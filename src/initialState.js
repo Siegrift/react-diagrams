@@ -1,5 +1,5 @@
-import {setInitialState as appInitialState} from './App/state.js'
-import {compose} from './utils/helpers'
+import { setInitialState as appInitialState } from './DiagramEditor/state.js'
+import { compose } from './utils/helpers'
 
 const state = {}
 

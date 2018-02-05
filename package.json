@@ -1,0 +1,25 @@
+{
+  "name": "react-diagrams",
+  "version": "1.0.0",
+  "description": "",
+  "repository": {
+    "type": "git"
+  },
+  "dependencies": {
+    "immutability-helper": "^2.6.4",
+    "lodash": "^4.17.5",
+    "react": "^16.2.0",
+    "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "eslint": "eslint app test *.js || exit 0",
+    "eslint-fix": "eslint --fix app test *.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "false": {}
+}

@@ -1,0 +1,11 @@
+.diagram-widget {
+    position: absolute;
+    width: 5em;
+    height: 5em;
+    border-radius: 1em;
+    cursor: pointer;
+    &__side-panel {
+        position: relative;
+        margin: 0.5em;
+    }
+}

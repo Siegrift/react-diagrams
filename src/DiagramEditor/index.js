@@ -10,8 +10,10 @@ import Splitter from '../componennts/Splitter/Splitter'
 import SidePanel from './SidePanel'
 import MainEditor from './MainEditor'
 
-const DiagramEditor = ({ topbarHeight, className, onTopbarHeightChange, onSidebarWidthChange, sidebarWidth }) => (
-  <div className={classnames(DiagramEditor, 'DiagramEditor')}>
+const DiagramEditor = ({ topbarHeight, className, onTopbarHeightChange,
+  onSidebarWidthChange, sidebarWidth, schema,
+}) => (
+  <div className={classnames('DiagramEditor', className)}>
     <Splitter
       vertical
       primaryIndex={1}
@@ -20,8 +22,8 @@ const DiagramEditor = ({ topbarHeight, className, onTopbarHeightChange, onSideba
     >
       <TopPanel />
       <Splitter secondarySize={sidebarWidth} primaryIndex={1} onChange={onSidebarWidthChange}>
-        <SidePanel />
-        <MainEditor />
+        <SidePanel schema={schema} />
+        <MainEditor schema={schema} />
       </Splitter>
     </Splitter>
   </div >

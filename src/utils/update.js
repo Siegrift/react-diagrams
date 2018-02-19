@@ -19,6 +19,6 @@ const recursiveSumUpdate = (newVal, oldVal) => {
   return ret
 }
 
-update.extend('$sum', (value: any, original: any) => recursiveSumUpdate(value, original))
+update.extend('$sum', (value, original) => recursiveSumUpdate(value, original))
 
 export default update

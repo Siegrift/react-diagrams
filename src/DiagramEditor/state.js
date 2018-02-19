@@ -4,7 +4,9 @@ export const PATH_APP = ['app']
 
 export const setInitialState = (state) =>
   setIn(state, PATH_APP, {
-    buttonText: 'Hello',
+    topbarHeight: 30,
+    sidebarWidth: 200,
   }, true)
 
-export const buttonTextSelector = (state) => getIn(state, [...PATH_APP, 'buttonText'])
+export const topbarHeightSelector = (state) => getIn(state, [...PATH_APP, 'topbarHeight'])
+export const sidebarWidthSelector = (state) => getIn(state, [...PATH_APP, 'sidebarWidth'])

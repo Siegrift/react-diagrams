@@ -1,16 +1,49 @@
 import React from 'react'
-import SplitterLayout from 'react-splitter-layout'
 import TopPanel from './TopPanel'
-import CenterPanel from './CenterPanel'
 import './_DiagramEditor.scss'
+import classnames from 'classnames'
+import { connect } from 'react-redux'
+import { withHandlers, compose } from 'recompose'
+import { topbarHeightSelector, sidebarWidthSelector } from './state'
+import { changeTopbarHeight, changeSidebarWidth } from './actions'
+import Splitter from '../componennts/Splitter/Splitter'
+import SidePanel from './SidePanel'
+import MainEditor from './MainEditor'
 
-const DiagramEditor = ({ className }) => (
-  <div className={`DiagramEditor ${className || ''}}`}>
-    <SplitterLayout vertical primaryIndex={1} secondaryInitialSize={30}>
+const DiagramEditor = ({ topbarHeight, className, onTopbarHeightChange, onSidebarWidthChange, sidebarWidth }) => (
+  <div className={classnames(DiagramEditor, 'DiagramEditor')}>
+    <Splitter
+      vertical
+      primaryIndex={1}
+      secondarySize={topbarHeight}
+      onChange={onTopbarHeightChange}
+    >
       <TopPanel />
-      <CenterPanel />
-    </SplitterLayout>
+      <Splitter secondarySize={sidebarWidth} primaryIndex={1} onChange={onSidebarWidthChange}>
+        <SidePanel />
+        <MainEditor />
+      </Splitter>
+    </Splitter>
   </div >
 )
 
-export default DiagramEditor
+export default compose(
+  connect(
+    (state) => ({
+      topbarHeight: topbarHeightSelector(state),
+      sidebarWidth: sidebarWidthSelector(state),
+    }),
+    {
+      changeTopbarHeight,
+      changeSidebarWidth,
+    },
+  ),
+  withHandlers({
+    onTopbarHeightChange: props => newTopbarHeight => {
+      props.changeTopbarHeight(newTopbarHeight)
+    },
+    onSidebarWidthChange: props => newSidebarWidth => {
+      props.changeSidebarWidth(newSidebarWidth)
+    },
+  }),
+)(DiagramEditor)

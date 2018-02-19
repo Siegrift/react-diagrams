@@ -1,7 +1,7 @@
 import React from 'react'
 
-const DiagramEditor = () => (
+const TopPanel = () => (
   <div>THIS WILL BE TOP PANEL</div>
 )
 
-export default DiagramEditor
+export default TopPanel

@@ -1,11 +1,23 @@
 .diagram-widget {
     position: absolute;
-    width: 5em;
-    height: 5em;
+    padding: 0.5em;
     border-radius: 1em;
     cursor: pointer;
     &__side-panel {
         position: relative;
         margin: 0.5em;
+    }
+    &__name {
+        text-align: center;
+    }
+}
+
+.ports {
+    display: flex;
+    &__in {
+        flex: 1;
+    }
+    &__out {
+        flex: 1;
     }
 }

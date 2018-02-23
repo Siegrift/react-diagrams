@@ -4,16 +4,30 @@ import './_DefaultDiagramWidget.scss'
 import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
 import { map } from 'lodash'
 import DefaultDiagramPort from '../DefaultDiagramPort'
+import { setSelectedWidget } from '../../DiagramEditor/MainEditor/actions'
+import { connect } from 'react-redux'
 
 const DefaultDiagramWidget = ({ className, x, y, children, color, widgetKey, sidePanel,
-  name, inPorts, outPorts, ...other
+  name, inPorts, outPorts, setSelectedWidget, editorKey, selected, ...other
 }) => (
   <div
-    className={classnames('diagram-widget', className, { 'diagram-widget__side-panel': sidePanel })}
+    className={classnames(
+      'diagram-widget',
+      className,
+      {
+        'diagram-widget__side-panel': sidePanel,
+        'diagram-widget__selected': selected,
+      }
+    )}
     style={{ top: y, left: x, backgroundColor: color }}
     draggable={sidePanel}
     onDragStart={event => {
       event.dataTransfer.setData(DATA_TRANSFER_WIDGET_KEY, widgetKey)
+    }}
+    onMouseDown={(e) => {
+      if (sidePanel) return
+      e.stopPropagation()
+      setSelectedWidget(editorKey, e.ctrlKey)
     }}
   >
     <p className="diagram-widget__name">{name}</p>
@@ -32,4 +46,7 @@ const DefaultDiagramWidget = ({ className, x, y, children, color, widgetKey, sid
   </div>
 )
 
-export default DefaultDiagramWidget
+export default connect(
+  null,
+  { setSelectedWidget },
+)(DefaultDiagramWidget)

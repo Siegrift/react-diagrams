@@ -4,7 +4,14 @@ import './_MainEditor.scss'
 import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
 import { connect } from 'react-redux'
 import { widgetsSelector, editorRefSelector, zoomSelector, offsetSelector } from './state'
-import { addWidget, setEditorRef, onEditorMouseMove, setDragging, updateZoom } from './actions'
+import {
+  addWidget,
+  setEditorRef,
+  onEditorMouseMove,
+  onEditorMouseDown,
+  updateZoom,
+  onEditorMouseUp,
+} from './actions'
 import DefaultDiagramWidget from '../../defaults/DefaultDiagramWidget'
 
 const getRelativePoint = ({ x, y }, editorRef) => {
@@ -19,7 +26,8 @@ const MainEditor = ({
   setEditorRef,
   editorRef,
   onEditorMouseMove,
-  setDragging,
+  onEditorMouseDown,
+  onEditorMouseUp,
   updateZoom,
   zoom,
   offset,
@@ -35,8 +43,8 @@ const MainEditor = ({
     className={classnames('editor')}
     onDragOver={event => event.preventDefault()}
     onMouseMove={e => onEditorMouseMove(getRelativePoint({ x: e.clientX, y: e.clientY }, editorRef))}
-    onMouseDown={e => setDragging(true)}
-    onMouseUp={e => setDragging(false)}
+    onMouseDown={e => onEditorMouseDown()}
+    onMouseUp={e => onEditorMouseUp()}
     onWheel={(e) => updateZoom(e, 0.001)}>
     <div
       className={classnames('editor__inner')}
@@ -62,7 +70,8 @@ export default connect(
     addWidget,
     setEditorRef,
     onEditorMouseMove,
-    setDragging,
+    onEditorMouseDown,
+    onEditorMouseUp,
     updateZoom,
   },
 )(MainEditor)

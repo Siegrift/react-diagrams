@@ -3,6 +3,7 @@ import { setIn, getIn } from '../../utils/helpers'
 export const PATH_EDITOR = ['editor']
 export const PATH_MOUSE = [...PATH_EDITOR, 'mouse']
 export const PATH_CANVAS = [...PATH_EDITOR, 'canvas']
+export const PATH_WIDGETS = [...PATH_EDITOR, 'widgets']
 
 export const setInitialState = (state) =>
   setIn(state, PATH_EDITOR, {
@@ -21,7 +22,7 @@ export const setInitialState = (state) =>
     editorRef: undefined,
   }, true)
 
-export const widgetsSelector = (state) => getIn(state, [...PATH_EDITOR, 'widgets'])
+export const widgetsSelector = (state) => getIn(state, [...PATH_WIDGETS])
 export const editorRefSelector = (state) => getIn(state, [...PATH_EDITOR, 'editorRef'])
 export const cursorSelector = (state) => getIn(state, [...PATH_MOUSE, 'cursor'])
 export const draggingSelector = (state) => getIn(state, [...PATH_MOUSE, 'dragging'])

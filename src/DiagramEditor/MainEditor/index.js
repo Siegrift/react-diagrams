@@ -14,11 +14,6 @@ import {
 } from './actions'
 import DefaultDiagramWidget from '../../defaults/DefaultDiagramWidget'
 
-const getRelativePoint = ({ x, y }, editorRef) => {
-  const boundingRect = editorRef.getBoundingClientRect()
-  return { x: x - boundingRect.left, y: y - boundingRect.top }
-}
-
 const MainEditor = ({
   schema,
   widgets,
@@ -37,15 +32,14 @@ const MainEditor = ({
     onDrop={event => {
       const dataKey = event.dataTransfer.getData(DATA_TRANSFER_WIDGET_KEY)
       const command = schema.commands.find(c => c.key === dataKey)
-      const pos = getRelativePoint({ x: event.clientX, y: event.clientY }, editorRef)
-      addWidget(command, pos)
+      addWidget(command, { x: event.clientX, y: event.clientY })
     }}
     className={classnames('editor')}
     onDragOver={event => event.preventDefault()}
-    onMouseMove={e => onEditorMouseMove(getRelativePoint({ x: e.clientX, y: e.clientY }, editorRef))}
+    onMouseMove={e => onEditorMouseMove({ x: e.clientX, y: e.clientY })}
     onMouseDown={e => onEditorMouseDown()}
     onMouseUp={e => onEditorMouseUp()}
-    onWheel={(e) => updateZoom(e, 0.001)}>
+    onWheel={(e) => updateZoom(e.deltaY, 0.001)}>
     <div
       className={classnames('editor__inner')}
       style={{

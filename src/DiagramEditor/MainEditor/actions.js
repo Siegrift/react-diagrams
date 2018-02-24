@@ -1,4 +1,4 @@
-import { PATH_EDITOR, PATH_MOUSE, PATH_CANVAS, PATH_WIDGETS } from './state'
+import { PATH_EDITOR, PATH_MOUSE, PATH_CANVAS } from './state'
 import { uniqueId, reduce, some, map, filter } from 'lodash'
 import update from '../../utils/update'
 
@@ -8,17 +8,37 @@ const setDragging = (editorState, isDragging) => update(editorState, {
   },
 })
 
+const getRelativePoint = (editorRef, { x, y }) => {
+  const boundingRect = editorRef.getBoundingClientRect()
+  return { x: x - boundingRect.left, y: y - boundingRect.top }
+}
+
+const getRelativeMousePoint = (editorState, { x, y }) => {
+  const boundingRect = editorState.editorRef.getBoundingClientRect()
+  const zoom = editorState.canvas.zoom
+  const offset = editorState.canvas.offset
+  return {
+    x: (x - boundingRect.left - boundingRect.width * (1 - zoom) / 2 - offset.x) / zoom,
+    y: (y - boundingRect.top - boundingRect.height * (1 - zoom) / 2 - offset.y) / zoom,
+  }
+}
+
 export const addWidget = (command, pos) => ({
-  type: 'Add widget',
-  path: [...PATH_WIDGETS],
+  type: 'Add widget to editor',
+  path: [...PATH_EDITOR],
   payload: { command, pos },
   reducer: (state) => {
     const id = uniqueId()
-    return update(state, {
-      [id]: { $set: { ...command, ...pos, editorKey: id, selected: false } },
-    })
+    const adjustedPos = getRelativeMousePoint(state, pos)
+    return {
+      ...state, widgets: {
+        ...state.widgets,
+        [id]: { ...command, ...adjustedPos, editorKey: id, selected: false },
+      },
+    }
   },
 })
+
 
 export const setSelectedWidget = (widgetKey, onlyAppend) => ({
   type: 'Add to selected widgets',
@@ -60,20 +80,21 @@ export const onEditorMouseMove = (position) => ({
   reducer: (state) => {
     let newState = update(state, {
       mouse: {
-        cursor: { $set: position },
+        cursor: { $set: getRelativePoint(state.editorRef, position) },
       },
     })
+    console.log(getRelativePoint(state.editorRef, position))
     if (newState.mouse.dragging) {
-      const diffX = position.x - state.mouse.cursor.x
-      const diffY = position.y - state.mouse.cursor.y
+      const diffX = newState.mouse.cursor.x - state.mouse.cursor.x
+      const diffY = newState.mouse.cursor.y - state.mouse.cursor.y
       console.log(diffX, diffY)
       if (some(newState.widgets, (w) => w.selected)) {
         const selectedKeys = map(filter(newState.widgets, (w) => w.selected), (w) => w.editorKey)
         const newWidgets = selectedKeys.reduce(
           (acc, key) => {
             const movedWidget = update(newState.widgets[key], {
-              x: { $sum: diffX },
-              y: { $sum: diffY },
+              x: { $sum: diffX / state.canvas.zoom },
+              y: { $sum: diffY / state.canvas.zoom },
             })
             return { ...acc, [key]: movedWidget }
           },
@@ -112,13 +133,9 @@ export const onEditorMouseUp = () => ({
   reducer: (state) => false,
 })
 
-export const updateZoom = (event, deltaScale) => ({
+export const updateZoom = (deltaY, deltaScale) => ({
   type: 'Update zoom',
-  path: [...PATH_CANVAS],
-  payload: { event, deltaScale },
-  reducer: (canvas) => {
-    return update(canvas, {
-      zoom: { $sum: event.deltaY * deltaScale },
-    })
-  },
+  path: [...PATH_CANVAS, 'zoom'],
+  payload: { deltaY, deltaScale },
+  reducer: (zoom) => Math.max(zoom + deltaY * deltaScale, 0),
 })

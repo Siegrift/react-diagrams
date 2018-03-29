@@ -41,10 +41,10 @@ export default compose(
     },
   ),
   withHandlers({
-    onTopbarHeightChange: props => newTopbarHeight => {
+    onTopbarHeightChange: (props) => (newTopbarHeight) => {
       props.changeTopbarHeight(newTopbarHeight)
     },
-    onSidebarWidthChange: props => newSidebarWidth => {
+    onSidebarWidthChange: (props) => (newSidebarWidth) => {
       props.changeSidebarWidth(newSidebarWidth)
     },
   }),

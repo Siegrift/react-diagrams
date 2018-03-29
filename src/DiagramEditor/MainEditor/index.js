@@ -28,18 +28,19 @@ const MainEditor = ({
   offset,
 }) => (
   <div
-    ref={ref => ref && setEditorRef(ref)}
-    onDrop={event => {
+    ref={(ref) => ref && setEditorRef(ref)}
+    onDrop={(event) => {
       const dataKey = event.dataTransfer.getData(DATA_TRANSFER_WIDGET_KEY)
-      const command = schema.commands.find(c => c.key === dataKey)
+      const command = schema.commands.find((c) => c.key === dataKey)
       addWidget(command, { x: event.clientX, y: event.clientY })
     }}
     className={classnames('editor')}
-    onDragOver={event => event.preventDefault()}
-    onMouseMove={e => onEditorMouseMove({ x: e.clientX, y: e.clientY })}
-    onMouseDown={e => onEditorMouseDown()}
-    onMouseUp={e => onEditorMouseUp()}
-    onWheel={(e) => updateZoom(e.deltaY, 0.001)}>
+    onDragOver={(event) => event.preventDefault()}
+    onMouseMove={(e) => onEditorMouseMove({ x: e.clientX, y: e.clientY })}
+    onMouseDown={(e) => onEditorMouseDown()}
+    onMouseUp={(e) => onEditorMouseUp()}
+    onWheel={(e) => updateZoom(e.deltaY, 0.001)}
+  >
     <div
       className={classnames('editor__inner')}
       style={{

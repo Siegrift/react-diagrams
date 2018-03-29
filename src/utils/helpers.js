@@ -122,8 +122,8 @@ export function dispatchIn(dispatch, path) {
     return dispatch(
       msg,
       (state, ...args) => {
-        let _state = getIn(state, path, {any: ({})})
-        let newState = fn(_state, ...args)
+        const _state = getIn(state, path, {any: ({})})
+        const newState = fn(_state, ...args)
         return setIn(state, path, newState, true)
       },
       args
@@ -186,7 +186,7 @@ function checkValidPath(path, minLength = 0) {
     throw new Error(`Expected path to be non-empty array, got: ${(path)}`)
   }
   // path may consist only of numbers and strings
-  for (let e of path) {
+  for (const e of path) {
     if (!((typeof e === 'string') || (typeof e === 'number'))) {
       throw new TypeError(`Path contains element that is not a number or a string.
         Path: ${(path)} Element: ${e}`)

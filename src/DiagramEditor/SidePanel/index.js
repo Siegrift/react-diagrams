@@ -5,7 +5,7 @@ const SidePanel = ({ schema }) => (
   <div>
     {
       schema.commands.map((c) => (
-        // 'key' is hidden by react  
+        // 'key' is hidden by react
         <DefaultDiagramWidget {...c} widgetKey={c.key} sidePanel />
       ))
     }

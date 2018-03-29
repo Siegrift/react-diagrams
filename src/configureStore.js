@@ -12,7 +12,7 @@ export default () => {
   const loggerMiddleware = createLogger({
     collapsed: true,
     predicate: (getState, action) => !action.notLogable,
-    actionTransformer: (action) => ({...action, type: 'RD: ' + action.type}),
+    actionTransformer: (action) => ({...action, type: `RD: ${action.type}`}),
   })
 
   const middlewares = [
@@ -32,7 +32,7 @@ export default () => {
 
   if (process.env.NODE_ENV === 'development') {
     logger.log = (message, payload) => store.dispatch({
-      type: 'RD:' + message,
+      type: `RD:${message}`,
       payload,
     })
   }

@@ -127,7 +127,7 @@ class SplitterLayout extends React.Component {
     return (
       <div className={classes} ref={(c) => {this.container = c}}>
         {wrappedChildren[0]}
-        < div
+        <div
           role="separator"
           className="layout-splitter"
           ref={(c) => {this.splitter = c}}

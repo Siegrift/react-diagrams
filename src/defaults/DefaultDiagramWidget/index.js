@@ -21,7 +21,7 @@ const DefaultDiagramWidget = ({ className, x, y, children, color, widgetKey, sid
     )}
     style={{ top: y, left: x, backgroundColor: color }}
     draggable={sidePanel}
-    onDragStart={event => {
+    onDragStart={(event) => {
       event.dataTransfer.setData(DATA_TRANSFER_WIDGET_KEY, widgetKey)
     }}
     onMouseDown={(e) => {

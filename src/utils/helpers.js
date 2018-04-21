@@ -33,7 +33,7 @@ export const forwardReducerTo = (reducer, path) => (
     const resolvedPath = typeof path === 'function'
       ? path(state)
       : path
-    const oldValue = getInState(state, resolvedPath, {last: dummy})
+    const oldValue = getInState(state, resolvedPath, { last: dummy })
     const newValue = reducer(oldValue !== dummy ? oldValue : undefined, payload)
     return setIn(state, resolvedPath, newValue)
   }
@@ -45,7 +45,7 @@ export const forwardReducerTo = (reducer, path) => (
  * - last is used when access fails at last step
  * - any is used when access fails at any step
  */
-export const getIn = (state, path, {last, any} = {}) => {
+export const getIn = (state, path, { last, any } = {}) => {
   checkValidPath(path)
   let value = state // 'any' terminates further flowtype inference, allowing value manipulation below
   for (let i = 0; i < path.length; i++) {
@@ -69,15 +69,15 @@ export const getIn = (state, path, {last, any} = {}) => {
  */
 export const hasIn = (state, path) => {
   const dummy = {}
-  return getIn(state, path, {any: dummy}) !== dummy
+  return getIn(state, path, { any: dummy }) !== dummy
 }
 
 /*
  * Typed getIn functions, to allow static checking when passing reducers
  */
 
-export function getInState(state, path, {last, any}) {
-  return getIn(state, path, {last, any})
+export function getInState(state, path, { last, any }) {
+  return getIn(state, path, { last, any })
 }
 
 /*
@@ -122,26 +122,13 @@ export function dispatchIn(dispatch, path) {
     return dispatch(
       msg,
       (state, ...args) => {
-        const _state = getIn(state, path, {any: ({})})
+        const _state = getIn(state, path, { any: ({}) })
         const newState = fn(_state, ...args)
         return setIn(state, path, newState, true)
       },
       args
     )
   }
-}
-
-/*
- * Sets specific `path` of connected component state using uiDispatch.
- *
- * component: component decorated by connect
- * path: array of string keys
- * val: new value for the `path`
- * msg: dispatch message
- * args: dispatch arguments
- */
-export function setInLocal(component, msg, path, val) {
-  dispatchIn(component.props.uiDispatch, path)(msg, (state, _val) => _val, [val])
 }
 
 function throwError(taskName, state, pathSegment, value) {
@@ -194,33 +181,10 @@ function checkValidPath(path, minLength = 0) {
   }
 }
 
-/*
- * Filters attributes of an object, based on a provided filter, into a new object.
- * Example:
- *   obj = {a: 10, b: {c: 20, d: 30}, e: {f: 40, g: 50}}
- *   objfilter = {a: false, b: {c: true}, e: true}
- *   returns a new object {b: {c: 20}, e: {f: 40, g: 50}}
- * Note: In case of filtering whole objects, only a reference is copied. So in
- *   previous example, new object's e === old object's e. This will not be the
- *   case, if we filter it like this: e: {f: true, g: true}.
- *
- * obj: an object to be filtered
- * objfilter: an object describing which attributes to keep and which to lose
- * returns: a new object
- */
-export const filterObject = (obj: Object, objFilter: Object): Object => (
-  Object.keys(obj).reduce((accum, attr) => ((
-    typeof objFilter[attr] === 'object'
-      ? (accum[attr] = filterObject(obj[attr], objFilter[attr]))
-      : (objFilter[attr] && (accum[attr] = obj[attr]))
-    , accum
-  )), {})
-)
-
 function cloneObject(obj) {
   if (obj === null || typeof obj !== 'object') {
     return obj
   }
   if (lodash.isArray(obj)) return [...obj]
-  return {...obj}
+  return { ...obj }
 }

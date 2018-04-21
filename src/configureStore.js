@@ -12,7 +12,7 @@ export default () => {
   const loggerMiddleware = createLogger({
     collapsed: true,
     predicate: (getState, action) => !action.notLogable,
-    actionTransformer: (action) => ({...action, type: `RD: ${action.type}`}),
+    actionTransformer: (action) => ({ ...action, type: `RD: ${action.type}` }),
   })
 
   const middlewares = [

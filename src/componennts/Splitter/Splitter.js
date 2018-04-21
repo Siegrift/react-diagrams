@@ -107,13 +107,16 @@ class SplitterLayout extends React.Component {
   render() {
     const primaryIndex = this.props.primaryIndex
     const wrappedChildren = this.props.children.map((child, index) =>
-      (<Pane vertical={this.props.vertical}
-        percentage={this.props.percentage}
-        primary={primaryIndex === index}
-        size={primaryIndex === index ? null : this.props.secondarySize}
-      >
-        {child}
-      </Pane>
+      (
+        <Pane
+          key={index}
+          vertical={this.props.vertical}
+          percentage={this.props.percentage}
+          primary={primaryIndex === index}
+          size={primaryIndex === index ? null : this.props.secondarySize}
+        >
+          {child}
+        </Pane>
       )
     )
     const classes = classnames(

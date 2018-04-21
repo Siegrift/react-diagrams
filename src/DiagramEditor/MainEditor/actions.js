@@ -1,4 +1,4 @@
-import { PATH_EDITOR, PATH_MOUSE, PATH_CANVAS } from './state'
+import { PATH_EDITOR, PATH_MOUSE, PATH_CANVAS, PATH_CURRENT_LINK, PATH_LINKS, currentLinkSelector } from './state'
 import { uniqueId, reduce, some, map, filter } from 'lodash'
 import update from '../../utils/update'
 
@@ -31,9 +31,17 @@ export const addWidget = (command, pos) => ({
     const id = uniqueId()
     const adjustedPos = getRelativeMousePoint(state, pos)
     return {
-      ...state, widgets: {
+      ...state,
+      widgets: {
         ...state.widgets,
-        [id]: { ...command, ...adjustedPos, editorKey: id, selected: false },
+        [id]: {
+          ...command,
+          inPorts: command.inPorts.map((port) => ({ ...port, editorKey: uniqueId() })),
+          outPorts: command.outPorts.map((port) => ({ ...port, editorKey: uniqueId() })),
+          ...adjustedPos,
+          editorKey: id,
+          selected: false,
+        },
       },
     }
   },
@@ -53,7 +61,7 @@ export const setSelectedWidget = (widgetKey, onlyAppend) => ({
         {}
       )
     }
-    if (widgetKey) {
+    if (widgetKey !== -1) {
       widgetsState = update(widgetsState, {
         [widgetKey]: {
           selected: {
@@ -77,17 +85,16 @@ export const onEditorMouseMove = (position) => ({
   type: 'Editor mouse move',
   path: [...PATH_EDITOR],
   payload: { position },
+  notLogable: true,
   reducer: (state) => {
     let newState = update(state, {
       mouse: {
         cursor: { $set: getRelativePoint(state.editorRef, position) },
       },
     })
-    console.log(getRelativePoint(state.editorRef, position))
     if (newState.mouse.dragging) {
       const diffX = newState.mouse.cursor.x - state.mouse.cursor.x
       const diffY = newState.mouse.cursor.y - state.mouse.cursor.y
-      console.log(diffX, diffY)
       if (some(newState.widgets, (w) => w.selected)) {
         const selectedKeys = map(filter(newState.widgets, (w) => w.selected), (w) => w.editorKey)
         const newWidgets = selectedKeys.reduce(
@@ -100,7 +107,25 @@ export const onEditorMouseMove = (position) => ({
           },
           {}
         )
-        newState = { ...newState, widgets: { ...newState.widgets, ...newWidgets } }
+        const links = map(newState.links, (link) => {
+          const moveLast = selectedKeys.find((key) => {
+            return some(newState.widgets[key].outPorts, (port) => port.editorKey === link.destination)
+          })
+          const moveFirst = selectedKeys.find((key) => {
+            return some(newState.widgets[key].inPorts, (port) => port.editorKey === link.source)
+          })
+          let newLink = link
+          const oldPath = link.path
+          if (moveFirst) {
+            newLink = { ...link, path: [{ x: oldPath[0].x + diffX / state.canvas.zoom, y: oldPath[0].y + diffY / state.canvas.zoom }, ...oldPath.splice(1)] }
+          } else if (moveLast) {
+            const last = oldPath[oldPath.length - 1]
+            newLink = { ...link, path: [...oldPath.splice(0, oldPath.length - 1), { x: last.x + diffX / state.canvas.zoom, y: last.y + diffY / state.canvas.zoom }] }
+          }
+          console.log(moveFirst, moveLast, newLink, link.destination, newState.widgets)
+          return newLink
+        })
+        newState = { ...newState, widgets: { ...newState.widgets, ...newWidgets }, links }
       } else {
         newState = update(newState, {
           canvas: {
@@ -114,22 +139,26 @@ export const onEditorMouseMove = (position) => ({
     }
     return newState
   },
-  notLogable: true,
 })
 
-export const onEditorMouseDown = () => ({
-  type: 'Editor mouse down',
-  path: [...PATH_EDITOR],
-  payload: undefined,
-  reducer: (state) => {
-    return setSelectedWidget(undefined).reducer(state)
-  },
+const addPointToCurrentLink = (point) => ({
+  type: 'Add point to current link',
+  path: PATH_CURRENT_LINK,
+  payload: point,
+  reducer: (link) => ({ ...link, path: [...link.path, point] }),
 })
+
+export const onEditorMouseDown = (point) => (dispatch, getState) => {
+  if (getState().editor.currentLink) {
+    dispatch(addPointToCurrentLink(getRelativeMousePoint(getState().editor, point)))
+  } else {
+    dispatch(setSelectedWidget(-1))
+  }
+}
 
 export const onEditorMouseUp = () => ({
   type: 'Editor mouse up',
   path: [...PATH_MOUSE, 'dragging'],
-  payload: undefined,
   reducer: (state) => false,
 })
 
@@ -139,3 +168,37 @@ export const updateZoom = (deltaY, deltaScale) => ({
   payload: { deltaY, deltaScale },
   reducer: (zoom) => Math.max(zoom + deltaY * deltaScale, 0),
 })
+
+
+export const setSelectedPort = (editorKey, point) => ({
+  type: 'Set selected port',
+  path: [...PATH_CURRENT_LINK],
+  payload: { editorKey, point },
+  reducer: (state) => {
+    if (editorKey === -1) return undefined
+    return {
+      source: editorKey,
+      path: [point],
+      destination: undefined,
+    }
+  },
+})
+
+const addToLinks = (link) => ({
+  type: 'Add to links',
+  payload: link,
+  path: PATH_LINKS,
+  reducer: (links) => ({ ...links, [uniqueId()]: link }),
+})
+
+export const onPortMouseDown = (editorKey, event) => (dispatch, getState) => {
+  const currentLink = currentLinkSelector(getState())
+  dispatch(setSelectedWidget(-1))
+  if (currentLink) {
+    dispatch(addPointToCurrentLink(getRelativeMousePoint(getState().editor, { x: event.clientX, y: event.clientY })))
+    if (currentLink.source !== editorKey) dispatch(addToLinks({ ...currentLinkSelector(getState()), destination: editorKey }))
+    dispatch(setSelectedPort(-1))
+  } else {
+    dispatch(setSelectedPort(editorKey, getRelativeMousePoint(getState().editor, { x: event.clientX, y: event.clientY })))
+  }
+}

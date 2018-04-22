@@ -10,42 +10,42 @@ import { connect } from 'react-redux'
 const DefaultDiagramWidget = ({ className, x, y, children, color, widgetKey, sidePanel,
   name, inPorts, outPorts, setSelectedNode, editorKey, selected, ...other
 }) => (
-    <div
-      className={classnames(
-        'diagram-widget',
-        className,
-        {
-          'diagram-widget__side-panel': sidePanel,
-          'diagram-widget__selected': selected,
-        }
-      )}
-      style={{ top: y, left: x, backgroundColor: color }} // TODO compute also bottom and right
-      draggable={sidePanel}
-      onDragStart={(event) => {
-        if (!sidePanel) return
-        event.dataTransfer.setData(DATA_TRANSFER_WIDGET_KEY, widgetKey)
-      }}
-      onMouseDown={(e) => {
-        if (sidePanel) return
-        e.stopPropagation()
-        setSelectedNode(editorKey, e.ctrlKey)
-      }}
-    >
-      <p className="diagram-widget__name">{name}</p>
-      <div className="ports">
-        <div className="ports__in">{
-          map(inPorts, (port) =>
-            <DefaultDiagramPort {...port} isInPort />
-          )
-        }</div>
-        <div className="ports__out">{
-          map(outPorts, (port) =>
-            <DefaultDiagramPort {...port} />
-          )}</div>
-      </div>
-      {children}
+  <div
+    className={classnames(
+      'diagram-widget',
+      className,
+      {
+        'diagram-widget__side-panel': sidePanel,
+        'diagram-widget__selected': selected,
+      }
+    )}
+    style={{ top: y, left: x, backgroundColor: color }} // TODO compute also bottom and right
+    draggable={sidePanel}
+    onDragStart={(event) => {
+      if (!sidePanel) return
+      event.dataTransfer.setData(DATA_TRANSFER_WIDGET_KEY, widgetKey)
+    }}
+    onMouseDown={(e) => {
+      if (sidePanel) return
+      e.stopPropagation()
+      setSelectedNode(editorKey, e.ctrlKey)
+    }}
+  >
+    <p className="diagram-widget__name">{name}</p>
+    <div className="ports">
+      <div className="ports__in">{
+        map(inPorts, (port) =>
+          <DefaultDiagramPort {...port} isInPort />
+        )
+      }</div>
+      <div className="ports__out">{
+        map(outPorts, (port) =>
+          <DefaultDiagramPort {...port} />
+        )}</div>
     </div>
-  )
+    {children}
+  </div>
+)
 
 export default connect(
   null,

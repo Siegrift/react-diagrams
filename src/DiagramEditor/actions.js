@@ -1,15 +1,14 @@
-import { PATH_APP } from './state'
+import { PATH_APP, PATH_TOPBAR_HEIGHT, PATH_SIDEBAR_WIDTH } from './state'
+import { setIn } from 'immutable'
 
 export const changeTopbarHeight = (height) => ({
   type: 'Change topbar height',
-  path: [...PATH_APP, 'topbarHeight'],
   payload: height,
-  reducer: (state) => height,
+  reducer: (state) => setIn(state, PATH_TOPBAR_HEIGHT, height),
 })
 
 export const changeSidebarWidth = (width) => ({
   type: 'Change sidebar width',
-  path: [...PATH_APP, 'sidebarWidth'],
   payload: width,
-  reducer: (state) => width,
+  reducer: (state) => setIn(state, PATH_SIDEBAR_WIDTH, width),
 })

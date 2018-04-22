@@ -1,5 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
+import { PATH_POINT_RADIUS, SELECTED_PATH_POINT_RADIUS } from '../../constants'
 
 // Properties of a line
 // I:  - pointA (array) [x,y]: coordinates
@@ -65,24 +66,22 @@ const bezierCommand = (point, i, a) => {
 //           - a (array): complete array of points coordinates
 //       O:  - (string) a svg path command
 // O:  - (string): a Svg <path> element
-export default ({ points, onLinkMouseDown, onPointMouseDown, pointSize, currentLink, selected }) => {
+export default ({ points, onLinkMouseDown, onPointMouseDown, currentLink, selected }) => {
   const path = points.map((point) => [point.x, point.y])
   // build the d attributes by looping over the points
   const d = path.reduce((acc, point, i, a) => i === 0
     ? `M ${point[0]},${point[1]}`
     : `${acc} ${bezierCommand(point, i, a)}`
     , '')
-  console.log('selected', selected)
   return (
     <g>
       <path className={classNames('Editor__Inner__Svg__Path', { Editor__Inner__Svg__Path__Selected: selected })} d={d} onMouseDown={onLinkMouseDown} />
       {points.map((point, index) => (
-        <rect
-          className={classNames('Editor__Inner__Svg__Rect', { Editor__Inner__Svg__Rect__Selected: point.selected })}
-          x={point.x - pointSize / 2}
-          y={point.y - pointSize / 2}
-          width={pointSize}
-          height={pointSize}
+        <circle
+          className={classNames('Editor__Inner__Svg__Circle', { Editor__Inner__Svg__Circle__Selected: point.selected })}
+          cx={point.x}
+          cy={point.y}
+          r={point.selected ? SELECTED_PATH_POINT_RADIUS : PATH_POINT_RADIUS}
           key={index}
           onMouseDown={(event) => {!currentLink && onPointMouseDown(event, point.editorKey)}}
         />

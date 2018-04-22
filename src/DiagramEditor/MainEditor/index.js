@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import './_MainEditor.scss'
 import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
 import { connect } from 'react-redux'
-import { widgetsSelector, editorRefSelector, zoomSelector, offsetSelector, currentLinkSelector, linksSelector, cursorSelector } from './state'
+import { widgetsSelector, editorRefSelector, zoomSelector, offsetSelector, currentLinkSelector, linksSelector } from './state'
 import {
   addWidget,
   setEditorRef,
@@ -66,18 +66,16 @@ const MainEditor = ({
             onLinkMouseDown={(e) => onLinkMouseDown(e, key)}
             key={key}
             linkKey={key}
-            pointSize={20}
           />
         ))
       }
       {
         currentLink && <LinkPath
           currentLink
-          points={[...currentLink.path, cursor]}
+          points={currentLink.path}
           selected
           onPointMouseDown={onPointMouseDown}
           onLinkMouseDown={(e) => onLinkMouseDown(e)}
-          pointSize={20}
         />
       }
     </svg>
@@ -104,7 +102,6 @@ export default connect(
     offset: offsetSelector(state),
     currentLink: currentLinkSelector(state),
     links: linksSelector(state),
-    cursor: cursorSelector(state),
   }),
   {
     addWidget,
@@ -115,5 +112,5 @@ export default connect(
     updateZoom,
     onLinkMouseDown,
     onPointMouseDown,
-  },
+  }
 )(MainEditor)

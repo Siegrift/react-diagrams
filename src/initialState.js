@@ -1,6 +1,6 @@
 import { setInitialState as appInitialState } from './DiagramEditor/state.js'
 import { setInitialState as editorInitialState } from './DiagramEditor/MainEditor/state'
-import { compose } from './utils/helpers'
+import { compose } from 'recompose'
 
 const state = {}
 

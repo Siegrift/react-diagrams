@@ -1,4 +1,6 @@
 import { setIn, getIn } from '../../utils/helpers'
+import { createSelector } from 'reselect'
+import { forEach } from 'lodash'
 
 export const PATH_EDITOR = ['editor']
 export const PATH_MOUSE = [...PATH_EDITOR, 'mouse']
@@ -34,3 +36,20 @@ export const zoomSelector = (state) => getIn(state, [...PATH_CANVAS, 'zoom'])
 export const offsetSelector = (state) => getIn(state, [...PATH_CANVAS, 'offset'])
 export const currentLinkSelector = (state) => getIn(state, PATH_CURRENT_LINK)
 export const linksSelector = (state) => getIn(state, PATH_LINKS)
+
+export const selectedNodesSelector = (
+  widgetsSelector,
+  linksSelector,
+  (widgets, links) => {
+    const selected = []
+    forEach({ ...widgets, ...links }, (node) => {
+      if (node.selected) selected.push(node.editorKey)
+    })
+    forEach(links, (link) => {
+      forEach(link.path, (node) => {
+        if (node.selected) selected.push(node.editorKey)
+      })
+    })
+    return selected
+  }
+)

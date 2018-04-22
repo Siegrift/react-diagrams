@@ -1,4 +1,6 @@
 import React from 'react'
+import classNames from 'classnames'
+
 // Properties of a line
 // I:  - pointA (array) [x,y]: coordinates
 //     - pointB (array) [x,y]: coordinates
@@ -63,25 +65,26 @@ const bezierCommand = (point, i, a) => {
 //           - a (array): complete array of points coordinates
 //       O:  - (string) a svg path command
 // O:  - (string): a Svg <path> element
-export default ({ points, onLinkMouseDown, onPointMouseDown, pointSize, currentLink }) => {
+export default ({ points, onLinkMouseDown, onPointMouseDown, pointSize, currentLink, selected }) => {
   const path = points.map((point) => [point.x, point.y])
   // build the d attributes by looping over the points
   const d = path.reduce((acc, point, i, a) => i === 0
     ? `M ${point[0]},${point[1]}`
     : `${acc} ${bezierCommand(point, i, a)}`
     , '')
+  console.log('selected', selected)
   return (
     <g>
-      <path className="Editor__Inner__Svg__Path" d={d} onMouseDown={onLinkMouseDown} />
+      <path className={classNames('Editor__Inner__Svg__Path', { Editor__Inner__Svg__Path__Selected: selected })} d={d} onMouseDown={onLinkMouseDown} />
       {points.map((point, index) => (
         <rect
-          className="Editor__Inner__Svg__Rect"
+          className={classNames('Editor__Inner__Svg__Rect', { Editor__Inner__Svg__Rect__Selected: point.selected })}
           x={point.x - pointSize / 2}
           y={point.y - pointSize / 2}
           width={pointSize}
           height={pointSize}
           key={index}
-          onMouseDown={(event) => {!currentLink && onPointMouseDown(event, index)}}
+          onMouseDown={(event) => {!currentLink && onPointMouseDown(event, point.editorKey)}}
         />
       ))}
     </g>

@@ -2,9 +2,9 @@ import React from 'react'
 import classnames from 'classnames'
 import './_DefaultDiagramPort.scss'
 import { connect } from 'react-redux'
-import { onPortMouseDown, setSelectedWidget } from '../../DiagramEditor/MainEditor/actions'
+import { onPortMouseDown, setSelectedNode } from '../../DiagramEditor/MainEditor/actions'
 
-const DefaultDiagramPort = ({ className, isInPort, name, type, editorKey, onPortMouseDown, setSelectedWidget }) => {
+const DefaultDiagramPort = ({ className, isInPort, name, type, editorKey, onPortMouseDown, setSelectedNode }) => {
   return (
     <div
       className={classnames(className, 'DiagramPort', isInPort ? 'DiagramPort__In' : 'DiagramPort__Out')}
@@ -23,5 +23,5 @@ const DefaultDiagramPort = ({ className, isInPort, name, type, editorKey, onPort
 
 export default connect(
   null,
-  { onPortMouseDown, setSelectedWidget },
+  { onPortMouseDown, setSelectedNode },
 )(DefaultDiagramPort)

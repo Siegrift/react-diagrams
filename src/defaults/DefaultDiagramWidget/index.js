@@ -19,7 +19,7 @@ const DefaultDiagramWidget = ({ className, x, y, children, color, widgetKey, sid
         'diagram-widget__selected': selected,
       }
     )}
-    style={{ top: y, left: x, backgroundColor: color }}
+    style={{ top: y, left: x, backgroundColor: color }} // TODO compute also bottom and right
     draggable={sidePanel}
     onDragStart={(event) => {
       if (!sidePanel) return

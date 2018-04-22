@@ -63,14 +63,27 @@ const bezierCommand = (point, i, a) => {
 //           - a (array): complete array of points coordinates
 //       O:  - (string) a svg path command
 // O:  - (string): a Svg <path> element
-export const svgPath = (rawPoints, key) => {
-  const points = rawPoints.map((point) => [point.x, point.y])
+export default ({ points, onLinkMouseDown, onPointMouseDown, pointSize, currentLink }) => {
+  const path = points.map((point) => [point.x, point.y])
   // build the d attributes by looping over the points
-  const d = points.reduce((acc, point, i, a) => i === 0
+  const d = path.reduce((acc, point, i, a) => i === 0
     ? `M ${point[0]},${point[1]}`
     : `${acc} ${bezierCommand(point, i, a)}`
     , '')
   return (
-    <path d={d} fill="none" stroke="grey" strokeWidth="4" key={key} />
+    <g>
+      <path className="Editor__Inner__Svg__Path" d={d} onMouseDown={onLinkMouseDown} />
+      {points.map((point, index) => (
+        <rect
+          className="Editor__Inner__Svg__Rect"
+          x={point.x - pointSize / 2}
+          y={point.y - pointSize / 2}
+          width={pointSize}
+          height={pointSize}
+          key={index}
+          onMouseDown={(event) => {!currentLink && onPointMouseDown(event, index)}}
+        />
+      ))}
+    </g>
   )
 }

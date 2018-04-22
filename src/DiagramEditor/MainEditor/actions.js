@@ -1,4 +1,4 @@
-import { PATH_EDITOR, PATH_MOUSE, PATH_CANVAS, PATH_CURRENT_LINK, PATH_LINKS, currentLinkSelector } from './state'
+import { PATH_EDITOR, PATH_MOUSE, PATH_CANVAS, PATH_CURRENT_LINK, PATH_LINKS, currentLinkSelector, editorRefSelector, linksSelector } from './state'
 import { uniqueId, reduce, some, map, filter } from 'lodash'
 import update from '../../utils/update'
 
@@ -78,6 +78,7 @@ export const setEditorRef = (ref) => ({
   type: 'Set editor ref',
   path: [...PATH_EDITOR, 'editorRef'],
   payload: { ref },
+  notLogable: true,
   reducer: (state) => ref,
 })
 
@@ -107,22 +108,25 @@ export const onEditorMouseMove = (position) => ({
           },
           {}
         )
+        console.log('xxx', newState.links, selectedKeys)
         const links = map(newState.links, (link) => {
           const moveLast = selectedKeys.find((key) => {
-            return some(newState.widgets[key].outPorts, (port) => port.editorKey === link.destination)
+            return some(newState.widgets[key].outPorts, (port) => {console.log(port.editorKey, link.destination); return port.editorKey === link.destination}) ||
+              some(newState.widgets[key].inPorts, (port) => {console.log(port.editorKey, link.destination); return port.editorKey === link.destination})
           })
           const moveFirst = selectedKeys.find((key) => {
-            return some(newState.widgets[key].inPorts, (port) => port.editorKey === link.source)
+            return some(newState.widgets[key].inPorts, (port) => {console.log(port.editorKey, link.source); return port.editorKey === link.source}) ||
+              some(newState.widgets[key].outPorts, (port) => {console.log(port.editorKey, link.source); return port.editorKey === link.source})
           })
           let newLink = link
-          const oldPath = link.path
           if (moveFirst) {
-            newLink = { ...link, path: [{ x: oldPath[0].x + diffX / state.canvas.zoom, y: oldPath[0].y + diffY / state.canvas.zoom }, ...oldPath.splice(1)] }
-          } else if (moveLast) {
-            const last = oldPath[oldPath.length - 1]
-            newLink = { ...link, path: [...oldPath.splice(0, oldPath.length - 1), { x: last.x + diffX / state.canvas.zoom, y: last.y + diffY / state.canvas.zoom }] }
+            newLink = { ...newLink, path: [{ x: newLink.path[0].x + diffX / state.canvas.zoom, y: newLink.path[0].y + diffY / state.canvas.zoom }, ...newLink.path.slice(1)] }
           }
-          console.log(moveFirst, moveLast, newLink, link.destination, newState.widgets)
+          if (moveLast) {
+            const last = newLink.path[newLink.path.length - 1]
+            newLink = { ...newLink, path: [...newLink.path.slice(0, newLink.path.length - 1), { x: last.x + diffX / state.canvas.zoom, y: last.y + diffY / state.canvas.zoom }] }
+          }
+          console.log('move', moveFirst, moveLast)
           return newLink
         })
         newState = { ...newState, widgets: { ...newState.widgets, ...newWidgets }, links }
@@ -202,3 +206,69 @@ export const onPortMouseDown = (editorKey, event) => (dispatch, getState) => {
     dispatch(setSelectedPort(editorKey, getRelativeMousePoint(getState().editor, { x: event.clientX, y: event.clientY })))
   }
 }
+
+const selectLink = (link) => ({
+  type: 'Select link',
+  payload: link,
+  path: PATH_LINKS,
+  reducer: (links) => ({ ...links, [link]: { ...links[link], selected: true } }),
+})
+
+const computeDiff = (p1, p2, p3) => {
+  return Math.abs(p1.x - p3.x) +
+    Math.abs(p1.y - p3.y) +
+    Math.abs(p2.x - p3.x) +
+    Math.abs(p2.y - p3.y)
+}
+
+const addPointToLink = (link, event) => ({
+  type: 'Add point to link',
+  payload: { link, event },
+  path: [],
+  reducer: (state) => {
+    const links = linksSelector(state)
+    const path = links[link].path.slice(0), point = getRelativeMousePoint(state.editor, { x: event.clientX, y: event.clientY })
+    const { pos } = path.reduce(
+      (acc, value, index) => {
+        if (index === 0) return acc
+        if (computeDiff(path[index - 1], value, point) < acc.diff) {
+          return {
+            diff: computeDiff(path[index - 1], value, point),
+            pos: index,
+          }
+        }
+        return acc
+      },
+      { diff: Number.MAX_VALUE, pos: 0 }
+    )
+    path.splice(pos, 0, point)
+    return update(state, {
+      editor: {
+        links: {
+          [link]: {
+            path: {
+              $set: path,
+            },
+          },
+        },
+      },
+    })
+  },
+})
+
+export const onLinkMouseDown = (event, key) => (dispatch, getState) => {
+  event.stopPropagation()
+  if (event.ctrlKey) dispatch(selectLink(key))
+  else dispatch(addPointToLink(key, event))
+}
+
+export const onPointMouseDown = (event, key, index) => ({
+  type: 'Select link point',
+  path: [],
+  payload: { event, key, index },
+  reducer: (state) => {
+    event.stopPropagation()
+    console.log('select point', key, index)
+    return state
+  },
+})

@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import './_MainEditor.scss'
 import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
 import { connect } from 'react-redux'
-import { widgetsSelector, editorRefSelector, zoomSelector, offsetSelector, currentLinkSelector, linksSelector } from './state'
+import { widgetsSelector, editorRefSelector, zoomSelector, offsetSelector, currentLinkSelector, linksSelector, cursorSelector } from './state'
 import {
   addWidget,
   setEditorRef,
@@ -11,15 +11,11 @@ import {
   onEditorMouseDown,
   updateZoom,
   onEditorMouseUp,
+  onLinkMouseDown,
+  onPointMouseDown,
 } from './actions'
 import DefaultDiagramWidget from '../../defaults/DefaultDiagramWidget'
-import { svgPath } from '../../utils/svg'
-
-const renderLink = (link, isSelected, key) => {
-  return (
-    svgPath(link.path, key)
-  )
-}
+import LinkPath from './svg'
 
 const MainEditor = ({
   schema,
@@ -35,6 +31,9 @@ const MainEditor = ({
   offset,
   currentLink,
   links,
+  onLinkMouseDown,
+  onPointMouseDown,
+  cursor,
 }) => (
   <div
     ref={(ref) => ref && setEditorRef(ref)}
@@ -52,14 +51,35 @@ const MainEditor = ({
     onMouseUp={(e) => onEditorMouseUp()}
     onWheel={(e) => updateZoom(e.deltaY, 0.001)}
   >
-    <svg className="Editor__Inner__Svg" style={{
-      transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
-    }}
+    <svg
+      className="Editor__Inner__Svg"
+      style={{
+        transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
+      }}
     >
       {
-        Object.keys(links).map((key) => renderLink(links[key], false, key))
+        Object.keys(links).map((key) => (
+          <LinkPath
+            points={links[key].path}
+            selected={links[key].selected}
+            onPointMouseDown={onPointMouseDown}
+            onLinkMouseDown={(e) => onLinkMouseDown(e, key)}
+            key={key}
+            linkKey={key}
+            pointSize={20}
+          />
+        ))
       }
-      {currentLink && renderLink(currentLink, true)}
+      {
+        currentLink && <LinkPath
+          currentLink
+          points={[...currentLink.path, cursor]}
+          selected
+          onPointMouseDown={onPointMouseDown}
+          onLinkMouseDown={(e) => onLinkMouseDown(e)}
+          pointSize={20}
+        />
+      }
     </svg>
     <div
       className={classnames('editor__inner')}
@@ -73,7 +93,7 @@ const MainEditor = ({
         ))
       }
     </div>
-  </div>
+  </div >
 )
 
 export default connect(
@@ -84,6 +104,7 @@ export default connect(
     offset: offsetSelector(state),
     currentLink: currentLinkSelector(state),
     links: linksSelector(state),
+    cursor: cursorSelector(state),
   }),
   {
     addWidget,
@@ -92,5 +113,7 @@ export default connect(
     onEditorMouseDown,
     onEditorMouseUp,
     updateZoom,
+    onLinkMouseDown,
+    onPointMouseDown,
   },
 )(MainEditor)

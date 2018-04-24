@@ -26,6 +26,7 @@ const Widget = ({ className, x, y, children, color, widgetKey, sidePanel,
       event.dataTransfer.setData(DATA_TRANSFER_WIDGET_KEY, widgetKey)
     }}
     onMouseDown={(e) => {
+      if (sidePanel) return
       e.stopPropagation()
       onWidgetMouseDown(editorKey, e)
     }}
@@ -34,12 +35,12 @@ const Widget = ({ className, x, y, children, color, widgetKey, sidePanel,
     <div className="ports">
       <div className="ports__in">{
         map(inPorts, (port) =>
-          <Port {...port} isInPort />
+          <Port {...port} isInPort sidePanel={sidePanel} />
         )
       }</div>
       <div className="ports__out">{
         map(outPorts, (port) =>
-          <Port {...port} />
+          <Port {...port} sidePanel={sidePanel} />
         )}</div>
     </div>
     {children}

@@ -5,9 +5,9 @@
     border-radius: 1em;
     width: fit-content;
     height: fit-content;
-    cursor: pointer;
     &__side-panel {
         position: relative;
+        width: inherit;
         margin: 0.5em;
     }
     &__name {
@@ -31,6 +31,7 @@
 }
 
 .ports {
+    cursor: pointer;
     display: flex;
     &__in {
         flex: 1;

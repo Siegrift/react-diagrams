@@ -22,6 +22,7 @@ import {
 import { uniqueId, reduce, some, map, filter, find } from 'lodash'
 import update from '../../utils/update'
 import { setIn } from 'immutable'
+import { MIN_ZOOM } from '../../constants'
 
 const computeDiff = (p1, p2) => {
   return { x: p1.x - p2.x, y: p1.y - p2.y }
@@ -45,6 +46,7 @@ export const setDragging = (dragging) => ({
 export const addWidget = (command, pos) => ({
   type: 'Add widget to editor',
   payload: { command, pos },
+  undoable: true,
   reducer: (state) => {
     const id = uniqueId()
     const adjustedPos = relativeMousePoint(state, pos)
@@ -87,6 +89,7 @@ export const cancelCurrentSelection = () => ({
 
 export const addToCurrentSelection = (nodeKey) => ({
   type: 'Add to current selection',
+  undoable: true,
   payload: nodeKey,
   reducer: (state) => {
     let newState = state
@@ -238,7 +241,7 @@ export const onEditorMouseUp = () => ({
 export const updateZoom = (deltaY, deltaScale) => ({
   type: 'Update zoom',
   payload: { deltaY, deltaScale },
-  reducer: (state) => setIn(state, PATH_ZOOM, Math.max(zoomSelector(state) + deltaY * deltaScale, 0)),
+  reducer: (state) => setIn(state, PATH_ZOOM, Math.max(zoomSelector(state) + deltaY * deltaScale, MIN_ZOOM)),
 })
 
 

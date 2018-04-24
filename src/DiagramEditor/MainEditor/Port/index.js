@@ -4,11 +4,12 @@ import './_Port.scss'
 import { connect } from 'react-redux'
 import { onPortMouseDown } from './actions.js'
 
-const Port = ({ className, isInPort, name, type, editorKey, onPortMouseDown }) => {
+const Port = ({ className, isInPort, name, type, editorKey, onPortMouseDown, sidePanel }) => {
   return (
     <div
       className={classnames(className, 'DiagramPort', isInPort ? 'DiagramPort__In' : 'DiagramPort__Out')}
       onMouseDown={(e) => {
+        if (sidePanel) return
         e.stopPropagation()
         onPortMouseDown(editorKey, e)
       }}

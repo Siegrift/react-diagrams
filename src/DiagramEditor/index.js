@@ -3,9 +3,9 @@ import TopPanel from './TopPanel'
 import './_DiagramEditor.scss'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-import { withHandlers, compose } from 'recompose'
+import { withHandlers, compose, lifecycle } from 'recompose'
 import { topbarHeightSelector, sidebarWidthSelector } from './state'
-import { changeTopbarHeight, changeSidebarWidth } from './actions'
+import { changeTopbarHeight, changeSidebarWidth, initializeEditor } from './actions'
 import Splitter from '../componennts/Splitter/Splitter'
 import SidePanel from './SidePanel'
 import MainEditor from './MainEditor'
@@ -13,7 +13,10 @@ import MainEditor from './MainEditor'
 const DiagramEditor = ({ topbarHeight, className, onTopbarHeightChange,
   onSidebarWidthChange, sidebarWidth, schema,
 }) => (
-  <div className={classnames('DiagramEditor', className)}>
+  <div
+    onContextMenu={(e) => e.preventDefault()}
+    className={classnames('DiagramEditor', className)}
+  >
     <Splitter
       vertical
       primaryIndex={1}
@@ -38,6 +41,7 @@ export default compose(
     {
       changeTopbarHeight,
       changeSidebarWidth,
+      initializeEditor,
     },
   ),
   withHandlers({
@@ -48,4 +52,9 @@ export default compose(
       props.changeSidebarWidth(newSidebarWidth)
     },
   }),
+  lifecycle({
+    componentDidMount() {
+      this.props.initializeEditor()
+    },
+  })
 )(DiagramEditor)

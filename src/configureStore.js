@@ -3,6 +3,7 @@ import { createStore, applyMiddleware } from 'redux'
 import { createLogger } from 'redux-logger'
 import rootReducer from './rootReducer'
 import getInitialState from './initialState'
+import historyMiddleware from './history'
 
 export default () => {
   const logger = {
@@ -16,6 +17,7 @@ export default () => {
 
   const middlewares = [
     thunk.withExtraArgument({ logger }),
+    historyMiddleware,
   ]
   if (process.env.NODE_ENV === 'development') {
     middlewares.push(
@@ -31,7 +33,7 @@ export default () => {
 
   if (process.env.NODE_ENV === 'development') {
     logger.log = (message, payload) => store.dispatch({
-      type: `RD:${message}`,
+      type: message,
       payload,
     })
   }

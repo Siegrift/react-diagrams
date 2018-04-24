@@ -5,15 +5,16 @@ import { setIn } from 'immutable'
 
 const distance = (p1, p2, p3) => {
   return Math.abs(p1.x - p3.x) +
-        Math.abs(p1.y - p3.y) +
-        Math.abs(p2.x - p3.x) +
-        Math.abs(p2.y - p3.y)
+    Math.abs(p1.y - p3.y) +
+    Math.abs(p2.x - p3.x) +
+    Math.abs(p2.y - p3.y)
 }
 
 
 const addPointToLink = (link, event) => ({
   type: 'Add point to link',
   payload: { link, event },
+  undoable: true,
   reducer: (state) => {
     const links = linksSelector(state), rawPoint = { x: event.clientX, y: event.clientY }
     const path = links[link].path.slice(0), point = relativeMousePoint(state, rawPoint)
@@ -57,8 +58,9 @@ export const onPointMouseDown = (event, editorKey) => (dispatch) => {
   dispatch(setSelectedNode(editorKey, event.ctrlKey))
 }
 
-export const addPointToCurrentLink = (point) => ({
+export const addPointToCurrentLink = (point, isUndoable) => ({
   type: 'Add point to current link',
   payload: point,
+  undoable: isUndoable ? isUndoable() : true,
   reducer: (state) => setIn(state, PATH_CURRENT_LINK_POINTS, [...currentLinkPointsSelector(state), createDefaultLinkPoint(relativeMousePoint(state, point))]),
 })

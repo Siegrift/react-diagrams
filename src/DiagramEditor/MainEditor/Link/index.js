@@ -1,6 +1,8 @@
 import React from 'react'
 import classNames from 'classnames'
-import { PATH_POINT_RADIUS, SELECTED_PATH_POINT_RADIUS } from '../../constants'
+import { connect } from 'react-redux'
+import { onLinkMouseDown, onPointMouseDown, addPointToCurrentLink } from './actions'
+import { PATH_POINT_RADIUS, SELECTED_PATH_POINT_RADIUS } from '../../../constants'
 
 // Properties of a line
 // I:  - pointA (array) [x,y]: coordinates
@@ -66,7 +68,15 @@ const bezierCommand = (point, i, a) => {
 //           - a (array): complete array of points coordinates
 //       O:  - (string) a svg path command
 // O:  - (string): a Svg <path> element
-export default ({ points, onLinkMouseDown, onPointMouseDown, currentLink, selected }) => {
+const Link = ({
+  points,
+  onLinkMouseDown,
+  onPointMouseDown,
+  currentLink,
+  selected,
+  editorKey,
+  addPointToCurrentLink,
+}) => {
   const path = points.map((point) => [point.x, point.y])
   // build the d attributes by looping over the points
   const d = path.reduce((acc, point, i, a) => i === 0
@@ -75,7 +85,13 @@ export default ({ points, onLinkMouseDown, onPointMouseDown, currentLink, select
     , '')
   return (
     <g>
-      <path className={classNames('Editor__Inner__Svg__Path', { Editor__Inner__Svg__Path__Selected: selected })} d={d} onMouseDown={onLinkMouseDown} />
+      <path
+        className={classNames('Editor__Inner__Svg__Path', { Editor__Inner__Svg__Path__Selected: selected })} d={d}
+        onMouseDown={(e) => {
+          e.stopPropagation()
+          onLinkMouseDown(e, editorKey)
+        }}
+      />
       {points.map((point, index) => (
         <circle
           className={classNames('Editor__Inner__Svg__Circle', { Editor__Inner__Svg__Circle__Selected: point.selected })}
@@ -83,9 +99,25 @@ export default ({ points, onLinkMouseDown, onPointMouseDown, currentLink, select
           cy={point.y}
           r={point.selected ? SELECTED_PATH_POINT_RADIUS : PATH_POINT_RADIUS}
           key={index}
-          onMouseDown={(event) => {!currentLink && onPointMouseDown(event, point.editorKey)}}
+          onMouseDown={(event) => {
+            event.stopPropagation()
+            if (currentLink) {
+              addPointToCurrentLink({ x: event.clientX, y: event.clientY })
+            } else {
+              onPointMouseDown(event, point.editorKey)
+            }
+          }}
         />
       ))}
     </g>
   )
 }
+
+export default connect(
+  null,
+  {
+    onLinkMouseDown,
+    onPointMouseDown,
+    addPointToCurrentLink,
+  }
+)(Link)

@@ -5,7 +5,6 @@ import rootReducer from './rootReducer'
 import getInitialState from './initialState'
 
 export default () => {
-  // Note(samo): We need a dummy logger first so we can provide it in the thunk before the store exists
   const logger = {
     log: () => null,
   }

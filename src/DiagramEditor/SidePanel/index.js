@@ -1,11 +1,11 @@
 import React from 'react'
-import DefaultDiagramWidget from '../../defaults/DefaultDiagramWidget'
+import Widget from '../MainEditor/Widget'
 
 const SidePanel = ({ schema }) => (
   <div>
     {
       schema.commands.map((c) => (
-        <DefaultDiagramWidget key={c.key} {...c} widgetKey={c.key} sidePanel />
+        <Widget key={c.key} {...c} widgetKey={c.key} sidePanel />
       ))
     }
   </div>

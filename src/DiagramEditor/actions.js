@@ -1,4 +1,4 @@
-import { PATH_APP, PATH_TOPBAR_HEIGHT, PATH_SIDEBAR_WIDTH } from './state'
+import { PATH_TOPBAR_HEIGHT, PATH_SIDEBAR_WIDTH } from './state'
 import { setIn } from 'immutable'
 
 export const changeTopbarHeight = (height) => ({

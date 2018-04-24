@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import './_MainEditor.scss'
 import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
 import { connect } from 'react-redux'
-import { widgetsSelector, editorRefSelector, zoomSelector, offsetSelector, currentLinkSelector, linksSelector, cursorSelector } from './state'
+import { widgetsSelector, editorRefSelector, zoomSelector, offsetSelector, currentLinkSelector, linksSelector, relativeCursorPointSelector } from './state'
 import {
   addWidget,
   setEditorRef,
@@ -11,12 +11,9 @@ import {
   onEditorMouseDown,
   updateZoom,
   onEditorMouseUp,
-  onLinkMouseDown,
-  onPointMouseDown,
-  relativeMousePoint,
 } from './actions'
-import DefaultDiagramWidget from '../../defaults/DefaultDiagramWidget'
-import LinkPath from './svg'
+import Widget from './Widget'
+import Link from './Link'
 
 const MainEditor = ({
   schema,
@@ -32,8 +29,6 @@ const MainEditor = ({
   offset,
   currentLink,
   links,
-  onLinkMouseDown,
-  onPointMouseDown,
   cursor,
 }) => (
   <div
@@ -48,7 +43,10 @@ const MainEditor = ({
     className={classnames('editor')}
     onDragOver={(event) => event.preventDefault()}
     onMouseMove={(e) => onEditorMouseMove({ x: e.clientX, y: e.clientY })}
-    onMouseDown={(e) => onEditorMouseDown({ x: e.clientX, y: e.clientY })}
+    onMouseDown={(e) => {
+      e.stopPropagation()
+      onEditorMouseDown({ x: e.clientX, y: e.clientY })
+    }}
     onMouseUp={(e) => onEditorMouseUp()}
     onWheel={(e) => updateZoom(e.deltaY, 0.001)}
   >
@@ -60,23 +58,19 @@ const MainEditor = ({
     >
       {
         Object.keys(links).map((key) => (
-          <LinkPath
+          <Link
             points={links[key].path}
             selected={links[key].selected}
-            onPointMouseDown={onPointMouseDown}
-            onLinkMouseDown={(e) => onLinkMouseDown(e, key)}
             key={key}
-            linkKey={key}
+            editorKey={key}
           />
         ))
       }
       {
-        currentLink && <LinkPath
+        currentLink && <Link
           currentLink
           points={cursor ? [...currentLink.path, cursor] : currentLink.path}
           selected
-          onPointMouseDown={onPointMouseDown}
-          onLinkMouseDown={(e) => onLinkMouseDown(e)}
         />
       }
     </svg>
@@ -88,7 +82,7 @@ const MainEditor = ({
     >
       {
         Object.keys(widgets).map((key) => (
-          <DefaultDiagramWidget {...widgets[key]} key={key} />
+          <Widget {...widgets[key]} key={key} />
         ))
       }
     </div>
@@ -103,7 +97,7 @@ export default connect(
     offset: offsetSelector(state),
     currentLink: currentLinkSelector(state),
     links: linksSelector(state),
-    cursor: cursorSelector(state) && relativeMousePoint(state, cursorSelector(state)),
+    cursor: relativeCursorPointSelector(state),
   }),
   {
     addWidget,
@@ -112,7 +106,5 @@ export default connect(
     onEditorMouseDown,
     onEditorMouseUp,
     updateZoom,
-    onLinkMouseDown,
-    onPointMouseDown,
   }
 )(MainEditor)

@@ -1,13 +1,13 @@
 import React from 'react'
 import classnames from 'classnames'
-import './_DefaultDiagramWidget.scss'
-import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
+import './_Widget.scss'
+import { DATA_TRANSFER_WIDGET_KEY } from '../../../constants'
 import { map } from 'lodash'
-import DefaultDiagramPort from '../DefaultDiagramPort'
-import { onWidgetMouseDown } from '../../DiagramEditor/MainEditor/actions'
+import Port from '../Port'
+import { onWidgetMouseDown } from './actions'
 import { connect } from 'react-redux'
 
-const DefaultDiagramWidget = ({ className, x, y, children, color, widgetKey, sidePanel,
+const Widget = ({ className, x, y, children, color, widgetKey, sidePanel,
   name, inPorts, outPorts, editorKey, selected, onWidgetMouseDown,
 }) => (
   <div
@@ -25,18 +25,21 @@ const DefaultDiagramWidget = ({ className, x, y, children, color, widgetKey, sid
       if (!sidePanel) return
       event.dataTransfer.setData(DATA_TRANSFER_WIDGET_KEY, widgetKey)
     }}
-    onMouseDown={(e) => onWidgetMouseDown(editorKey, e)}
+    onMouseDown={(e) => {
+      e.stopPropagation()
+      onWidgetMouseDown(editorKey, e)
+    }}
   >
     <p className="diagram-widget__name">{name}</p>
     <div className="ports">
       <div className="ports__in">{
         map(inPorts, (port) =>
-          <DefaultDiagramPort {...port} isInPort />
+          <Port {...port} isInPort />
         )
       }</div>
       <div className="ports__out">{
         map(outPorts, (port) =>
-          <DefaultDiagramPort {...port} />
+          <Port {...port} />
         )}</div>
     </div>
     {children}
@@ -46,4 +49,4 @@ const DefaultDiagramWidget = ({ className, x, y, children, color, widgetKey, sid
 export default connect(
   null,
   { onWidgetMouseDown },
-)(DefaultDiagramWidget)
+)(Widget)

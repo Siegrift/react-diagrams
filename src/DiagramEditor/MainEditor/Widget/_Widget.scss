@@ -1,0 +1,41 @@
+.diagram-widget {
+    pointer-events: all;
+    position: absolute;
+    padding: 0.5em;
+    border-radius: 1em;
+    width: fit-content;
+    height: fit-content;
+    cursor: pointer;
+    &__side-panel {
+        position: relative;
+        margin: 0.5em;
+    }
+    &__name {
+        text-align: center;
+    }
+    &__selected {
+        background: linear-gradient(90deg, rgb(0, 192, 255) 50%, transparent 0), linear-gradient(0deg, rgb(0, 192, 255) 50%, transparent 0), linear-gradient(90deg, rgb(0, 192, 255) 50%, transparent 0), linear-gradient(0deg, rgb(0, 192, 255) 50%, transparent 0);
+        background-repeat: repeat-x, repeat-y, repeat-x, repeat-y;
+        background-size: 20px 4px, 4px 20px, 20px 4px, 4px 20px;
+        background-position: left top, right top, left bottom, left top;
+        animation: border-dance 7s infinite linear;
+    }
+    @keyframes border-dance {
+        0% {
+            background-position: left top, right top, right bottom, left bottom;
+        }
+        100% {
+            background-position: right top, right bottom, left bottom, left top;
+        }
+    }
+}
+
+.ports {
+    display: flex;
+    &__in {
+        flex: 1;
+    }
+    &__out {
+        flex: 1;
+    }
+}

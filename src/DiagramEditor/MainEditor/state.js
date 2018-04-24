@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect'
 import { forEach, get } from 'lodash'
+import { relativeMousePoint } from './actions'
 
 export const PATH_EDITOR = ['editor']
 export const PATH_MOUSE = [...PATH_EDITOR, 'mouse']
@@ -67,3 +68,7 @@ export const selectedNodesSelector = createSelector(
     return selected
   }
 )
+
+export const relativeCursorPointSelector = (state) => {
+  return cursorSelector(state) && relativeMousePoint(state, cursorSelector(state))
+}

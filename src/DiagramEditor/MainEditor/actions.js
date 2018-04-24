@@ -4,7 +4,6 @@ import {
   PATH_ZOOM,
   PATH_CURRENT_LINK,
   PATH_LINKS,
-  currentLinkSelector,
   selectedNodesSelector,
   cursorSelector,
   linksSelector,
@@ -12,8 +11,6 @@ import {
   widgetsSelector,
   PATH_DRAGGING,
   draggingSelector,
-  currentLinkPointsSelector,
-  PATH_CURRENT_LINK_POINTS,
   zoomSelector,
   getWidgetByEditorKey,
   getWidgetPathByEditorKey,
@@ -22,9 +19,13 @@ import {
   getLinkPathByEditorKey,
   offsetSelector,
 } from './state'
-import { uniqueId, reduce, some, map, filter, find, get } from 'lodash'
+import { uniqueId, reduce, some, map, filter, find } from 'lodash'
 import update from '../../utils/update'
 import { setIn } from 'immutable'
+
+const computeDiff = (p1, p2) => {
+  return { x: p1.x - p2.x, y: p1.y - p2.y }
+}
 
 export const relativeMousePoint = (state, { x, y }) => {
   const boundingRect = editorRefSelector(state).getBoundingClientRect()
@@ -35,8 +36,7 @@ export const relativeMousePoint = (state, { x, y }) => {
   }
 }
 
-
-const setDragging = (dragging) => ({
+export const setDragging = (dragging) => ({
   type: `Set dragging to ${dragging}`,
   payload: dragging,
   reducer: (state) => setIn(state, PATH_DRAGGING, dragging),
@@ -121,10 +121,6 @@ export const setEditorRef = (ref) => ({
   notLogable: true,
   reducer: (state) => setIn(state, PATH_EDITOR_REF, ref),
 })
-
-const computeDiff = (p1, p2) => {
-  return { x: p1.x - p2.x, y: p1.y - p2.y }
-}
 
 export const onEditorMouseMove = (position) => ({
   type: 'Editor mouse move',
@@ -227,27 +223,11 @@ export const onEditorMouseMove = (position) => ({
   },
 })
 
-const createDefaultLinkPoint = (position) => ({ ...position, editorKey: uniqueId(), selected: false })
-
-const addPointToCurrentLink = (point) => ({
-  type: 'Add point to current link',
-  payload: point,
-  reducer: (state) => setIn(state, PATH_CURRENT_LINK_POINTS, [...currentLinkPointsSelector(state), createDefaultLinkPoint(point)]),
-})
-
-export const onWidgetMouseDown = (editorKey, e) => (dispatch) => {
-  e.stopPropagation()
-  dispatch(setDragging(true))
-  dispatch(setSelectedNode(editorKey, e.ctrlKey))
-}
+export const createDefaultLinkPoint = (position) => ({ ...position, editorKey: uniqueId(), selected: false })
 
 export const onEditorMouseDown = (point) => (dispatch, getState) => {
   dispatch(setDragging(true))
-  if (getState().editor.currentLink) {
-    dispatch(addPointToCurrentLink(relativeMousePoint(getState(), point)))
-  } else {
-    dispatch(cancelCurrentSelection())
-  }
+  dispatch(cancelCurrentSelection())
 }
 
 export const onEditorMouseUp = () => ({
@@ -273,81 +253,3 @@ export const setSelectedPort = (editorKey, point) => ({
       destination: undefined,
     }),
 })
-
-const addToLinks = (link) => ({
-  type: 'Add to links',
-  payload: link,
-  reducer: (state) => {
-    const editorKey = uniqueId()
-    return setIn(state, [...PATH_LINKS, editorKey], { ...link, selected: false, editorKey })
-  },
-})
-
-export const onPortMouseDown = (editorKey, event) => (dispatch, getState) => {
-  const currentLink = currentLinkSelector(getState())
-  const point = { x: event.clientX, y: event.clientY }
-  dispatch(setDragging(true))
-  dispatch(cancelCurrentSelection())
-  if (currentLink) {
-    dispatch(addPointToCurrentLink(relativeMousePoint(getState(), point)))
-    dispatch(addToLinks({ ...currentLinkSelector(getState()), destination: editorKey }))
-    dispatch(setSelectedPort(-1))
-  } else {
-    dispatch(setSelectedPort(editorKey, relativeMousePoint(getState(), point)))
-    dispatch(addPointToCurrentLink(relativeMousePoint(getState(), point)))
-  }
-}
-
-const distance = (p1, p2, p3) => {
-  return Math.abs(p1.x - p3.x) +
-    Math.abs(p1.y - p3.y) +
-    Math.abs(p2.x - p3.x) +
-    Math.abs(p2.y - p3.y)
-}
-
-const addPointToLink = (link, event) => ({
-  type: 'Add point to link',
-  payload: { link, event },
-  reducer: (state) => {
-    const links = linksSelector(state), rawPoint = { x: event.clientX, y: event.clientY }
-    const path = links[link].path.slice(0), point = relativeMousePoint(state, rawPoint)
-    const { pos } = path.reduce(
-      (acc, value, index) => {
-        if (index === 0) return acc
-        if (distance(path[index - 1], value, point) < acc.diff) {
-          return {
-            diff: distance(path[index - 1], value, point),
-            pos: index,
-          }
-        }
-        return acc
-      },
-      { diff: Number.MAX_VALUE, pos: 0 }
-    )
-    path.splice(pos, 0, createDefaultLinkPoint(point))
-    return update(state, {
-      editor: {
-        links: {
-          [link]: {
-            path: {
-              $set: path,
-            },
-          },
-        },
-      },
-    })
-  },
-})
-
-export const onLinkMouseDown = (event, key) => (dispatch, getState) => {
-  event.stopPropagation()
-  dispatch(setDragging(true))
-  if (event.ctrlKey) dispatch(setSelectedNode(key, true))
-  else dispatch(addPointToLink(key, event))
-}
-
-export const onPointMouseDown = (event, editorKey) => (dispatch) => {
-  event.stopPropagation()
-  dispatch(setDragging(true))
-  dispatch(setSelectedNode(editorKey, event.ctrlKey))
-}

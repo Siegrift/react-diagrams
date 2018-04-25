@@ -245,7 +245,7 @@ export const updateZoom = (deltaY, deltaScale) => ({
 })
 
 
-export const setSelectedPort = (editorKey, point) => ({
+export const setSelectedPort = (editorKey, point, undoable) => ({
   type: 'Set selected port',
   payload: { editorKey, point },
   reducer: (state) => setIn(state, PATH_CURRENT_LINK, editorKey === -1 ?

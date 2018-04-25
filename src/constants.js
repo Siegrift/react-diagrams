@@ -12,7 +12,9 @@ export const undoRedoFilter = {
     canvas: true,
     currentLink: true,
     links: true,
-    mouse: true,
+    mouse: {
+      cursor: true,
+    },
     widgets: true,
   },
 }

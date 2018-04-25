@@ -2,7 +2,7 @@ import React from 'react'
 import classNames from 'classnames'
 import './_PanelItem.scss'
 
-const PanelItem = ({ icon, text, children, onClick, disabled }) => (
+const PanelItem = ({ text, children, onClick, disabled }) => (
   <div
     className={classNames('PanelItem', { PanelItem__Disabled: disabled })}
     onClick={(e) => {

@@ -2,59 +2,87 @@ import React from 'react'
 import TopPanel from './TopPanel'
 import './_DiagramEditor.scss'
 import classnames from 'classnames'
-import { connect } from 'react-redux'
-import { withHandlers, compose, lifecycle } from 'recompose'
+import { connectAdvanced } from 'react-redux'
 import { topbarHeightSelector, sidebarWidthSelector } from './state'
 import { changeTopbarHeight, changeSidebarWidth, initializeEditor } from './actions'
 import Splitter from '../componennts/Splitter/Splitter'
 import SidePanel from './SidePanel'
 import MainEditor from './MainEditor'
+import { bindActionCreators } from 'redux'
+import { shallowEqual } from '../utils/helpers'
+import { apiExportGraph } from './editorApi'
 
-const DiagramEditor = ({ topbarHeight, className, onTopbarHeightChange,
-  onSidebarWidthChange, sidebarWidth, schema,
-}) => (
-  <div
-    onContextMenu={(e) => e.preventDefault()}
-    className={classnames('DiagramEditor', className)}
-  >
-    <Splitter
-      vertical
-      primaryIndex={1}
-      secondarySize={topbarHeight}
-      onChange={onTopbarHeightChange}
-    >
-      <TopPanel />
-      <Splitter secondarySize={sidebarWidth} primaryIndex={1} onChange={onSidebarWidthChange}>
-        <SidePanel schema={schema} />
-        <MainEditor schema={schema} />
-      </Splitter>
-    </Splitter>
-  </div >
+class DiagramEditor extends React.Component {
+
+  exportGraph = () => this.props.apiExportGraph()
+
+  onTopbarHeightChange = (newTopbarHeight) => {
+    this.props.changeTopbarHeight(newTopbarHeight)
+  }
+  onSidebarWidthChange = (newSidebarWidth) => {
+    this.props.changeSidebarWidth(newSidebarWidth)
+  }
+
+  componentDidMount() {
+    this.props.initializeEditor()
+  }
+
+
+  render() {
+    const { className, topbarHeight, onTopbarHeightChange, sidebarWidth, schema, onSidebarWidthChange } = this.props
+    return (
+      <div
+        onContextMenu={(e) => e.preventDefault()}
+        className={classnames('DiagramEditor', className)}
+      >
+        <Splitter
+          vertical
+          primaryIndex={1}
+          secondarySize={topbarHeight}
+          onChange={onTopbarHeightChange}
+        >
+          <TopPanel />
+          <Splitter secondarySize={sidebarWidth} primaryIndex={1} onChange={onSidebarWidthChange}>
+            <SidePanel schema={schema} />
+            <MainEditor schema={schema} />
+          </Splitter>
+        </Splitter>
+      </div >
+    )
+  }
+}
+
+const mapStateToProps = (state) => ({
+  topbarHeight: topbarHeightSelector(state),
+  sidebarWidth: sidebarWidthSelector(state),
+})
+
+const mapActionsToProps = (dispatch) => bindActionCreators(
+  {
+    changeTopbarHeight,
+    changeSidebarWidth,
+    initializeEditor,
+    apiExportGraph,
+  },
+  dispatch
 )
 
-export default compose(
-  connect(
-    (state) => ({
-      topbarHeight: topbarHeightSelector(state),
-      sidebarWidth: sidebarWidthSelector(state),
-    }),
-    {
-      changeTopbarHeight,
-      changeSidebarWidth,
-      initializeEditor,
-    },
-  ),
-  withHandlers({
-    onTopbarHeightChange: (props) => (newTopbarHeight) => {
-      props.changeTopbarHeight(newTopbarHeight)
-    },
-    onSidebarWidthChange: (props) => (newSidebarWidth) => {
-      props.changeSidebarWidth(newSidebarWidth)
-    },
-  }),
-  lifecycle({
-    componentDidMount() {
-      this.props.initializeEditor()
-    },
-  })
+const selectorFactory = (dispatch) => {
+  let result = {}
+  return (nextState, nextOwnProps) => {
+    const nextResult = {
+      ...nextOwnProps,
+      ...mapStateToProps(nextState),
+      ...mapActionsToProps(dispatch),
+    }
+    if (!shallowEqual(result, nextResult)) result = nextResult
+    return result
+  }
+}
+
+export default connectAdvanced(
+  selectorFactory,
+  {
+    withRef: true,
+  }
 )(DiagramEditor)

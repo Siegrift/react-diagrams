@@ -8,8 +8,22 @@ Promise.config({
   warnings: process.env.NODE_ENV === 'development',
 })
 const store = getConfiguredStore()
-export default (props) => (
-  <Provider store={store}>
-    <DiagramEditor {...props} />
-  </Provider>
-)
+
+class DiagramEditorWrapper extends React.Component {
+  static editorRef = undefined
+
+  exportGraph() {
+    return this.editorRef.exportGraph()
+  }
+
+  render() {
+    return (
+      <Provider store={store} >
+        <DiagramEditor ref={(ref) => {this.editorRef = ref.getWrappedInstance()}} {...this.props} />
+      </Provider>
+    )
+  }
+}
+
+
+export default DiagramEditorWrapper

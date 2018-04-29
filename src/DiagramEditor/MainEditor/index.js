@@ -48,7 +48,11 @@ const MainEditor = ({
       onEditorMouseDown({ x: e.clientX, y: e.clientY })
     }}
     onMouseUp={(e) => onEditorMouseUp()}
-    onWheel={(e) => updateZoom(e.deltaY, 0.001)}
+    onWheel={(e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      updateZoom(e.deltaY, 0.001)
+    }}
   >
     <svg
       className="Editor__Inner__Svg"

@@ -1,6 +1,7 @@
 import { get } from 'lodash'
 import { createSelector } from 'reselect'
 import { currentLinkSelector, selectedNodesSelector } from './MainEditor/state'
+import { LOCAL_STORAGE_PATH } from '../constants'
 
 export const PATH_APP = ['app']
 export const PATH_TOPBAR_HEIGHT = [...PATH_APP, 'topbarHeight']
@@ -38,3 +39,5 @@ export const cancelableSelector = createSelector(
     return currentLink || selectedNodes.length
   }
 )
+
+export const loadAvailableSelector = (state) => localStorage.getItem(LOCAL_STORAGE_PATH) !== null

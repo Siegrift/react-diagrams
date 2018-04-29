@@ -18,3 +18,21 @@ export const undoRedoFilter = {
     widgets: true,
   },
 }
+
+export const saveFilter = {
+  app: {
+    sidebarWidth: true,
+    topbarHeight: true,
+  },
+  editor: {
+    canvas: true,
+    currentLink: true,
+    links: true,
+    mouse: {
+      cursor: true,
+    },
+    widgets: true,
+  },
+}
+
+export const LOCAL_STORAGE_PATH = 'diagramEditorState'

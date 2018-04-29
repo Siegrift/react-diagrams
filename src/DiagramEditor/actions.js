@@ -2,8 +2,8 @@ import { PATH_TOPBAR_HEIGHT, PATH_SIDEBAR_WIDTH, PATH_HISTORY, PATH_HISTORY_INDE
 import { currentLinkSelector, selectedNodesSelector, PATH_WIDGETS, widgetsSelector, PATH_LINKS, linksSelector } from './MainEditor/state'
 import { setSelectedPort, cancelCurrentSelection } from './MainEditor/actions'
 import { setIn, getIn } from 'immutable'
-import { deepMergeFilterObject } from '../utils/helpers'
-import { undoRedoFilter } from '../constants'
+import { deepMergeFilterObject, filterObject } from '../utils/helpers'
+import { undoRedoFilter, LOCAL_STORAGE_PATH, saveFilter } from '../constants'
 import shortcuts from './shortcuts'
 import { concat, reduce } from 'lodash'
 
@@ -138,3 +138,15 @@ export const deleteSelection = () => (dispatch, getState) => {
     dispatch(deleteCurrentSelection())
   }
 }
+
+export const localStorageSave = () => (dispatch, getState, { logger }) => {
+  logger.log('Save editor state')
+  localStorage.setItem(LOCAL_STORAGE_PATH, JSON.stringify(filterObject(getState(), saveFilter)))
+}
+
+
+export const localStorageLoad = () => ({
+  type: 'Load editor state',
+  undoable: true,
+  reducer: (state) => deepMergeFilterObject(state, saveFilter, JSON.parse(localStorage.getItem(LOCAL_STORAGE_PATH))),
+})

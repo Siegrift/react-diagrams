@@ -1,15 +1,17 @@
 import React from 'react'
 import PanelItem from './PanelItem'
 import { connect } from 'react-redux'
-import { topbarHeightSelector, undoableSelector, redoableSelector, cancelableSelector } from '../state'
+import { topbarHeightSelector, undoableSelector, redoableSelector, cancelableSelector, loadAvailableSelector } from '../state'
 import { selectedNodesSelector } from '../MainEditor/state'
 import './_TopPanel.scss'
-import { undo, redo, cancelSelection, deleteSelection } from '../actions'
+import { undo, redo, cancelSelection, deleteSelection, localStorageSave, localStorageLoad } from '../actions'
 
 import UndoIcon from 'react-icons/lib/md/undo'
 import RedoIcon from 'react-icons/lib/md/redo'
 import CancelIcon from 'react-icons/lib/md/cancel'
 import DeleteIcon from 'react-icons/lib/md/delete'
+import SaveIcon from 'react-icons/lib/md/save'
+import LoadIcon from 'react-icons/lib/md/file-download'
 
 const TopPanel = ({
   topbarHeight,
@@ -21,6 +23,9 @@ const TopPanel = ({
   cancelSelection,
   deleteSelection,
   currentSelection,
+  localStorageSave,
+  localStorageLoad,
+  loadAvailable,
 }) => (
   <div className="TopPanel" style={{ height: topbarHeight }}>
     <PanelItem text="Undo" onClick={undo} disabled={!undoable}>
@@ -35,6 +40,12 @@ const TopPanel = ({
     <PanelItem text="Delete selected" onClick={deleteSelection} disabled={!currentSelection.length}>
       <DeleteIcon />
     </PanelItem>
+    <PanelItem text="Save" onClick={localStorageSave}>
+      <SaveIcon />
+    </PanelItem>
+    <PanelItem text="Load" onClick={localStorageLoad} disabled={!loadAvailable}>
+      <LoadIcon />
+    </PanelItem>
   </div>
 )
 
@@ -45,6 +56,7 @@ export default connect(
     redoable: redoableSelector(state),
     cancelable: cancelableSelector(state),
     currentSelection: selectedNodesSelector(state),
+    loadAvailable: loadAvailableSelector(state),
   }),
-  { undo, redo, cancelSelection, deleteSelection }
+  { undo, redo, cancelSelection, deleteSelection, localStorageSave, localStorageLoad }
 )(TopPanel)

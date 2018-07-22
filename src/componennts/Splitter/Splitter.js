@@ -1,7 +1,7 @@
 import React from 'react'
-import Pane from './Pane'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import Pane from './Pane'
 import './_Splitter.scss'
 
 class SplitterLayout extends React.Component {
@@ -74,10 +74,15 @@ class SplitterLayout extends React.Component {
     if (this.splitter && !this.props.percentage) {
       const containerRect = this.container.getBoundingClientRect()
       const splitterRect = this.splitter.getBoundingClientRect()
-      const secondaryPaneSize = this.getSecondaryPaneSize(containerRect, splitterRect, {
-        left: splitterRect.left,
-        top: splitterRect.top,
-      }, false)
+      const secondaryPaneSize = this.getSecondaryPaneSize(
+        containerRect,
+        splitterRect,
+        {
+          left: splitterRect.left,
+          top: splitterRect.top,
+        },
+        false
+      )
       if (this.props.onChange) this.props.onChange(secondaryPaneSize)
     }
   }
@@ -86,10 +91,15 @@ class SplitterLayout extends React.Component {
     if (this.state.resizing) {
       const containerRect = this.container.getBoundingClientRect()
       const splitterRect = this.splitter.getBoundingClientRect()
-      const secondaryPaneSize = this.getSecondaryPaneSize(containerRect, splitterRect, {
-        left: e.clientX,
-        top: e.clientY,
-      }, true)
+      const secondaryPaneSize = this.getSecondaryPaneSize(
+        containerRect,
+        splitterRect,
+        {
+          left: e.clientX,
+          top: e.clientY,
+        },
+        true
+      )
       window.getSelection().removeAllRanges()
       if (this.props.onChange) this.props.onChange(secondaryPaneSize)
     }
@@ -106,38 +116,39 @@ class SplitterLayout extends React.Component {
 
   render() {
     const primaryIndex = this.props.primaryIndex
-    const wrappedChildren = this.props.children.map((child, index) =>
-      (
-        <Pane
-          key={index}
-          vertical={this.props.vertical}
-          percentage={this.props.percentage}
-          primary={primaryIndex === index}
-          size={primaryIndex === index ? null : this.props.secondarySize}
-        >
-          {child}
-        </Pane>
-      )
-    )
-    const classes = classnames(
-      'splitter-layout',
-      this.props.className,
-      {
-        'splitter-layout-vertical': this.props.vertical,
-        'layout-changing': this.state.resizing,
-      },
-    )
+    const wrappedChildren = this.props.children.map((child, index) => (
+      <Pane
+        key={index}
+        vertical={this.props.vertical}
+        percentage={this.props.percentage}
+        primary={primaryIndex === index}
+        size={primaryIndex === index ? null : this.props.secondarySize}
+      >
+        {child}
+      </Pane>
+    ))
+    const classes = classnames('splitter-layout', this.props.className, {
+      'splitter-layout-vertical': this.props.vertical,
+      'layout-changing': this.state.resizing,
+    })
     return (
-      <div className={classes} ref={(c) => {this.container = c}}>
+      <div
+        className={classes}
+        ref={(c) => {
+          this.container = c
+        }}
+      >
         {wrappedChildren[0]}
         <div
           role="separator"
           className="layout-splitter"
-          ref={(c) => {this.splitter = c}}
+          ref={(c) => {
+            this.splitter = c
+          }}
           onMouseDown={this.handleSplitterMouseDown}
         />
         {wrappedChildren[1]}
-      </div >
+      </div>
     )
   }
 }

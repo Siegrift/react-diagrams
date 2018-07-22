@@ -24,8 +24,10 @@
   },
   "devDependencies": {},
   "scripts": {
-    "eslint": "eslint app test *.js || exit 0",
-    "eslint-fix": "eslint --fix app test *.js"
+    "eslint": "eslint src *.js || exit 0",
+    "lint": "prettier-eslint --write \"src/**/*.{js,jsx,json,scss}\"",
+    "test": "jest --env=jsdom",
+    "flow": "flow"
   },
   "author": "",
   "license": "ISC",

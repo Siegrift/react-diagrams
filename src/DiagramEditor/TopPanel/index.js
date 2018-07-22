@@ -1,10 +1,6 @@
 import React from 'react'
-import PanelItem from './PanelItem'
 import { connect } from 'react-redux'
-import { topbarHeightSelector, undoableSelector, redoableSelector, cancelableSelector, loadAvailableSelector } from '../state'
-import { selectedNodesSelector } from '../MainEditor/state'
 import './_TopPanel.scss'
-import { undo, redo, cancelSelection, deleteSelection, localStorageSave, localStorageLoad } from '../actions'
 
 import UndoIcon from 'react-icons/lib/md/undo'
 import RedoIcon from 'react-icons/lib/md/redo'
@@ -12,6 +8,23 @@ import CancelIcon from 'react-icons/lib/md/cancel'
 import DeleteIcon from 'react-icons/lib/md/delete'
 import SaveIcon from 'react-icons/lib/md/save'
 import LoadIcon from 'react-icons/lib/md/file-download'
+import {
+  cancelSelection,
+  deleteSelection,
+  localStorageLoad,
+  localStorageSave,
+  redo,
+  undo,
+} from '../actions'
+import { selectedNodesSelector } from '../MainEditor/state'
+import {
+  cancelableSelector,
+  loadAvailableSelector,
+  redoableSelector,
+  topbarHeightSelector,
+  undoableSelector,
+} from '../state'
+import PanelItem from './PanelItem'
 
 const TopPanel = ({
   topbarHeight,

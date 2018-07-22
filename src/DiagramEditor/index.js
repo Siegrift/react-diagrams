@@ -3,17 +3,16 @@ import TopPanel from './TopPanel'
 import './_DiagramEditor.scss'
 import classnames from 'classnames'
 import { connectAdvanced } from 'react-redux'
-import { topbarHeightSelector, sidebarWidthSelector } from './state'
-import { changeTopbarHeight, changeSidebarWidth, initializeEditor } from './actions'
+import { sidebarWidthSelector, topbarHeightSelector } from './state'
+import { changeSidebarWidth, changeTopbarHeight, initializeEditor } from './actions'
 import Splitter from '../componennts/Splitter/Splitter'
 import SidePanel from './SidePanel'
 import MainEditor from './MainEditor'
 import { bindActionCreators } from 'redux'
-import { shallowEqual } from '../utils/helpers'
+import { shallowEqual } from '../utils'
 import { apiExportGraph } from './editorApi'
 
 class DiagramEditor extends React.Component {
-
   exportGraph = () => this.props.apiExportGraph()
 
   onTopbarHeightChange = (newTopbarHeight) => {
@@ -27,9 +26,15 @@ class DiagramEditor extends React.Component {
     this.props.initializeEditor()
   }
 
-
   render() {
-    const { className, topbarHeight, onTopbarHeightChange, sidebarWidth, schema, onSidebarWidthChange } = this.props
+    const {
+      className,
+      topbarHeight,
+      onTopbarHeightChange,
+      sidebarWidth,
+      schema,
+      onSidebarWidthChange,
+    } = this.props
     return (
       <div
         onContextMenu={(e) => e.preventDefault()}
@@ -47,7 +52,7 @@ class DiagramEditor extends React.Component {
             <MainEditor schema={schema} />
           </Splitter>
         </Splitter>
-      </div >
+      </div>
     )
   }
 }
@@ -57,15 +62,16 @@ const mapStateToProps = (state) => ({
   sidebarWidth: sidebarWidthSelector(state),
 })
 
-const mapActionsToProps = (dispatch) => bindActionCreators(
-  {
-    changeTopbarHeight,
-    changeSidebarWidth,
-    initializeEditor,
-    apiExportGraph,
-  },
-  dispatch
-)
+const mapActionsToProps = (dispatch) =>
+  bindActionCreators(
+    {
+      changeTopbarHeight,
+      changeSidebarWidth,
+      initializeEditor,
+      apiExportGraph,
+    },
+    dispatch
+  )
 
 const selectorFactory = (dispatch) => {
   let result = {}
@@ -80,9 +86,6 @@ const selectorFactory = (dispatch) => {
   }
 }
 
-export default connectAdvanced(
-  selectorFactory,
-  {
-    withRef: true,
-  }
-)(DiagramEditor)
+export default connectAdvanced(selectorFactory, {
+  withRef: true,
+})(DiagramEditor)

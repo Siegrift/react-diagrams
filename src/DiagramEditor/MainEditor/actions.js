@@ -1,28 +1,28 @@
+import { filter, find, map, reduce, some, uniqueId } from 'lodash'
+import { setIn } from 'immutable'
+import update from '../../update'
+import { MIN_ZOOM } from '../../constants'
 import {
-  PATH_EDITOR_REF,
-  PATH_CURSOR,
-  PATH_ZOOM,
   PATH_CURRENT_LINK,
-  PATH_LINKS,
-  selectedNodesSelector,
-  cursorSelector,
-  linksSelector,
-  PATH_WIDGETS,
-  widgetsSelector,
+  PATH_CURSOR,
   PATH_DRAGGING,
+  PATH_EDITOR_REF,
+  PATH_LINKS,
+  PATH_WIDGETS,
+  PATH_ZOOM,
+  cursorSelector,
   draggingSelector,
-  zoomSelector,
+  editorRefSelector,
+  getLinkByEditorKey,
+  getLinkPathByEditorKey,
   getWidgetByEditorKey,
   getWidgetPathByEditorKey,
-  getLinkByEditorKey,
-  editorRefSelector,
-  getLinkPathByEditorKey,
+  linksSelector,
   offsetSelector,
+  selectedNodesSelector,
+  widgetsSelector,
+  zoomSelector,
 } from './state'
-import { uniqueId, reduce, some, map, filter, find } from 'lodash'
-import update from '../../utils/update'
-import { setIn } from 'immutable'
-import { MIN_ZOOM } from '../../constants'
 
 const computeDiff = (p1, p2) => {
   return { x: p1.x - p2.x, y: p1.y - p2.y }
@@ -30,10 +30,11 @@ const computeDiff = (p1, p2) => {
 
 export const relativeMousePoint = (state, { x, y }) => {
   const boundingRect = editorRefSelector(state).getBoundingClientRect()
-  const zoom = zoomSelector(state), offset = offsetSelector(state)
+  const zoom = zoomSelector(state),
+    offset = offsetSelector(state)
   return {
-    x: (x - boundingRect.left - boundingRect.width * (1 - zoom) / 2 - offset.x) / zoom,
-    y: (y - boundingRect.top - boundingRect.height * (1 - zoom) / 2 - offset.y) / zoom,
+    x: (x - boundingRect.left - (boundingRect.width * (1 - zoom)) / 2 - offset.x) / zoom,
+    y: (y - boundingRect.top - (boundingRect.height * (1 - zoom)) / 2 - offset.y) / zoom,
   }
 }
 
@@ -94,17 +95,33 @@ export const addToCurrentSelection = (nodeKey) => ({
   reducer: (state) => {
     let newState = state
     if (getWidgetByEditorKey(state, nodeKey)) {
-      newState = setIn(newState, [...getWidgetPathByEditorKey(nodeKey), 'selected'], !getWidgetByEditorKey(state, nodeKey).selected)
+      newState = setIn(
+        newState,
+        [...getWidgetPathByEditorKey(nodeKey), 'selected'],
+        !getWidgetByEditorKey(state, nodeKey).selected
+      )
     }
     if (getLinkByEditorKey(state, nodeKey)) {
-      newState = setIn(newState, [...getLinkPathByEditorKey(nodeKey), 'selected'], !getLinkByEditorKey(state, nodeKey).selected)
+      newState = setIn(
+        newState,
+        [...getLinkPathByEditorKey(nodeKey), 'selected'],
+        !getLinkByEditorKey(state, nodeKey).selected
+      )
     }
-    if (find(linksSelector(newState), ((link) => link.path.find((point) => point.editorKey === nodeKey)))) {
-      const link = find(linksSelector(newState), ((link) => link.path.find((point) => point.editorKey === nodeKey)))
+    if (
+      find(linksSelector(newState), (link) =>
+        link.path.find((point) => point.editorKey === nodeKey)
+      )
+    ) {
+      const link = find(linksSelector(newState), (link) =>
+        link.path.find((point) => point.editorKey === nodeKey)
+      )
       newState = setIn(
         newState,
         [...PATH_LINKS, link.editorKey, 'path'],
-        link.path.map((point) => point.editorKey === nodeKey ? { ...point, selected: !point.selected } : point),
+        link.path.map(
+          (point) => (point.editorKey === nodeKey ? { ...point, selected: !point.selected } : point)
+        )
       )
     }
     return newState
@@ -134,60 +151,112 @@ export const onEditorMouseMove = (position) => ({
     if (draggingSelector(newState)) {
       const diff = computeDiff(cursorSelector(newState), cursorSelector(state))
       if (some(newState.editor.widgets, (w) => w.selected)) {
-        const selectedKeys = map(filter(newState.editor.widgets, (w) => w.selected), (w) => w.editorKey)
-        const newWidgets = selectedKeys.reduce(
-          (acc, key) => {
-            const movedWidget = update(newState.editor.widgets[key], {
-              x: { $sum: diff.x / state.editor.canvas.zoom },
-              y: { $sum: diff.y / state.editor.canvas.zoom },
-            })
-            return { ...acc, [key]: movedWidget }
-          },
-          {}
+        const selectedKeys = map(
+          filter(newState.editor.widgets, (w) => w.selected),
+          (w) => w.editorKey
         )
+        const newWidgets = selectedKeys.reduce((acc, key) => {
+          const movedWidget = update(newState.editor.widgets[key], {
+            x: { $sum: diff.x / state.editor.canvas.zoom },
+            y: { $sum: diff.y / state.editor.canvas.zoom },
+          })
+          return { ...acc, [key]: movedWidget }
+        }, {})
         const links = reduce(
           newState.editor.links,
           (acc, value, key) => {
             const moveLast = selectedKeys.find((key) => {
-              return some(newState.editor.widgets[key].outPorts, (port) => port.editorKey === value.destination) ||
-                some(newState.editor.widgets[key].inPorts, (port) => port.editorKey === value.destination)
+              return (
+                some(
+                  newState.editor.widgets[key].outPorts,
+                  (port) => port.editorKey === value.destination
+                ) ||
+                some(
+                  newState.editor.widgets[key].inPorts,
+                  (port) => port.editorKey === value.destination
+                )
+              )
             })
             const moveFirst = selectedKeys.find((key) => {
-              return some(newState.editor.widgets[key].inPorts, (port) => port.editorKey === value.source) ||
-                some(newState.editor.widgets[key].outPorts, (port) => port.editorKey === value.source)
+              return (
+                some(
+                  newState.editor.widgets[key].inPorts,
+                  (port) => port.editorKey === value.source
+                ) ||
+                some(
+                  newState.editor.widgets[key].outPorts,
+                  (port) => port.editorKey === value.source
+                )
+              )
             })
             let newLink = value
             if (moveFirst) {
-              newLink = { ...newLink, path: [{ ...newLink.path[0], x: newLink.path[0].x + diff.x / state.editor.canvas.zoom, y: newLink.path[0].y + diff.y / state.editor.canvas.zoom }, ...newLink.path.slice(1)] }
+              newLink = {
+                ...newLink,
+                path: [
+                  {
+                    ...newLink.path[0],
+                    x: newLink.path[0].x + diff.x / state.editor.canvas.zoom,
+                    y: newLink.path[0].y + diff.y / state.editor.canvas.zoom,
+                  },
+                  ...newLink.path.slice(1),
+                ],
+              }
             }
             if (moveLast) {
               const last = newLink.path[newLink.path.length - 1]
-              newLink = { ...newLink, path: [...newLink.path.slice(0, newLink.path.length - 1), { ...last, x: last.x + diff.x / state.editor.canvas.zoom, y: last.y + diff.y / state.editor.canvas.zoom }] }
+              newLink = {
+                ...newLink,
+                path: [
+                  ...newLink.path.slice(0, newLink.path.length - 1),
+                  {
+                    ...last,
+                    x: last.x + diff.x / state.editor.canvas.zoom,
+                    y: last.y + diff.y / state.editor.canvas.zoom,
+                  },
+                ],
+              }
             }
             return { ...acc, [key]: newLink }
           },
           {}
         )
-        newState = { ...newState, editor: { ...newState.editor, widgets: { ...newState.editor.widgets, ...newWidgets }, links } }
+        newState = {
+          ...newState,
+          editor: {
+            ...newState.editor,
+            widgets: { ...newState.editor.widgets, ...newWidgets },
+            links,
+          },
+        }
       }
 
       if (some(newState.editor.links, (link) => link.selected)) {
-        const selectedKeys = map(filter(newState.editor.links, (link) => link.selected), (link) => link.editorKey)
-        const newLinks = selectedKeys.reduce(
-          (acc, key) => {
-            const movedLink = update(newState.editor.links[key], {
-              path: {
-                $set: newState.editor.links[key].path.map((point, index) => {
-                  if (index === 0 || index === newState.editor.links[key].path.length - 1) return point
-                  return { ...point, x: point.x + diff.x / state.editor.canvas.zoom, y: point.y + diff.y / state.editor.canvas.zoom }
-                }),
-              },
-            })
-            return { ...acc, [key]: movedLink }
-          },
-          {}
+        const selectedKeys = map(
+          filter(newState.editor.links, (link) => link.selected),
+          (link) => link.editorKey
         )
-        newState = { ...newState, editor: { ...newState.editor, links: { ...newState.editor.links, ...newLinks } } }
+        const newLinks = selectedKeys.reduce((acc, key) => {
+          const movedLink = update(newState.editor.links[key], {
+            path: {
+              $set: newState.editor.links[key].path.map((point, index) => {
+                if (index === 0 || index === newState.editor.links[key].path.length - 1) {
+                  return point
+                }
+                return {
+                  ...point,
+                  x: point.x + diff.x / state.editor.canvas.zoom,
+                  y: point.y + diff.y / state.editor.canvas.zoom,
+                }
+              }),
+            },
+          })
+          return { ...acc, [key]: movedLink }
+        }, {})
+        newState = {
+          ...newState,
+          editor: { ...newState.editor, links: { ...newState.editor.links, ...newLinks } },
+        }
       }
 
       if (some(newState.editor.links, (link) => some(link.path, (point) => point.selected))) {
@@ -199,8 +268,15 @@ export const onEditorMouseMove = (position) => ({
               [key]: {
                 ...link,
                 path: link.path.map((point) => {
-                  if (!selectedNodesSelector(state).includes(link.editorKey) && point.selected) return { ...point, x: point.x + diff.x / state.editor.canvas.zoom, y: point.y + diff.y / state.editor.canvas.zoom }
-                  else return point
+                  if (!selectedNodesSelector(state).includes(link.editorKey) && point.selected) {
+                    return {
+                      ...point,
+                      x: point.x + diff.x / state.editor.canvas.zoom,
+                      y: point.y + diff.y / state.editor.canvas.zoom,
+                    }
+                  } else {
+                    return point
+                  }
                 }),
               },
             }
@@ -226,7 +302,11 @@ export const onEditorMouseMove = (position) => ({
   },
 })
 
-export const createDefaultLinkPoint = (position) => ({ ...position, editorKey: uniqueId(), selected: false })
+export const createDefaultLinkPoint = (position) => ({
+  ...position,
+  editorKey: uniqueId(),
+  selected: false,
+})
 
 export const onEditorMouseDown = (point) => (dispatch, getState) => {
   dispatch(setDragging(true))
@@ -241,18 +321,23 @@ export const onEditorMouseUp = () => ({
 export const updateZoom = (deltaY, deltaScale) => ({
   type: 'Update zoom',
   payload: { deltaY, deltaScale },
-  reducer: (state) => setIn(state, PATH_ZOOM, Math.max(zoomSelector(state) + deltaY * deltaScale, MIN_ZOOM)),
+  reducer: (state) =>
+    setIn(state, PATH_ZOOM, Math.max(zoomSelector(state) + deltaY * deltaScale, MIN_ZOOM)),
 })
-
 
 export const setSelectedPort = (editorKey, point, undoable) => ({
   type: 'Set selected port',
   payload: { editorKey, point },
-  reducer: (state) => setIn(state, PATH_CURRENT_LINK, editorKey === -1 ?
-    undefined :
-    {
-      source: editorKey,
-      path: [],
-      destination: undefined,
-    }),
+  reducer: (state) =>
+    setIn(
+      state,
+      PATH_CURRENT_LINK,
+      editorKey === -1
+        ? undefined
+        : {
+          source: editorKey,
+          path: [],
+          destination: undefined,
+        }
+    ),
 })

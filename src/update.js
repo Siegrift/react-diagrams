@@ -7,8 +7,11 @@ const recursiveSumUpdate = (newVal, oldVal) => {
   const ret = {}
   const keys = Object.keys(newVal)
   if (keys.length === 0) {
-    if (typeof newVal !== 'number' || typeof oldVal !== 'number') throw new Error('Can add only numbers')
-    else return newVal + oldVal
+    if (typeof newVal !== 'number' || typeof oldVal !== 'number') {
+      throw new Error('Can add only numbers')
+    } else {
+      return newVal + oldVal
+    }
   }
   keys.forEach((key) => {
     if (oldVal === undefined || oldVal[key] === undefined) {

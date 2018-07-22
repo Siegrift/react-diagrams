@@ -1,8 +1,8 @@
 import React from 'react'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
-import { onLinkMouseDown, onPointMouseDown, addPointToCurrentLink } from './actions'
 import { PATH_POINT_RADIUS, SELECTED_PATH_POINT_RADIUS } from '../../../constants'
+import { addPointToCurrentLink, onLinkMouseDown, onPointMouseDown } from './actions'
 
 // Properties of a line
 // I:  - pointA (array) [x,y]: coordinates
@@ -24,7 +24,6 @@ const line = (pointA, pointB) => {
 //     - reverse (boolean, optional): sets the direction
 // O:  - (array) [x,y]: a tuple of coordinates
 const controlPoint = (current, previous, next, reverse) => {
-
   // When 'current' is the first or last point of the array
   // 'previous' or 'next' don't exist.
   // Replace with 'current'
@@ -51,7 +50,6 @@ const controlPoint = (current, previous, next, reverse) => {
 //     - a (array): complete array of points coordinates
 // O:  - (string) 'C x2,y2 x1,y1 x,y': SVG cubic bezier C command
 const bezierCommand = (point, i, a) => {
-
   // start control point
   const cps = controlPoint(a[i - 1], a[i - 2], point)
 
@@ -79,14 +77,18 @@ const Link = ({
 }) => {
   const path = points.map((point) => [point.x, point.y])
   // build the d attributes by looping over the points
-  const d = path.reduce((acc, point, i, a) => i === 0
-    ? `M ${point[0]},${point[1]}`
-    : `${acc} ${bezierCommand(point, i, a)}`
-    , '')
+  const d = path.reduce(
+    (acc, point, i, a) =>
+      i === 0 ? `M ${point[0]},${point[1]}` : `${acc} ${bezierCommand(point, i, a)}`,
+    ''
+  )
   return (
     <g>
       <path
-        className={classNames('Editor__Inner__Svg__Path', { Editor__Inner__Svg__Path__Selected: selected })} d={d}
+        className={classNames('Editor__Inner__Svg__Path', {
+          Editor__Inner__Svg__Path__Selected: selected,
+        })}
+        d={d}
         onMouseDown={(e) => {
           e.stopPropagation()
           onLinkMouseDown(e, editorKey)
@@ -94,7 +96,9 @@ const Link = ({
       />
       {points.map((point, index) => (
         <circle
-          className={classNames('Editor__Inner__Svg__Circle', { Editor__Inner__Svg__Circle__Selected: point.selected })}
+          className={classNames('Editor__Inner__Svg__Circle', {
+            Editor__Inner__Svg__Circle__Selected: point.selected,
+          })}
           cx={point.x}
           cy={point.y}
           r={point.selected ? SELECTED_PATH_POINT_RADIUS : PATH_POINT_RADIUS}

@@ -1,8 +1,8 @@
 .DiagramPort {
-    &__Label {
-        font-size: 0.8em;
-    }
-    &:hover {
-        background-color: rgba(50, 50, 50, .2);
-    }
+  &__Label {
+    font-size: 0.8em;
+  }
+  &:hover {
+    background-color: rgba(50, 50, 50, 0.2);
+  }
 }

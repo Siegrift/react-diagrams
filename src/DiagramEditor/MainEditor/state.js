@@ -17,27 +17,26 @@ export const PATH_OFFSET = [...PATH_CANVAS, 'offset']
 export const getWidgetPathByEditorKey = (editorKey) => [...PATH_WIDGETS, editorKey]
 export const getLinkPathByEditorKey = (editorKey) => [...PATH_LINKS, editorKey]
 
-export const setInitialState = (state) =>
-  ({
-    ...state,
-    [PATH_EDITOR]: {
-      mouse: {
-        cursor: undefined,
-        dragging: false,
-      },
-      canvas: {
-        offset: {
-          x: 0,
-          y: 0,
-        },
-        zoom: 1,
-      },
-      widgets: {},
-      links: {},
-      currentLink: undefined,
-      editorRef: undefined,
+export const setInitialState = (state) => ({
+  ...state,
+  [PATH_EDITOR]: {
+    mouse: {
+      cursor: undefined,
+      dragging: false,
     },
-  })
+    canvas: {
+      offset: {
+        x: 0,
+        y: 0,
+      },
+      zoom: 1,
+    },
+    widgets: {},
+    links: {},
+    currentLink: undefined,
+    editorRef: undefined,
+  },
+})
 
 export const widgetsSelector = (state) => get(state, PATH_WIDGETS)
 export const editorRefSelector = (state) => get(state, PATH_EDITOR_REF)
@@ -49,8 +48,10 @@ export const currentLinkSelector = (state) => get(state, PATH_CURRENT_LINK)
 export const linksSelector = (state) => get(state, PATH_LINKS)
 export const currentLinkPointsSelector = (state) => get(state, PATH_CURRENT_LINK_POINTS)
 
-export const getWidgetByEditorKey = (state, editorKey) => get(state, getWidgetPathByEditorKey(editorKey))
-export const getLinkByEditorKey = (state, editorKey) => get(state, getLinkPathByEditorKey(editorKey))
+export const getWidgetByEditorKey = (state, editorKey) =>
+  get(state, getWidgetPathByEditorKey(editorKey))
+export const getLinkByEditorKey = (state, editorKey) =>
+  get(state, getLinkPathByEditorKey(editorKey))
 
 export const selectedNodesSelector = createSelector(
   widgetsSelector,

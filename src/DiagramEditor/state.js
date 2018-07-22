@@ -1,7 +1,7 @@
 import { get } from 'lodash'
 import { createSelector } from 'reselect'
-import { currentLinkSelector, selectedNodesSelector } from './MainEditor/state'
 import { LOCAL_STORAGE_PATH } from '../constants'
+import { currentLinkSelector, selectedNodesSelector } from './MainEditor/state'
 
 export const PATH_APP = ['app']
 export const PATH_TOPBAR_HEIGHT = [...PATH_APP, 'topbarHeight']
@@ -28,7 +28,8 @@ export const undoableSelector = (state) => {
 }
 
 export const redoableSelector = (state) => {
-  const history = [...get(state, PATH_HISTORY)], index = get(state, PATH_HISTORY_INDEX)
+  const history = [...get(state, PATH_HISTORY)],
+    index = get(state, PATH_HISTORY_INDEX)
   return index < history.length - 1
 }
 

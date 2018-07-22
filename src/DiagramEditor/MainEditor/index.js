@@ -1,16 +1,24 @@
 import React from 'react'
 import classnames from 'classnames'
 import './_MainEditor.scss'
-import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
 import { connect } from 'react-redux'
-import { widgetsSelector, editorRefSelector, zoomSelector, offsetSelector, currentLinkSelector, linksSelector, relativeCursorPointSelector } from './state'
+import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
+import {
+  currentLinkSelector,
+  editorRefSelector,
+  linksSelector,
+  offsetSelector,
+  relativeCursorPointSelector,
+  widgetsSelector,
+  zoomSelector,
+} from './state'
 import {
   addWidget,
-  setEditorRef,
-  onEditorMouseMove,
   onEditorMouseDown,
-  updateZoom,
+  onEditorMouseMove,
   onEditorMouseUp,
+  setEditorRef,
+  updateZoom,
 } from './actions'
 import Widget from './Widget'
 import Link from './Link'
@@ -60,23 +68,16 @@ const MainEditor = ({
         transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
       }}
     >
-      {
-        Object.keys(links).map((key) => (
-          <Link
-            points={links[key].path}
-            selected={links[key].selected}
-            key={key}
-            editorKey={key}
-          />
-        ))
-      }
-      {
-        currentLink && <Link
+      {Object.keys(links).map((key) => (
+        <Link points={links[key].path} selected={links[key].selected} key={key} editorKey={key} />
+      ))}
+      {currentLink && (
+        <Link
           currentLink
           points={cursor ? [...currentLink.path, cursor] : currentLink.path}
           selected
         />
-      }
+      )}
     </svg>
     <div
       className={classnames('editor__inner')}
@@ -84,13 +85,9 @@ const MainEditor = ({
         transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
       }}
     >
-      {
-        Object.keys(widgets).map((key) => (
-          <Widget {...widgets[key]} key={key} />
-        ))
-      }
+      {Object.keys(widgets).map((key) => <Widget {...widgets[key]} key={key} />)}
     </div>
-  </div >
+  </div>
 )
 
 export default connect(

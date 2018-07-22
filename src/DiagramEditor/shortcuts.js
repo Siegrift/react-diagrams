@@ -1,4 +1,4 @@
-import { undo, redo, cancelSelection, deleteSelection } from './actions'
+import { cancelSelection, deleteSelection, redo, undo } from './actions'
 
 const shortcuts = [
   {

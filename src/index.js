@@ -18,12 +18,16 @@ class DiagramEditorWrapper extends React.Component {
 
   render() {
     return (
-      <Provider store={store} >
-        <DiagramEditor ref={(ref) => {this.editorRef = ref.getWrappedInstance()}} {...this.props} />
+      <Provider store={store}>
+        <DiagramEditor
+          ref={(ref) => {
+            this.editorRef = ref.getWrappedInstance()
+          }}
+          {...this.props}
+        />
       </Provider>
     )
   }
 }
-
 
 export default DiagramEditorWrapper

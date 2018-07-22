@@ -1,11 +1,26 @@
-import { PATH_TOPBAR_HEIGHT, PATH_SIDEBAR_WIDTH, PATH_HISTORY, PATH_HISTORY_INDEX, undoableSelector, redoableSelector, cancelableSelector } from './state'
-import { currentLinkSelector, selectedNodesSelector, PATH_WIDGETS, widgetsSelector, PATH_LINKS, linksSelector } from './MainEditor/state'
-import { setSelectedPort, cancelCurrentSelection } from './MainEditor/actions'
-import { setIn, getIn } from 'immutable'
-import { deepMergeFilterObject, filterObject } from '../utils/helpers'
-import { undoRedoFilter, LOCAL_STORAGE_PATH, saveFilter } from '../constants'
-import shortcuts from './shortcuts'
+import { getIn, setIn } from 'immutable'
 import { concat, reduce } from 'lodash'
+import { deepMergeFilterObject, filterObject } from '../utils'
+import { LOCAL_STORAGE_PATH, saveFilter, undoRedoFilter } from '../constants'
+import {
+  PATH_HISTORY,
+  PATH_HISTORY_INDEX,
+  PATH_SIDEBAR_WIDTH,
+  PATH_TOPBAR_HEIGHT,
+  cancelableSelector,
+  redoableSelector,
+  undoableSelector,
+} from './state'
+import {
+  PATH_LINKS,
+  PATH_WIDGETS,
+  currentLinkSelector,
+  linksSelector,
+  selectedNodesSelector,
+  widgetsSelector,
+} from './MainEditor/state'
+import { cancelCurrentSelection, setSelectedPort } from './MainEditor/actions'
+import shortcuts from './shortcuts'
 
 const keyboardEventToString = (event) => {
   const mods = []
@@ -51,7 +66,8 @@ export const initializeEditor = () => (dispatch, getState, { logger }) => {
 export const addToHistory = (stateToAdd) => ({
   type: 'Add to history',
   reducer: (state) => {
-    const history = [...getIn(state, PATH_HISTORY)], index = getIn(state, PATH_HISTORY_INDEX)
+    const history = [...getIn(state, PATH_HISTORY)],
+      index = getIn(state, PATH_HISTORY_INDEX)
     history.splice(index + 1, history.length, stateToAdd)
     const newState = setIn(state, PATH_HISTORY, history)
     return setIn(newState, PATH_HISTORY_INDEX, history.length - 1)
@@ -62,7 +78,8 @@ export const undo = () => ({
   type: 'Undo',
   reducer: (state) => {
     if (!undoableSelector(state)) return state
-    const history = getIn(state, PATH_HISTORY), index = getIn(state, PATH_HISTORY_INDEX)
+    const history = getIn(state, PATH_HISTORY),
+      index = getIn(state, PATH_HISTORY_INDEX)
     const newState = deepMergeFilterObject(state, undoRedoFilter, history[index - 1])
     return setIn(newState, PATH_HISTORY_INDEX, index - 1)
   },
@@ -72,7 +89,8 @@ export const redo = () => ({
   type: 'Redo',
   reducer: (state) => {
     if (!redoableSelector(state)) return state
-    const history = getIn(state, PATH_HISTORY), index = getIn(state, PATH_HISTORY_INDEX)
+    const history = getIn(state, PATH_HISTORY),
+      index = getIn(state, PATH_HISTORY_INDEX)
     const newState = deepMergeFilterObject(state, undoRedoFilter, history[index + 1])
     return setIn(newState, PATH_HISTORY_INDEX, index + 1)
   },
@@ -93,7 +111,8 @@ export const deleteCurrentSelection = () => ({
   type: 'Delete current selection',
   reducer: (state) => {
     const selectedNodes = selectedNodesSelector(state)
-    let newState = state, newLinks = linksSelector(state)
+    let newState = state,
+      newLinks = linksSelector(state)
     const newWidgets = reduce(
       widgetsSelector(newState),
       (acc, widget, key) => {
@@ -102,7 +121,9 @@ export const deleteCurrentSelection = () => ({
           newLinks = reduce(
             newLinks,
             (acc, link, linkKey) => {
-              if (widgetPorts.includes(link.source) || widgetPorts.includes(link.destination)) return acc
+              if (widgetPorts.includes(link.source) || widgetPorts.includes(link.destination)) {
+                return acc
+              }
               return { ...acc, [linkKey]: link }
             },
             {}
@@ -144,9 +165,9 @@ export const localStorageSave = () => (dispatch, getState, { logger }) => {
   localStorage.setItem(LOCAL_STORAGE_PATH, JSON.stringify(filterObject(getState(), saveFilter)))
 }
 
-
 export const localStorageLoad = () => ({
   type: 'Load editor state',
   undoable: true,
-  reducer: (state) => deepMergeFilterObject(state, saveFilter, JSON.parse(localStorage.getItem(LOCAL_STORAGE_PATH))),
+  reducer: (state) =>
+    deepMergeFilterObject(state, saveFilter, JSON.parse(localStorage.getItem(LOCAL_STORAGE_PATH))),
 })

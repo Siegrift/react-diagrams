@@ -2,12 +2,25 @@ import React from 'react'
 import classnames from 'classnames'
 import './_Port.scss'
 import { connect } from 'react-redux'
-import { onPortMouseDown, isValidLinkDefault } from './actions.js'
+import { isValidLinkDefault, onPortMouseDown } from './actions.js'
 
-const Port = ({ className, isInPort, name, type, editorKey, onPortMouseDown, sidePanel, isValidLink }) => {
+const Port = ({
+  className,
+  isInPort,
+  name,
+  type,
+  editorKey,
+  onPortMouseDown,
+  sidePanel,
+  isValidLink,
+}) => {
   return (
     <div
-      className={classnames(className, 'DiagramPort', isInPort ? 'DiagramPort__In' : 'DiagramPort__Out')}
+      className={classnames(
+        className,
+        'DiagramPort',
+        isInPort ? 'DiagramPort__In' : 'DiagramPort__Out'
+      )}
       onMouseDown={(e) => {
         if (sidePanel) return
         e.stopPropagation()
@@ -24,5 +37,5 @@ const Port = ({ className, isInPort, name, type, editorKey, onPortMouseDown, sid
 
 export default connect(
   null,
-  { onPortMouseDown },
+  { onPortMouseDown }
 )(Port)

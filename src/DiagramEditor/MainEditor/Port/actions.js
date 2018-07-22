@@ -1,5 +1,5 @@
 import { setIn } from 'immutable'
-import { uniqueId, map, flatten, concat } from 'lodash'
+import { concat, flatten, map, uniqueId } from 'lodash'
 import { PATH_LINKS, currentLinkSelector, widgetsSelector } from '../state'
 import { cancelCurrentSelection, setSelectedPort } from '../actions'
 import { addPointToCurrentLink } from '../Link/actions'
@@ -9,12 +9,14 @@ export const isValidLinkDefault = (source, destination) => {
 }
 
 const getLinkDataByEditorKey = (state, editorKey) => {
-  const ports = flatten(map(widgetsSelector(state), (widget) => {
-    return concat(
-      map(widget.inPorts, (port) => ({ ...port, isInPort: true })),
-      map(widget.outPorts, (port) => ({ ...port, isInPort: false })),
-    )
-  }))
+  const ports = flatten(
+    map(widgetsSelector(state), (widget) => {
+      return concat(
+        map(widget.inPorts, (port) => ({ ...port, isInPort: true })),
+        map(widget.outPorts, (port) => ({ ...port, isInPort: false }))
+      )
+    })
+  )
   return ports.find((port) => port.editorKey === editorKey)
 }
 

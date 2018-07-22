@@ -16,7 +16,9 @@ const Pane = (props) => {
     classes += ' layout-pane-primary'
   }
   return (
-    <div className={classes} style={style}>{props.children}</div>
+    <div className={classes} style={style}>
+      {props.children}
+    </div>
   )
 }
 
@@ -25,10 +27,7 @@ Pane.propTypes = {
   primary: PropTypes.bool,
   size: PropTypes.number,
   percentage: PropTypes.bool,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
 }
 
 Pane.defaultProps = {

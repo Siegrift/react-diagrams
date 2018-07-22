@@ -1,6 +1,5 @@
-import { widgetsSelector, linksSelector } from './MainEditor/state'
 import { omit, reduce } from 'lodash'
-
+import { linksSelector, widgetsSelector } from './MainEditor/state'
 
 export const apiExportGraph = () => (dispatch, getState) => {
   const state = getState()
@@ -10,7 +9,8 @@ export const apiExportGraph = () => (dispatch, getState) => {
     widgetsSelector(state),
     (acc, widget, key) => {
       return {
-        ...acc, [key]: getWidgetToExport(widget),
+        ...acc,
+        [key]: getWidgetToExport(widget),
       }
     },
     {}
@@ -19,7 +19,8 @@ export const apiExportGraph = () => (dispatch, getState) => {
     linksSelector(state),
     (acc, link, key) => {
       return {
-        ...acc, [key]: getLinkToExport(link),
+        ...acc,
+        [key]: getLinkToExport(link),
       }
     },
     {}

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Provider } from 'react-redux'
-import DiagramEditor from './DiagramEditor'
+import DiagramEditor from './DiagramEditor/DiagramEditor'
 import getConfiguredStore from './configureStore'
 // extend bluebird promise in dev mode
 Promise.config({

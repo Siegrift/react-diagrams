@@ -84,7 +84,26 @@ const Link = ({
   )
   return (
     <g>
+      <defs>
+        <marker
+          id="arrow"
+          markerWidth="5"
+          markerHeight="5"
+          refX="0"
+          refY="1"
+          orient="auto"
+          markerUnits="strokeWidth"
+        >
+          <path
+            d="M0,0 L0,4 L4,2 z"
+            className={classNames({
+              Marker__End: selected,
+            })}
+          />
+        </marker>
+      </defs>
       <path
+        markerEnd="url(#arrow)"
         className={classNames('Editor__Inner__Svg__Path', {
           Editor__Inner__Svg__Path__Selected: selected,
         })}

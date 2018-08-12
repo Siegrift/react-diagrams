@@ -20,8 +20,8 @@ import {
   setEditorRef,
   updateZoom,
 } from './actions'
-import Widget from './Widget'
-import Link from './Link'
+import Widget from './Widget/Widget'
+import Link from './Link/Link'
 
 const MainEditor = ({
   schema,

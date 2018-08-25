@@ -1,8 +1,11 @@
 import { setIn } from 'immutable'
 import { concat, flatten, map, uniqueId } from 'lodash'
-import { PATH_LINKS, currentLinkSelector, widgetsSelector } from '../state'
-import { cancelCurrentSelection, setSelectedPort } from '../actions'
-import { addPointToCurrentLink } from '../Link/actions'
+import { PATH_LINKS } from '../Links/state'
+import { currentLinkSelector } from '../Links/selectors'
+import { widgetsSelector } from '../Widgets/selectors'
+
+import { cancelCurrentSelection, setSelectedPort } from '../MainEditor/actions'
+import { addPointToCurrentLink } from '../Links/actions'
 
 export const isValidLinkDefault = (source, destination) => {
   return !source.isInPort && destination.isInPort

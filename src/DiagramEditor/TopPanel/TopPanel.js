@@ -8,6 +8,7 @@ import CancelIcon from 'react-icons/lib/md/cancel'
 import DeleteIcon from 'react-icons/lib/md/delete'
 import SaveIcon from 'react-icons/lib/md/save'
 import LoadIcon from 'react-icons/lib/md/file-download'
+import FormatIcon from 'react-icons/lib/md/format-shapes'
 import {
   cancelSelection,
   deleteSelection,
@@ -15,8 +16,9 @@ import {
   localStorageSave,
   redo,
   undo,
+  formatDiagrams,
 } from '../actions'
-import { selectedNodesSelector } from '../MainEditor/state'
+import { selectedNodesSelector } from '../MainEditor/selectors'
 import {
   cancelableSelector,
   loadAvailableSelector,
@@ -39,6 +41,7 @@ const TopPanel = ({
   localStorageSave,
   localStorageLoad,
   loadAvailable,
+  formatDiagrams,
 }) => (
   <div className="TopPanel" style={{ height: topbarHeight }}>
     <PanelItem text="Undo" onClick={undo} disabled={!undoable}>
@@ -59,6 +62,9 @@ const TopPanel = ({
     <PanelItem text="Load" onClick={localStorageLoad} disabled={!loadAvailable}>
       <LoadIcon />
     </PanelItem>
+    <PanelItem text="Format" onClick={formatDiagrams}>
+      <FormatIcon />
+    </PanelItem>
   </div>
 )
 
@@ -71,5 +77,13 @@ export default connect(
     currentSelection: selectedNodesSelector(state),
     loadAvailable: loadAvailableSelector(state),
   }),
-  { undo, redo, cancelSelection, deleteSelection, localStorageSave, localStorageLoad }
+  {
+    undo,
+    redo,
+    cancelSelection,
+    deleteSelection,
+    localStorageSave,
+    localStorageLoad,
+    formatDiagrams,
+  }
 )(TopPanel)

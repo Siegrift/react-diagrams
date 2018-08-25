@@ -1,5 +1,6 @@
 import { omit, reduce } from 'lodash'
-import { linksSelector, widgetsSelector } from './MainEditor/state'
+import { widgetsSelector } from './Widgets/selectors'
+import { linksSelector } from './Links/selectors'
 
 export const apiExportGraph = () => (dispatch, getState) => {
   const state = getState()

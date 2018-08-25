@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
-import { PATH_POINT_RADIUS, SELECTED_PATH_POINT_RADIUS } from '../../../constants'
+import { PATH_POINT_RADIUS, SELECTED_PATH_POINT_RADIUS } from '../../constants'
 import { addPointToCurrentLink, onLinkMouseDown, onPointMouseDown } from './actions'
 
 // Properties of a line

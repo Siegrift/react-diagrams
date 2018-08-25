@@ -3,8 +3,8 @@ import classnames from 'classnames'
 import './_Widget.scss'
 import { map } from 'lodash'
 import { connect } from 'react-redux'
-import { DATA_TRANSFER_WIDGET_KEY } from '../../../constants'
-import Port from '../Port/Port'
+import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
+import Port from '../Ports/Port'
 import { onWidgetMouseDown } from './actions'
 
 const Widget = ({
@@ -23,6 +23,7 @@ const Widget = ({
   onWidgetMouseDown,
 }) => (
   <div
+    id={editorKey}
     className={classnames('diagram-widget', className, {
       'diagram-widget__side-panel': sidePanel,
       'diagram-widget__selected': selected,

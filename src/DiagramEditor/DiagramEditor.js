@@ -16,6 +16,7 @@ class DiagramEditor extends React.Component {
   exportGraph = () => this.props.apiExportGraph()
 
   onTopbarHeightChange = (newTopbarHeight) => {
+    console.log('xxx')
     this.props.changeTopbarHeight(newTopbarHeight)
   }
   onSidebarWidthChange = (newSidebarWidth) => {
@@ -27,14 +28,7 @@ class DiagramEditor extends React.Component {
   }
 
   render() {
-    const {
-      className,
-      topbarHeight,
-      onTopbarHeightChange,
-      sidebarWidth,
-      schema,
-      onSidebarWidthChange,
-    } = this.props
+    const { className, topbarHeight, sidebarWidth, schema } = this.props
     return (
       <div
         onContextMenu={(e) => e.preventDefault()}
@@ -44,10 +38,14 @@ class DiagramEditor extends React.Component {
           vertical
           primaryIndex={1}
           secondarySize={topbarHeight}
-          onChange={onTopbarHeightChange}
+          onChange={this.onTopbarHeightChange}
         >
           <TopPanel />
-          <Splitter secondarySize={sidebarWidth} primaryIndex={1} onChange={onSidebarWidthChange}>
+          <Splitter
+            secondarySize={sidebarWidth}
+            primaryIndex={1}
+            onChange={this.onSidebarWidthChange}
+          >
             <SidePanel schema={schema} />
             <MainEditor schema={schema} />
           </Splitter>

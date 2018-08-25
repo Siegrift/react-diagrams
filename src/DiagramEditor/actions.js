@@ -1,5 +1,5 @@
 import { getIn, setIn } from 'immutable'
-import { concat, reduce } from 'lodash'
+import { concat, reduce, forEach } from 'lodash'
 import { deepMergeFilterObject, filterObject } from '../utils'
 import { LOCAL_STORAGE_PATH, saveFilter, undoRedoFilter } from '../constants'
 import {
@@ -11,16 +11,14 @@ import {
   redoableSelector,
   undoableSelector,
 } from './state'
-import {
-  PATH_LINKS,
-  PATH_WIDGETS,
-  currentLinkSelector,
-  linksSelector,
-  selectedNodesSelector,
-  widgetsSelector,
-} from './MainEditor/state'
+import { PATH_LINKS } from './Links/state'
+import { PATH_WIDGETS } from './Widgets/state'
+import { currentLinkSelector, linksSelector } from './Links/selectors'
+import { widgetsSelector } from './Widgets/selectors'
 import { cancelCurrentSelection, setSelectedPort } from './MainEditor/actions'
+import { selectedNodesSelector } from './MainEditor/selectors'
 import shortcuts from './shortcuts'
+import { graphlib, layout } from 'dagre'
 
 const keyboardEventToString = (event) => {
   const mods = []
@@ -167,7 +165,38 @@ export const localStorageSave = () => (dispatch, getState, { logger }) => {
 
 export const localStorageLoad = () => ({
   type: 'Load editor state',
-  undoable: true,
   reducer: (state) =>
     deepMergeFilterObject(state, saveFilter, JSON.parse(localStorage.getItem(LOCAL_STORAGE_PATH))),
+})
+
+export const formatDiagrams = () => ({
+  type: 'Format diagrams',
+  reducer: (state) => {
+    const g = new graphlib.Graph()
+    g.setGraph({})
+    // Default to assigning a new object as a label for each new edge.
+    g.setDefaultEdgeLabel(() => ({}))
+    const widgets = widgetsSelector(state)
+    const links = linksSelector(state)
+
+    forEach(widgets, ({ editorKey }) => {
+      // TODO: remember ref in state
+      const element = document.getElementById(editorKey)
+      g.setNode(editorKey, { width: element.clientWidth, height: element.clientHeight })
+    })
+
+    // TODO code after refactoring ports
+    forEach(links, ({ source, destination }) => {
+      g.setEdge(source, destination)
+    })
+
+    layout(g)
+    g.nodes().forEach((v) => {
+      console.log(`Node ${v}: ${JSON.stringify(g.node(v))}`)
+    })
+    g.edges().forEach((e) => {
+      console.log(`Edge ${e.v} -> ${e.w}: ${JSON.stringify(g.edge(e))}`)
+    })
+    return state
+  },
 })

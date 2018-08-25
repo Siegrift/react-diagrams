@@ -2,40 +2,21 @@ import { filter, find, map, reduce, some, uniqueId } from 'lodash'
 import { setIn } from 'immutable'
 import update from '../../update'
 import { MIN_ZOOM } from '../../constants'
+import { PATH_CURSOR, PATH_DRAGGING, PATH_EDITOR_REF, PATH_ZOOM } from './state'
+import { PATH_LINKS, getLinkPathByEditorKey, PATH_CURRENT_LINK } from '../Links/state'
+import { getLinkByEditorKey, linksSelector } from '../Links/selectors'
 import {
-  PATH_CURRENT_LINK,
-  PATH_CURSOR,
-  PATH_DRAGGING,
-  PATH_EDITOR_REF,
-  PATH_LINKS,
-  PATH_WIDGETS,
-  PATH_ZOOM,
   cursorSelector,
   draggingSelector,
-  editorRefSelector,
-  getLinkByEditorKey,
-  getLinkPathByEditorKey,
-  getWidgetByEditorKey,
-  getWidgetPathByEditorKey,
-  linksSelector,
-  offsetSelector,
   selectedNodesSelector,
-  widgetsSelector,
   zoomSelector,
-} from './state'
+  relativeMousePoint,
+} from './selectors.js'
+import { getWidgetPathByEditorKey, PATH_WIDGETS } from '../Widgets/state'
+import { widgetsSelector, getWidgetByEditorKey } from '../Widgets/selectors'
 
 const computeDiff = (p1, p2) => {
   return { x: p1.x - p2.x, y: p1.y - p2.y }
-}
-
-export const relativeMousePoint = (state, { x, y }) => {
-  const boundingRect = editorRefSelector(state).getBoundingClientRect()
-  const zoom = zoomSelector(state),
-    offset = offsetSelector(state)
-  return {
-    x: (x - boundingRect.left - (boundingRect.width * (1 - zoom)) / 2 - offset.x) / zoom,
-    y: (y - boundingRect.top - (boundingRect.height * (1 - zoom)) / 2 - offset.y) / zoom,
-  }
 }
 
 export const setDragging = (dragging) => ({
@@ -300,12 +281,6 @@ export const onEditorMouseMove = (position) => ({
     }
     return newState
   },
-})
-
-export const createDefaultLinkPoint = (position) => ({
-  ...position,
-  editorKey: uniqueId(),
-  selected: false,
 })
 
 export const onEditorMouseDown = (point) => (dispatch, getState) => {

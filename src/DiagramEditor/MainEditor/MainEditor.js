@@ -3,15 +3,14 @@ import classnames from 'classnames'
 import './_MainEditor.scss'
 import { connect } from 'react-redux'
 import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
+import { currentLinkSelector, linksSelector } from '../Links/selectors'
 import {
-  currentLinkSelector,
+  zoomSelector,
   editorRefSelector,
-  linksSelector,
   offsetSelector,
   relativeCursorPointSelector,
-  widgetsSelector,
-  zoomSelector,
-} from './state'
+} from './selectors'
+import { widgetsSelector } from '../Widgets/selectors'
 import {
   addWidget,
   onEditorMouseDown,
@@ -20,8 +19,8 @@ import {
   setEditorRef,
   updateZoom,
 } from './actions'
-import Widget from './Widget/Widget'
-import Link from './Link/Link'
+import Widget from '../Widgets/Widget'
+import Link from '../Links/Link'
 
 const MainEditor = ({
   schema,

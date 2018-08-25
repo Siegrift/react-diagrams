@@ -1,18 +1,20 @@
+// @flow
 import React from 'react'
 import { Provider } from 'react-redux'
 import DiagramEditor from './DiagramEditor/DiagramEditor'
 import getConfiguredStore from './configureStore'
-// extend bluebird promise in dev mode
-Promise.config({
-  longStackTraces: process.env.NODE_ENV === 'development',
-  warnings: process.env.NODE_ENV === 'development',
-})
+
+import type { DiagramEditorApi } from './DiagramEditor/DiagramEditor'
+import type { Schema } from './flowTypes'
+
 const store = getConfiguredStore()
 
-class DiagramEditorWrapper extends React.Component {
-  static editorRef = undefined
+class DiagramEditorWrapper extends React.Component<Schema> {
+  editorRef: ?DiagramEditorApi
+  store: any
 
   exportGraph() {
+    if (!this.editorRef) return undefined
     return this.editorRef.exportGraph()
   }
 

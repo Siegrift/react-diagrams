@@ -8,14 +8,16 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
+    "css-modules-flow-types-cli": "^1.1.0",
     "dagre": "^0.8.2",
     "immutability-helper": "^2.6.4",
     "immutable": "^4.0.0-rc.9",
+    "jest": "^23.5.0",
     "lodash": "^4.17.5",
-    "prop-types": "^15.6.0",
-    "react": "^16.2.0",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
     "react-icons": "^2.2.7",
-    "react-redux": "^5.0.6",
+    "react-redux": "^5.0.7",
     "react-splitter-layout": "^3.0.0",
     "recompose": "^0.26.0",
     "redux": "^3.7.2",
@@ -23,12 +25,34 @@
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "babel-eslint": "^8.2.6",
+    "eslint": "^5.4.0",
+    "eslint-config-vacuumlabs": "^1.5.0",
+    "eslint-plugin-flowtype": "^2.50.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-react": "^7.11.1",
+    "flow-bin": "^0.79.1",
+    "flow-coverage-report": "^0.5.0",
+    "flow-typed": "^2.5.1"
+  },
   "scripts": {
     "eslint": "eslint src *.js || exit 0",
     "lint": "prettier-eslint --write \"src/**/*.{js,jsx,json,scss}\"",
-    "test": "jest --env=jsdom",
-    "flow": "flow"
+    "test": "jest --watch --env=jsdom",
+    "flow": "python3 ./check_flow.py & flow & flow-coverage-report"
+  },
+  "flow-coverage-report": {
+    "includeGlob": [
+      "src/**/*.js",
+      "webpack/**/*.js",
+      "react-diagrams/**/*.js"
+    ],
+    "type": [
+      "text",
+      "html",
+      "json"
+    ]
   },
   "author": "",
   "license": "ISC",

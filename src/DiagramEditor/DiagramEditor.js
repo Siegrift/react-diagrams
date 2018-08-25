@@ -1,3 +1,4 @@
+// @flow
 import React from 'react'
 import TopPanel from './TopPanel/TopPanel'
 import './_DiagramEditor.scss'
@@ -11,6 +12,11 @@ import MainEditor from './MainEditor/MainEditor'
 import { bindActionCreators } from 'redux'
 import { shallowEqual } from '../utils'
 import { apiExportGraph } from './editorApi'
+
+// TODO: TBD
+export type DiagramEditorApi = {
+  exportGraph: () => any,
+}
 
 class DiagramEditor extends React.Component {
   exportGraph = () => this.props.apiExportGraph()

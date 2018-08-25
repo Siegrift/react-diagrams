@@ -1,6 +1,13 @@
+// @flow
 import { omit, reduce } from 'lodash'
 import { widgetsSelector } from './Widgets/selectors'
 import { linksSelector } from './Links/selectors'
+
+// TODO: TBD
+export type ExportedGraph = {
+  widgets: any,
+  links: any,
+}
 
 export const apiExportGraph = () => (dispatch, getState) => {
   const state = getState()

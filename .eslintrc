@@ -1,0 +1,26 @@
+{
+  "extends": [
+    "vacuumlabs",
+    "plugin:flowtype/recommended"
+  ],
+  "plugins": [
+    "flowtype"
+  ],
+  "rules": {
+    "object-curly-spacing": "off",
+    "no-duplicate-imports": "off"
+  },
+  "env": {
+    "node": true,
+    "browser": true,
+    "jest": true
+  },
+  "globals": {
+    "Promise": true
+  },
+  "settings": {
+    "flowtype": {
+      "onlyFilesWithFlowAnnotation": true
+    }
+  }
+}

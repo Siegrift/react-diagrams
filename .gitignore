@@ -2,3 +2,6 @@ node_modules
 build/*
 *.log
 .vscode/
+# Add package lock when the structure will be stabilized a bit
+package-lock.json
+flow-coverage

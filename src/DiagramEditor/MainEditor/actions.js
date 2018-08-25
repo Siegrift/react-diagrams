@@ -28,33 +28,39 @@ export const setDragging = (dragging) => ({
   reducer: (state) => setIn(state, PATH_DRAGGING, dragging),
 })
 
-const addWidget = (command, pos, portKeys) => ({
+const addWidget = (command, pos, portKeys, widgetEditorKey) => ({
   type: 'Add widget to editor',
-  payload: { command, pos, portKeys },
+  payload: { command, pos, portKeys, widgetEditorKey },
   undoable: true,
   reducer: (state) => {
-    const editorKey = uniqueId()
-    return setIn(state, getWidgetPathByEditorKey(editorKey), {
+    return setIn(state, getWidgetPathByEditorKey(widgetEditorKey), {
       ...pick(command, ['name', 'desc', 'color']),
       inPortKeys: portKeys.in,
       outPortKeys: portKeys.out,
       ...relativeMousePoint(state, pos),
-      editorKey,
+      editorKey: widgetEditorKey,
       selected: false,
     })
   },
 })
 
+// TODO: move  to widget actions
 export const onWidgetDrop = (command, pos) => (dispatch, getState) => {
-  const { inPorts, outPorts } = createPorts(command)
+  const widgetEditorKey = uniqueId()
+  const { inPorts, outPorts } = createPorts(command, widgetEditorKey)
   // TODO: why exactly has to be this called?
   dispatch(setDragging(false))
   dispatch(addPorts(inPorts, outPorts))
   dispatch(
-    addWidget(command, pos, {
-      in: inPorts.map((p) => p.editorKey),
-      out: outPorts.map((p) => p.editorKey),
-    })
+    addWidget(
+      command,
+      pos,
+      {
+        in: inPorts.map((p) => p.editorKey),
+        out: outPorts.map((p) => p.editorKey),
+      },
+      widgetEditorKey
+    )
   )
   dispatch(checkpoint())
 }
@@ -138,6 +144,7 @@ export const setEditorRef = (ref) => ({
   reducer: (state) => setIn(state, PATH_EDITOR_REF, ref),
 })
 
+// TODO: split this function and also remove ports
 export const onEditorMouseMove = (position) => ({
   type: 'Editor mouse move',
   payload: { position },
@@ -146,29 +153,31 @@ export const onEditorMouseMove = (position) => ({
     let newState = setIn(state, PATH_CURSOR, position)
     if (draggingSelector(newState)) {
       const diff = computeDiff(cursorSelector(newState), cursorSelector(state))
-      if (some(newState.editor.widgets, (w) => w.selected)) {
+      if (some(widgetsSelector(newState), (w) => w.selected)) {
         const selectedKeys = map(
-          filter(newState.editor.widgets, (w) => w.selected),
+          filter(widgetsSelector(newState), (w) => w.selected),
           (w) => w.editorKey
         )
+        console.log(selectedKeys)
         const newWidgets = selectedKeys.reduce((acc, key) => {
-          const movedWidget = update(newState.editor.widgets[key], {
-            x: { $sum: diff.x / state.editor.canvas.zoom },
-            y: { $sum: diff.y / state.editor.canvas.zoom },
+          const movedWidget = update(widgetsSelector(newState)[key], {
+            x: { $sum: diff.x / zoomSelector(state) },
+            y: { $sum: diff.y / zoomSelector(state) },
           })
           return { ...acc, [key]: movedWidget }
         }, {})
+        console.log('UUUU', widgetsSelector(newState), newWidgets)
         const links = reduce(
-          newState.editor.links,
+          linksSelector(newState),
           (acc, value, key) => {
             const moveLast = selectedKeys.find((key) => {
               return (
                 some(
-                  newState.editor.widgets[key].outPorts,
+                  widgetsSelector(newState)[key].outPorts,
                   (port) => port.editorKey === value.destination
                 ) ||
                 some(
-                  newState.editor.widgets[key].inPorts,
+                  widgetsSelector(newState)[key].inPorts,
                   (port) => port.editorKey === value.destination
                 )
               )
@@ -176,11 +185,11 @@ export const onEditorMouseMove = (position) => ({
             const moveFirst = selectedKeys.find((key) => {
               return (
                 some(
-                  newState.editor.widgets[key].inPorts,
+                  widgetsSelector(newState)[key].inPorts,
                   (port) => port.editorKey === value.source
                 ) ||
                 some(
-                  newState.editor.widgets[key].outPorts,
+                  widgetsSelector(newState)[key].outPorts,
                   (port) => port.editorKey === value.source
                 )
               )
@@ -192,8 +201,8 @@ export const onEditorMouseMove = (position) => ({
                 path: [
                   {
                     ...newLink.path[0],
-                    x: newLink.path[0].x + diff.x / state.editor.canvas.zoom,
-                    y: newLink.path[0].y + diff.y / state.editor.canvas.zoom,
+                    x: newLink.path[0].x + diff.x / zoomSelector(state),
+                    y: newLink.path[0].y + diff.y / zoomSelector(state),
                   },
                   ...newLink.path.slice(1),
                 ],
@@ -207,8 +216,8 @@ export const onEditorMouseMove = (position) => ({
                   ...newLink.path.slice(0, newLink.path.length - 1),
                   {
                     ...last,
-                    x: last.x + diff.x / state.editor.canvas.zoom,
-                    y: last.y + diff.y / state.editor.canvas.zoom,
+                    x: last.x + diff.x / zoomSelector(state),
+                    y: last.y + diff.y / zoomSelector(state),
                   },
                 ],
               }
@@ -219,30 +228,27 @@ export const onEditorMouseMove = (position) => ({
         )
         newState = {
           ...newState,
-          editor: {
-            ...newState.editor,
-            widgets: { ...newState.editor.widgets, ...newWidgets },
-            links,
-          },
+          widgets: { ...widgetsSelector(newState), ...newWidgets },
+          links: { ...linksSelector(newState), ...links },
         }
       }
 
-      if (some(newState.editor.links, (link) => link.selected)) {
+      if (some(linksSelector(newState), (link) => link.selected)) {
         const selectedKeys = map(
-          filter(newState.editor.links, (link) => link.selected),
+          filter(linksSelector(newState), (link) => link.selected),
           (link) => link.editorKey
         )
         const newLinks = selectedKeys.reduce((acc, key) => {
-          const movedLink = update(newState.editor.links[key], {
+          const movedLink = update(linksSelector(newState)[key], {
             path: {
-              $set: newState.editor.links[key].path.map((point, index) => {
-                if (index === 0 || index === newState.editor.links[key].path.length - 1) {
+              $set: linksSelector(newState)[key].path.map((point, index) => {
+                if (index === 0 || index === linksSelector(newState)[key].path.length - 1) {
                   return point
                 }
                 return {
                   ...point,
-                  x: point.x + diff.x / state.editor.canvas.zoom,
-                  y: point.y + diff.y / state.editor.canvas.zoom,
+                  x: point.x + diff.x / zoomSelector(state),
+                  y: point.y + diff.y / zoomSelector(state),
                 }
               }),
             },
@@ -251,13 +257,13 @@ export const onEditorMouseMove = (position) => ({
         }, {})
         newState = {
           ...newState,
-          editor: { ...newState.editor, links: { ...newState.editor.links, ...newLinks } },
+          links: { ...linksSelector(newState), ...newLinks },
         }
       }
 
-      if (some(newState.editor.links, (link) => some(link.path, (point) => point.selected))) {
+      if (some(linksSelector(newState), (link) => some(link.path, (point) => point.selected))) {
         const newLinks = reduce(
-          newState.editor.links,
+          linksSelector(newState),
           (acc, link, key) => {
             return {
               ...acc,
@@ -267,8 +273,8 @@ export const onEditorMouseMove = (position) => ({
                   if (!selectedNodesSelector(state).includes(link.editorKey) && point.selected) {
                     return {
                       ...point,
-                      x: point.x + diff.x / state.editor.canvas.zoom,
-                      y: point.y + diff.y / state.editor.canvas.zoom,
+                      x: point.x + diff.x / zoomSelector(state),
+                      y: point.y + diff.y / zoomSelector(state),
                     }
                   } else {
                     return point
@@ -279,7 +285,7 @@ export const onEditorMouseMove = (position) => ({
           },
           {}
         )
-        newState = { ...newState, editor: { ...newState.editor, links: newLinks } }
+        newState = { ...newState, links: newLinks }
       }
       if (!selectedNodesSelector(state).length) {
         newState = update(newState, {

@@ -19,6 +19,7 @@ import { cancelCurrentSelection, setSelectedPort } from './MainEditor/actions'
 import { selectedNodesSelector } from './MainEditor/selectors'
 import shortcuts from './shortcuts'
 import { graphlib, layout } from 'dagre'
+import { portByEditorKeySelector } from './Ports/selectors'
 
 const keyboardEventToString = (event) => {
   const mods = []
@@ -115,7 +116,7 @@ export const deleteCurrentSelection = () => ({
       widgetsSelector(newState),
       (acc, widget, key) => {
         if (widget.selected) {
-          const widgetPorts = concat(widget.inPorts, widget.outPorts).map((port) => port.editorKey)
+          const widgetPorts = concat(widget.inPortKeys, widget.outPortKeys)
           newLinks = reduce(
             newLinks,
             (acc, link, linkKey) => {
@@ -169,6 +170,7 @@ export const localStorageLoad = () => ({
     deepMergeFilterObject(state, saveFilter, JSON.parse(localStorage.getItem(LOCAL_STORAGE_PATH))),
 })
 
+// TODO: also take into account link points
 export const formatDiagrams = () => ({
   type: 'Format diagrams',
   reducer: (state) => {
@@ -185,18 +187,15 @@ export const formatDiagrams = () => ({
       g.setNode(editorKey, { width: element.clientWidth, height: element.clientHeight })
     })
 
-    // TODO code after refactoring ports
     forEach(links, ({ source, destination }) => {
-      g.setEdge(source, destination)
+      const sourceWidget = portByEditorKeySelector(state, source).widgetEditorKey
+      const destinationWidget = portByEditorKeySelector(state, destination).widgetEditorKey
+      g.setEdge(sourceWidget, destinationWidget)
     })
 
     layout(g)
-    g.nodes().forEach((v) => {
-      console.log(`Node ${v}: ${JSON.stringify(g.node(v))}`)
-    })
-    g.edges().forEach((e) => {
-      console.log(`Edge ${e.v} -> ${e.w}: ${JSON.stringify(g.edge(e))}`)
-    })
+    console.warn('Format not yet ready!')
+    // TODO: make affect on state
     return state
   },
 })

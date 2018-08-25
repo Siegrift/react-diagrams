@@ -11,7 +11,7 @@ const WidgetEnhancer = ({ widget, inPorts, outPorts, onWidgetMouseDown }) => (
     outPorts={outPorts}
     onMouseDown={(event) => {
       event.stopPropagation()
-      onWidgetMouseDown(widget.key, event)
+      onWidgetMouseDown(widget.editorKey, event)
     }}
   />
 )

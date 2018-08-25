@@ -1,4 +1,4 @@
-import { filter, find, map, reduce, some, uniqueId } from 'lodash'
+import { pick, filter, find, map, reduce, some, uniqueId } from 'lodash'
 import { setIn } from 'immutable'
 import update from '../../update'
 import { MIN_ZOOM } from '../../constants'
@@ -12,8 +12,11 @@ import {
   zoomSelector,
   relativeMousePoint,
 } from './selectors.js'
+import { createPorts } from '../Ports/portUtils'
+import { addPorts } from '../Ports/actions'
 import { getWidgetPathByEditorKey, PATH_WIDGETS } from '../Widgets/state'
 import { widgetsSelector, getWidgetByEditorKey } from '../Widgets/selectors'
+import { checkpoint } from '../actions'
 
 const computeDiff = (p1, p2) => {
   return { x: p1.x - p2.x, y: p1.y - p2.y }
@@ -25,24 +28,36 @@ export const setDragging = (dragging) => ({
   reducer: (state) => setIn(state, PATH_DRAGGING, dragging),
 })
 
-export const addWidget = (command, pos) => ({
+const addWidget = (command, pos, portKeys) => ({
   type: 'Add widget to editor',
-  payload: { command, pos },
+  payload: { command, pos, portKeys },
   undoable: true,
   reducer: (state) => {
-    const id = uniqueId()
-    const adjustedPos = relativeMousePoint(state, pos)
-    const newState = setDragging(false).reducer(state) // TODO hack
-    return setIn(newState, [...PATH_WIDGETS, id], {
-      ...command,
-      inPorts: command.inPorts.map((port) => ({ ...port, editorKey: uniqueId() })),
-      outPorts: command.outPorts.map((port) => ({ ...port, editorKey: uniqueId() })),
-      ...adjustedPos,
-      editorKey: id,
+    const editorKey = uniqueId()
+    return setIn(state, getWidgetPathByEditorKey(editorKey), {
+      ...pick(command, ['name', 'desc', 'color']),
+      inPortKeys: portKeys.in,
+      outPortKeys: portKeys.out,
+      ...relativeMousePoint(state, pos),
+      editorKey,
       selected: false,
     })
   },
 })
+
+export const onWidgetDrop = (command, pos) => (dispatch, getState) => {
+  const { inPorts, outPorts } = createPorts(command)
+  // TODO: why exactly has to be this called?
+  dispatch(setDragging(false))
+  dispatch(addPorts(inPorts, outPorts))
+  dispatch(
+    addWidget(command, pos, {
+      in: inPorts.map((p) => p.editorKey),
+      out: outPorts.map((p) => p.editorKey),
+    })
+  )
+  dispatch(checkpoint())
+}
 
 export const cancelCurrentSelection = () => ({
   type: 'Cancel current selection',

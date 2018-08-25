@@ -16,7 +16,6 @@ class DiagramEditor extends React.Component {
   exportGraph = () => this.props.apiExportGraph()
 
   onTopbarHeightChange = (newTopbarHeight) => {
-    console.log('xxx')
     this.props.changeTopbarHeight(newTopbarHeight)
   }
   onSidebarWidthChange = (newSidebarWidth) => {

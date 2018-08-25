@@ -12,20 +12,21 @@ import {
 } from './selectors'
 import { widgetsSelector } from '../Widgets/selectors'
 import {
-  addWidget,
+  onWidgetDrop,
   onEditorMouseDown,
   onEditorMouseMove,
   onEditorMouseUp,
   setEditorRef,
   updateZoom,
 } from './actions'
-import Widget from '../Widgets/Widget'
+import WidgetEnhancer from '../Widgets/WidgetEnhancer'
 import Link from '../Links/Link'
+import { map } from 'lodash'
 
 const MainEditor = ({
   schema,
   widgets,
-  addWidget,
+  onWidgetDrop,
   setEditorRef,
   editorRef,
   onEditorMouseMove,
@@ -45,7 +46,7 @@ const MainEditor = ({
       // sometimes called from widget with dragable = false
       if (!dataKey) return
       const command = schema.commands.find((c) => c.key === dataKey)
-      addWidget(command, { x: event.clientX, y: event.clientY })
+      onWidgetDrop(command, { x: event.clientX, y: event.clientY })
     }}
     className={classnames('editor')}
     onDragOver={(event) => event.preventDefault()}
@@ -84,7 +85,7 @@ const MainEditor = ({
         transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
       }}
     >
-      {Object.keys(widgets).map((key) => <Widget {...widgets[key]} key={key} />)}
+      {map(widgets, (widget) => <WidgetEnhancer key={widget.editorKey} widget={widget} />)}
     </div>
   </div>
 )
@@ -100,7 +101,7 @@ export default connect(
     cursor: relativeCursorPointSelector(state),
   }),
   {
-    addWidget,
+    onWidgetDrop,
     setEditorRef,
     onEditorMouseMove,
     onEditorMouseDown,

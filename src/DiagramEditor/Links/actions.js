@@ -1,10 +1,11 @@
 import update from 'immutability-helper'
 import { setIn } from 'immutable'
-import { PATH_CURRENT_LINK_POINTS } from './state'
+import { PATH_CURRENT_LINK_POINTS, PATH_LINKS } from './state'
 import { currentLinkPointsSelector, linksSelector } from './selectors'
 import { relativeMousePoint } from '../MainEditor/selectors'
 import { setDragging, setSelectedNode } from '../MainEditor/actions'
-import { uniqueId } from 'lodash'
+import { concat, flatten, map, uniqueId } from 'lodash'
+import { widgetsSelector } from '../Widgets/selectors'
 
 // TODO: move to utils
 const distance = (p1, p2, p3) => {
@@ -77,3 +78,33 @@ export const addPointToCurrentLink = (point, isUndoable) => ({
       createDefaultLinkPoint(relativeMousePoint(state, point)),
     ]),
 })
+
+// TODO: rename to "addLink"
+export const addToLinks = (link) => ({
+  type: 'Add to links',
+  payload: link,
+  undoable: true,
+  reducer: (state) => {
+    const editorKey = uniqueId()
+    return setIn(state, [...PATH_LINKS, editorKey], { ...link, selected: false, editorKey })
+  },
+})
+
+// TODO: this should be a selector
+const getLinkDataByEditorKey = (state, editorKey) => {
+  const ports = flatten(
+    map(widgetsSelector(state), (widget) => {
+      return concat(
+        map(widget.inPorts, (port) => ({ ...port, isInPort: true })),
+        map(widget.outPorts, (port) => ({ ...port, isInPort: false }))
+      )
+    })
+  )
+  return ports.find((port) => port.editorKey === editorKey)
+}
+
+export const isInvalidLink = (state, sourceEditorKey, destinationEditorKey, linkChecker) => {
+  const source = getLinkDataByEditorKey(state, sourceEditorKey)
+  const destination = getLinkDataByEditorKey(state, destinationEditorKey)
+  return !linkChecker(source, destination)
+}

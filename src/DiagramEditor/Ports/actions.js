@@ -1,43 +1,16 @@
-import { setIn } from 'immutable'
-import { concat, flatten, map, uniqueId } from 'lodash'
-import { PATH_LINKS } from '../Links/state'
 import { currentLinkSelector } from '../Links/selectors'
-import { widgetsSelector } from '../Widgets/selectors'
+import { concat } from 'lodash'
+
+import { setIn } from 'immutable'
 
 import { cancelCurrentSelection, setSelectedPort } from '../MainEditor/actions'
-import { addPointToCurrentLink } from '../Links/actions'
+import { addPointToCurrentLink, addToLinks, isInvalidLink } from '../Links/actions'
+import { PATH_PORTS } from './state'
+import { getPorts } from './selectors'
 
 export const isValidLinkDefault = (source, destination) => {
   return !source.isInPort && destination.isInPort
 }
-
-const getLinkDataByEditorKey = (state, editorKey) => {
-  const ports = flatten(
-    map(widgetsSelector(state), (widget) => {
-      return concat(
-        map(widget.inPorts, (port) => ({ ...port, isInPort: true })),
-        map(widget.outPorts, (port) => ({ ...port, isInPort: false }))
-      )
-    })
-  )
-  return ports.find((port) => port.editorKey === editorKey)
-}
-
-const isInvalidLink = (state, sourceEditorKey, destinationEditorKey, linkChecker) => {
-  const source = getLinkDataByEditorKey(state, sourceEditorKey)
-  const destination = getLinkDataByEditorKey(state, destinationEditorKey)
-  return !linkChecker(source, destination)
-}
-
-const addToLinks = (link) => ({
-  type: 'Add to links',
-  payload: link,
-  undoable: true,
-  reducer: (state) => {
-    const editorKey = uniqueId()
-    return setIn(state, [...PATH_LINKS, editorKey], { ...link, selected: false, editorKey })
-  },
-})
 
 export const onPortMouseDown = (editorKey, event, linkChecker) => (dispatch, getState) => {
   const currentLink = currentLinkSelector(getState())
@@ -53,3 +26,18 @@ export const onPortMouseDown = (editorKey, event, linkChecker) => (dispatch, get
     dispatch(addPointToCurrentLink(point))
   }
 }
+
+export const addPorts = (inPorts, outPorts) => ({
+  type: 'Add ports',
+  undoable: false,
+  payload: { inPorts, outPorts },
+  reducer: (state) => {
+    const ports = concat(inPorts, outPorts)
+    return setIn(state, PATH_PORTS, {
+      ...getPorts(state),
+      ...ports.reduce((acc, port) => {
+        return { ...acc, [port.editorKey]: port }
+      }, {}),
+    })
+  },
+})

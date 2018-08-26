@@ -1,6 +1,9 @@
 // @flow
 import type { Path } from './commonTypes'
-import type { State } from './initialState'
+import type { InitialState } from './initialState'
+
+// re-export State as it's imported mainly in redux actions
+export type State = InitialState
 
 export type SegmentReducer<Segment, Payload> = (state: Segment, payload: Payload) => Segment
 export type GenericAction<Segment, Payload> = {

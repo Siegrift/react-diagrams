@@ -12,7 +12,11 @@ import type { AppliedWidgetState } from './diagramEditor/widgets/state'
 import type { AppliedLinkState } from './diagramEditor/links/state'
 import type { AppliedPortState } from './diagramEditor/ports/state'
 
-export type State = AppliedAppState
+export type InitialState = AppliedAppState &
+  AppliedEditorState &
+  AppliedWidgetState &
+  AppliedLinkState &
+  AppliedPortState
 
 export type StateDraft = ?AppliedAppState &
   ?AppliedEditorState &
@@ -20,7 +24,7 @@ export type StateDraft = ?AppliedAppState &
   ?AppliedLinkState &
   ?AppliedPortState
 
-export default (): State =>
+export default (): InitialState =>
   compose(
     appInitialState,
     editorInitialState,

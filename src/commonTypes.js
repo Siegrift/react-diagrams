@@ -1,15 +1,15 @@
 // @flow
-export type PathElement = number | string;
-export type Path = Array<PathElement>;
+export type PathElement = number | string
+export type Path = Array<PathElement>
 
-export type Dimensions = {
+export type Dimension = {
   width: number,
-  height: number
-};
+  height: number,
+}
 
 export type Position = {
   x: number,
-  y: number
-};
+  y: number,
+}
 
-export type EditorKey = string;
+export type EditorKey = string

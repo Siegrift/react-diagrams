@@ -20,6 +20,8 @@ import { selectedNodesSelector } from './mainEditor/selectors'
 import shortcuts from './shortcuts'
 import { graphlib, layout } from 'dagre'
 import { portByEditorKeySelector } from './ports/selectors'
+import { setFormattedWidgets } from './widgets/actions'
+import { setFormattedLinks } from './links/actions'
 
 const keyboardEventToString = (event) => {
   const mods = []
@@ -171,31 +173,32 @@ export const localStorageLoad = () => ({
 })
 
 // TODO: also take into account link points
-export const formatDiagrams = () => ({
-  type: 'Format diagrams',
-  reducer: (state) => {
-    const g = new graphlib.Graph()
-    g.setGraph({})
-    // Default to assigning a new object as a label for each new edge.
-    g.setDefaultEdgeLabel(() => ({}))
-    const widgets = widgetsSelector(state)
-    const links = linksSelector(state)
+export const formatDiagrams = () => (dispatch, getState) => {
+  const state = getState()
+  const g = new graphlib.Graph()
+  g.setGraph({})
+  // Default to assigning a new object as a label for each new edge.
+  g.setDefaultEdgeLabel(() => ({}))
+  const widgets = widgetsSelector(state)
+  const links = linksSelector(state)
 
-    forEach(widgets, ({ editorKey }) => {
-      // TODO: remember ref in state
-      const element = document.getElementById(editorKey)
-      g.setNode(editorKey, { width: element.clientWidth, height: element.clientHeight })
-    })
+  forEach(widgets, ({ editorKey }) => {
+    // TODO: remember ref in state
+    const element = document.getElementById(editorKey)
+    g.setNode(editorKey, { width: element.clientWidth, height: element.clientHeight })
+  })
 
-    forEach(links, ({ source, destination }) => {
-      const sourceWidget = portByEditorKeySelector(state, source).widgetEditorKey
-      const destinationWidget = portByEditorKeySelector(state, destination).widgetEditorKey
-      g.setEdge(sourceWidget, destinationWidget)
-    })
+  forEach(links, ({ source, destination }) => {
+    const sourceWidget = portByEditorKeySelector(state, source).widgetEditorKey
+    const destinationWidget = portByEditorKeySelector(state, destination).widgetEditorKey
+    g.setEdge(sourceWidget, destinationWidget)
+  })
 
-    layout(g)
-    console.warn('Format not yet ready!')
-    // TODO: make affect on state
-    return state
-  },
-})
+  layout(g)
+  // FLOW: once flowed use flow declarations in widget/link actions
+  const dagreWidgets = g.nodes().map((key) => ({ key, widget: g.node(key) }))
+  const dagreLinks = g.edges().map((key) => ({ key, link: g.edge(key) }))
+
+  dispatch(setFormattedWidgets(dagreWidgets))
+  dispatch(setFormattedLinks(dagreLinks))
+}

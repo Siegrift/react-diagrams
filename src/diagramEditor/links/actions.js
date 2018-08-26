@@ -86,3 +86,12 @@ export const isInvalidLink = (state, sourceEditorKey, destinationEditorKey, link
   const destinationWidget = getWidgetByEditorKey(state, destinationPort.widgetEditorKey)
   return !linkChecker(sourcePort, sourceWidget, destinationPort, destinationWidget)
 }
+
+// TODO: implementatian
+export const setFormattedLinks = (dagreLinks) => ({
+  type: 'Set formatted links',
+  undoable: false,
+  reducer: (state) => {
+    return state
+  },
+})

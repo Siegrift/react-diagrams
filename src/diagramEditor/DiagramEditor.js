@@ -13,8 +13,8 @@ import MainEditor from './mainEditor/MainEditor'
 import { bindActionCreators } from 'redux'
 import { shallowEqual } from '../utils'
 import { apiExportGraph } from './editorApi'
-
-import type { State } from '../initialState'
+import type { State, Dispatch } from '../reduxTypes'
+import type { Dispatch as GeneralDispatch } from 'redux'
 
 // TODO: TBD
 export type DiagramEditorApi = {
@@ -79,7 +79,7 @@ const mapStateToProps = (state: State) => ({
   sidebarWidth: sidebarWidthSelector(state),
 })
 
-const mapActionsToProps = (dispatch: Dispatch) =>
+const mapActionsToProps = (dispatch: GeneralDispatch<any>) =>
   bindActionCreators(
     {
       changeTopbarHeight,

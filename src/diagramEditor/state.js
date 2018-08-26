@@ -5,7 +5,8 @@ import { LOCAL_STORAGE_PATH } from '../constants'
 import { selectedNodesSelector } from './mainEditor/selectors'
 import { currentLinkSelector } from './links/selectors'
 
-import type { State, StateDraft } from '../initialState'
+import type { StateDraft } from '../initialState'
+import type { State } from '../reduxTypes'
 import type { CurrentLink } from './links/state'
 
 export const PATH_APP = ['app']

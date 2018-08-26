@@ -2,10 +2,11 @@
 import { get } from 'lodash'
 import { createSelector } from 'reselect'
 import { LOCAL_STORAGE_PATH } from '../constants'
-import { selectedNodesSelector } from './MainEditor/selectors'
-import { currentLinkSelector } from './Links/selectors'
+import { selectedNodesSelector } from './mainEditor/selectors'
+import { currentLinkSelector } from './links/selectors'
 
 import type { State, StateDraft } from '../initialState'
+import type { CurrentLink } from './links/state'
 
 export const PATH_APP = ['app']
 export const PATH_TOPBAR_HEIGHT = [...PATH_APP, 'topbarHeight']
@@ -32,6 +33,7 @@ export const setInitialState = (state: StateDraft): StateDraft & AppliedAppState
   },
 })
 
+// TODO: move to selectors
 export const topbarHeightSelector = (state: State) => get(state, PATH_TOPBAR_HEIGHT)
 export const sidebarWidthSelector = (state: State) => get(state, PATH_SIDEBAR_WIDTH)
 
@@ -49,7 +51,8 @@ export const redoableSelector = (state: State) => {
 export const cancelableSelector = createSelector(
   currentLinkSelector,
   selectedNodesSelector,
-  (currentLink, selectedNodes) => {
+  // FLOW: flow selectedNodes properly
+  (currentLink: CurrentLink, selectedNodes: any) => {
     return currentLink || selectedNodes.length
   }
 )

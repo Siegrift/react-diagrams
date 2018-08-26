@@ -2,7 +2,7 @@ import React from 'react'
 import { onWidgetMouseDown } from './actions'
 import Widget from './Widget'
 import { connect } from 'react-redux'
-import { portByEditorKeySelector } from '../Ports/selectors'
+import { portByEditorKeySelector } from '../ports/selectors'
 
 const WidgetEnhancer = ({ widget, inPorts, outPorts, onWidgetMouseDown }) => (
   <Widget

@@ -1,3 +1,4 @@
+// @flow
 /*
  * Filters attributes of an object, based on a provided filter, into a new object.
  * Example:
@@ -14,7 +15,7 @@
  */
 export const filterObject = (obj: Object, objFilter: Object): Object =>
   Object.keys(obj).reduce(
-    (accum, attr) => (
+    (accum: Object, attr: string) => (
       typeof objFilter[attr] === 'object'
         ? (accum[attr] = filterObject(obj[attr], objFilter[attr]))
         : // Eslint complains about the comma usage on next line
@@ -25,8 +26,12 @@ export const filterObject = (obj: Object, objFilter: Object): Object =>
     {}
   )
 
-export const deepMergeFilterObject = (mergeInto, objFilter, mergeFromFiltered) =>
-  Object.keys(mergeInto).reduce((accum, attr) => {
+export const deepMergeFilterObject = (
+  mergeInto: Object,
+  objFilter: Object,
+  mergeFromFiltered: Object
+) =>
+  Object.keys(mergeInto).reduce((accum: Object, attr: string) => {
     objFilter[attr] === undefined || objFilter[attr] === false
       ? (accum[attr] = mergeInto[attr])
       : typeof objFilter[attr] === 'object'
@@ -39,7 +44,7 @@ export const deepMergeFilterObject = (mergeInto, objFilter, mergeFromFiltered) =
     return accum
   }, {})
 
-export const is = (x, y) => {
+export const is = (x: any, y: any) => {
   if (x === y) {
     return x !== 0 || y !== 0 || 1 / x === 1 / y
   } else {
@@ -49,7 +54,7 @@ export const is = (x, y) => {
   }
 }
 
-export const shallowEqual = (objA, objB) => {
+export const shallowEqual = (objA: any, objB: any) => {
   if (is(objA, objB)) {
     return true
   }

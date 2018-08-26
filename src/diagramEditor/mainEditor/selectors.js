@@ -1,8 +1,8 @@
 import { get, forEach } from 'lodash'
 import { createSelector } from 'reselect'
 import { PATH_EDITOR_REF, PATH_CURSOR, PATH_ZOOM, PATH_OFFSET, PATH_DRAGGING } from './state'
-import { linksSelector } from '../Links/selectors'
-import { widgetsSelector } from '../Widgets/selectors'
+import { linksSelector } from '../links/selectors'
+import { widgetsSelector } from '../widgets/selectors'
 
 export const editorRefSelector = (state) => get(state, PATH_EDITOR_REF)
 export const cursorSelector = (state) => get(state, PATH_CURSOR)

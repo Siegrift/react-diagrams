@@ -2,10 +2,11 @@ import update from 'immutability-helper'
 import { setIn } from 'immutable'
 import { PATH_CURRENT_LINK_POINTS, PATH_LINKS } from './state'
 import { currentLinkPointsSelector, linksSelector } from './selectors'
-import { relativeMousePoint } from '../MainEditor/selectors'
-import { setDragging, setSelectedNode } from '../MainEditor/actions'
-import { concat, flatten, map, uniqueId } from 'lodash'
-import { widgetsSelector } from '../Widgets/selectors'
+import { relativeMousePoint } from '../mainEditor/selectors'
+import { setDragging, setSelectedNode } from '../mainEditor/actions'
+import { uniqueId } from 'lodash'
+import { getWidgetByEditorKey } from '../widgets/selectors'
+import { portByEditorKeySelector } from '../ports/selectors'
 import { distance, createDefaultLinkPoint } from './linkUtils'
 
 const addPointToLink = (link, event) => ({
@@ -78,21 +79,11 @@ export const addToLinks = (link) => ({
   },
 })
 
-// TODO: this should be a selector
-const getLinkDataByEditorKey = (state, editorKey) => {
-  const ports = flatten(
-    map(widgetsSelector(state), (widget) => {
-      return concat(
-        map(widget.inPorts, (port) => ({ ...port, isInPort: true })),
-        map(widget.outPorts, (port) => ({ ...port, isInPort: false }))
-      )
-    })
-  )
-  return ports.find((port) => port.editorKey === editorKey)
-}
-
 export const isInvalidLink = (state, sourceEditorKey, destinationEditorKey, linkChecker) => {
-  const source = getLinkDataByEditorKey(state, sourceEditorKey)
-  const destination = getLinkDataByEditorKey(state, destinationEditorKey)
-  return !linkChecker(source, destination)
+  console.log(sourceEditorKey, destinationEditorKey, 'aaaa')
+  const sourcePort = portByEditorKeySelector(state, sourceEditorKey)
+  const sourceWidget = getWidgetByEditorKey(state, sourcePort.widgetEditorKey)
+  const destinationPort = portByEditorKeySelector(state, destinationEditorKey)
+  const destinationWidget = getWidgetByEditorKey(state, destinationPort.widgetEditorKey)
+  return !linkChecker(sourcePort, sourceWidget, destinationPort, destinationWidget)
 }

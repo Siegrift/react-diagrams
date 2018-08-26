@@ -11,15 +11,15 @@ import {
   redoableSelector,
   undoableSelector,
 } from './state'
-import { PATH_LINKS } from './Links/state'
-import { PATH_WIDGETS } from './Widgets/state'
-import { currentLinkSelector, linksSelector } from './Links/selectors'
-import { widgetsSelector } from './Widgets/selectors'
-import { cancelCurrentSelection, setSelectedPort } from './MainEditor/actions'
-import { selectedNodesSelector } from './MainEditor/selectors'
+import { PATH_LINKS } from './links/state'
+import { PATH_WIDGETS } from './widgets/state'
+import { currentLinkSelector, linksSelector } from './links/selectors'
+import { widgetsSelector } from './widgets/selectors'
+import { cancelCurrentSelection, setSelectedPort } from './mainEditor/actions'
+import { selectedNodesSelector } from './mainEditor/selectors'
 import shortcuts from './shortcuts'
 import { graphlib, layout } from 'dagre'
-import { portByEditorKeySelector } from './Ports/selectors'
+import { portByEditorKeySelector } from './ports/selectors'
 
 const keyboardEventToString = (event) => {
   const mods = []

@@ -2,7 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 import './_Widget.scss'
 import { map } from 'lodash'
-import Port from '../Ports/Port'
+import Port from '../ports/Port'
 
 const Widget = ({
   className,

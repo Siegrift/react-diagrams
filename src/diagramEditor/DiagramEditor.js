@@ -1,18 +1,20 @@
 // @flow
 import React from 'react'
-import TopPanel from './TopPanel/TopPanel'
+import TopPanel from './topPanel/TopPanel'
 // FLOW: css/css imports are not recognized by flow
 import './_DiagramEditor.scss'
 import classnames from 'classnames'
 import { connectAdvanced } from 'react-redux'
 import { sidebarWidthSelector, topbarHeightSelector } from './state'
 import { changeSidebarWidth, changeTopbarHeight, initializeEditor } from './actions'
-import Splitter from '../components/Splitter/Splitter'
-import SidePanel from './SidePanel/SidePanel'
-import MainEditor from './MainEditor/MainEditor'
+import Splitter from '../components/splitter/Splitter'
+import SidePanel from './sidePanel/SidePanel'
+import MainEditor from './mainEditor/MainEditor'
 import { bindActionCreators } from 'redux'
 import { shallowEqual } from '../utils'
 import { apiExportGraph } from './editorApi'
+
+import type { State } from '../initialState'
 
 // TODO: TBD
 export type DiagramEditorApi = {
@@ -33,10 +35,10 @@ type Props = {
 class DiagramEditor extends React.Component<Props> {
   exportGraph = () => this.props.apiExportGraph()
 
-  onTopbarHeightChange = (newTopbarHeight) => {
+  onTopbarHeightChange = (newTopbarHeight: number) => {
     this.props.changeTopbarHeight(newTopbarHeight)
   }
-  onSidebarWidthChange = (newSidebarWidth) => {
+  onSidebarWidthChange = (newSidebarWidth: number) => {
     this.props.changeSidebarWidth(newSidebarWidth)
   }
 
@@ -48,7 +50,7 @@ class DiagramEditor extends React.Component<Props> {
     const { className, topbarHeight, sidebarWidth, schema } = this.props
     return (
       <div
-        onContextMenu={(e) => e.preventDefault()}
+        onContextMenu={(e: Event) => e.preventDefault()}
         className={classnames('DiagramEditor', className)}
       >
         <Splitter
@@ -72,12 +74,12 @@ class DiagramEditor extends React.Component<Props> {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: State) => ({
   topbarHeight: topbarHeightSelector(state),
   sidebarWidth: sidebarWidthSelector(state),
 })
 
-const mapActionsToProps = (dispatch) =>
+const mapActionsToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       changeTopbarHeight,
@@ -88,9 +90,9 @@ const mapActionsToProps = (dispatch) =>
     dispatch
   )
 
-const selectorFactory = (dispatch) => {
+const selectorFactory = (dispatch: Dispatch) => {
   let result = {}
-  return (nextState, nextOwnProps) => {
+  return (nextState: State, nextOwnProps: Props) => {
     const nextResult = {
       ...nextOwnProps,
       ...mapStateToProps(nextState),

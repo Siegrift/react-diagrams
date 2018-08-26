@@ -1,15 +1,20 @@
-import { currentLinkSelector } from '../Links/selectors'
+import { currentLinkSelector } from '../links/selectors'
 import { concat } from 'lodash'
 
 import { setIn } from 'immutable'
 
-import { cancelCurrentSelection, setSelectedPort } from '../MainEditor/actions'
-import { addPointToCurrentLink, addToLinks, isInvalidLink } from '../Links/actions'
+import { cancelCurrentSelection, setSelectedPort } from '../mainEditor/actions'
+import { addPointToCurrentLink, addToLinks, isInvalidLink } from '../links/actions'
 import { PATH_PORTS } from './state'
 import { getPorts } from './selectors'
 
-export const isValidLinkDefault = (source, destination) => {
-  return !source.isInPort && destination.isInPort
+export const isValidLinkDefault = (
+  sourcePort,
+  sourceWidget,
+  destinationPort,
+  destinationWidget
+) => {
+  return !sourcePort.isInPort && destinationPort.isInPort
 }
 
 export const onPortMouseDown = (editorKey, event, linkChecker) => (dispatch, getState) => {

@@ -1,4 +1,4 @@
-import { setDragging, setSelectedNode } from '../MainEditor/actions'
+import { setDragging, setSelectedNode } from '../mainEditor/actions'
 
 export const onWidgetMouseDown = (editorKey, e) => (dispatch) => {
   dispatch(setDragging(true))

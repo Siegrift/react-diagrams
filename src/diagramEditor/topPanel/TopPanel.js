@@ -18,7 +18,7 @@ import {
   undo,
   formatDiagrams,
 } from '../actions'
-import { selectedNodesSelector } from '../MainEditor/selectors'
+import { selectedNodesSelector } from '../mainEditor/selectors'
 import {
   cancelableSelector,
   loadAvailableSelector,
@@ -26,7 +26,7 @@ import {
   topbarHeightSelector,
   undoableSelector,
 } from '../state'
-import PanelItem from './PanelItem'
+import PanelItem from './panelItem/PanelItem'
 
 const TopPanel = ({
   topbarHeight,

@@ -1,16 +1,16 @@
 // @flow
 import * as React from 'react'
 import { Provider } from 'react-redux'
-import DiagramEditor from './DiagramEditor/DiagramEditor'
+import DiagramEditor from './diagramEditor/DiagramEditor'
 import getConfiguredStore from './configureStore'
 
-import type { DiagramEditorApi } from './DiagramEditor/DiagramEditor'
+import type { DiagramEditorApi } from './diagramEditor/DiagramEditor'
 import type { Schema } from './schemaTypes'
-import type { ExportedGraph } from './DiagramEditor/editorApi'
+import type { ExportedGraph } from './diagramEditor/editorApi'
 
 const store = getConfiguredStore()
 
-type DiagramEditorRef = { getWrappedInstance: () => DiagramEditorApi };
+type DiagramEditorRef = { getWrappedInstance: () => DiagramEditorApi }
 
 class DiagramEditorWrapper extends React.Component<Schema> {
   editorRef: ?DiagramEditorApi

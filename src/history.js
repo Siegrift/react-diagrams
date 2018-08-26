@@ -1,4 +1,4 @@
-import { addToHistory } from './DiagramEditor/actions'
+import { addToHistory } from './diagramEditor/actions'
 import { undoRedoFilter } from './constants'
 import { filterObject } from './utils'
 

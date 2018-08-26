@@ -18,11 +18,13 @@ export const createPorts = (
     inPorts: inPorts.map((port: SchemaPort) => ({
       ...port,
       editorKey: uniqueId(),
+      isInPort: true,
       widgetEditorKey,
     })),
     outPorts: outPorts.map((port: SchemaPort) => ({
       ...port,
       editorKey: uniqueId(),
+      isInPort: false,
       widgetEditorKey,
     })),
   }

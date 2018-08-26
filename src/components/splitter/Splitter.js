@@ -158,7 +158,7 @@ class SplitterLayout extends React.Component<Props, State> {
 
   render() {
     const primaryIndex = this.props.primaryIndex
-    const wrappedChildren = this.props.children.map((child, index) => (
+    const wrappedChildren = this.props.children.map((child: React.Node, index: number) => (
       <Pane
         key={index}
         vertical={this.props.vertical}
@@ -176,7 +176,7 @@ class SplitterLayout extends React.Component<Props, State> {
     return (
       <div
         className={classes}
-        ref={(c) => {
+        ref={(c: any) => {
           this.container = c
         }}
       >
@@ -184,7 +184,7 @@ class SplitterLayout extends React.Component<Props, State> {
         <div
           role="separator"
           className="layout-splitter"
-          ref={(c) => {
+          ref={(c: any) => {
             this.splitter = c
           }}
           onMouseDown={this.handleSplitterMouseDown}

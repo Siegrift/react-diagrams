@@ -9,6 +9,7 @@ export const PATH_PORTS = ['ports']
 export type Port = SchemaPort & {
   editorKey: EditorKey,
   widgetEditorKey: EditorKey,
+  isInPort: boolean,
 }
 
 // FLOW: TBD, key is actually editorKey

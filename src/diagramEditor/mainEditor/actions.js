@@ -3,8 +3,8 @@ import { setIn } from 'immutable'
 import update from '../../update'
 import { MIN_ZOOM } from '../../constants'
 import { PATH_CURSOR, PATH_DRAGGING, PATH_EDITOR_REF, PATH_ZOOM } from './state'
-import { PATH_LINKS, getLinkPathByEditorKey, PATH_CURRENT_LINK } from '../Links/state'
-import { getLinkByEditorKey, linksSelector } from '../Links/selectors'
+import { PATH_LINKS, getLinkPathByEditorKey, PATH_CURRENT_LINK } from '../links/state'
+import { getLinkByEditorKey, linksSelector } from '../links/selectors'
 import {
   cursorSelector,
   draggingSelector,
@@ -12,10 +12,10 @@ import {
   zoomSelector,
   relativeMousePoint,
 } from './selectors.js'
-import { createPorts } from '../Ports/portUtils'
-import { addPorts } from '../Ports/actions'
-import { getWidgetPathByEditorKey, PATH_WIDGETS } from '../Widgets/state'
-import { widgetsSelector, getWidgetByEditorKey } from '../Widgets/selectors'
+import { createPorts } from '../ports/portUtils'
+import { addPorts } from '../ports/actions'
+import { getWidgetPathByEditorKey, PATH_WIDGETS } from '../widgets/state'
+import { widgetsSelector, getWidgetByEditorKey } from '../widgets/selectors'
 import { checkpoint } from '../actions'
 
 const computeDiff = (p1, p2) => {
@@ -158,7 +158,6 @@ export const onEditorMouseMove = (position) => ({
           filter(widgetsSelector(newState), (w) => w.selected),
           (w) => w.editorKey
         )
-        console.log(selectedKeys)
         const newWidgets = selectedKeys.reduce((acc, key) => {
           const movedWidget = update(widgetsSelector(newState)[key], {
             x: { $sum: diff.x / zoomSelector(state) },
@@ -166,7 +165,6 @@ export const onEditorMouseMove = (position) => ({
           })
           return { ...acc, [key]: movedWidget }
         }, {})
-        console.log('UUUU', widgetsSelector(newState), newWidgets)
         const links = reduce(
           linksSelector(newState),
           (acc, value, key) => {

@@ -1,11 +1,11 @@
 // @flow
 import { omit, reduce } from 'lodash'
-import { widgetsSelector } from './Widgets/selectors'
-import { linksSelector } from './Links/selectors'
+import { widgetsSelector } from './widgets/selectors'
+import { linksSelector } from './links/selectors'
 import type { Dispatch, GetState } from '../reduxTypes'
 
-import type { Widget } from './Widgets/state'
-import type { Link } from './Links/state'
+import type { Widget } from './widgets/state'
+import type { Link } from './links/state'
 import type { EditorKey } from '../commonTypes'
 
 // TODO: TBD

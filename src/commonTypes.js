@@ -12,4 +12,7 @@ export type Position = {
   y: number,
 }
 
+// dagre (formatter) uses center positioning
+export type Center = Position
+
 export type EditorKey = string

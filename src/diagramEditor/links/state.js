@@ -8,11 +8,22 @@ export const PATH_CURRENT_LINK = ['currentLink']
 export const PATH_CURRENT_LINK_POINTS = [...PATH_CURRENT_LINK, 'path']
 export const getLinkPathByEditorKey = (editorKey: EditorKey): Path => [...PATH_LINKS, editorKey]
 
-// FLOW: TBD
-export type Link = {}
+// TODO: move to separate state
+export type LinkPoint = Position & {
+  editorKey: EditorKey,
+  selected: boolean,
+}
 
+export type Link = {
+  source: EditorKey,
+  destination: EditorKey,
+  editorKey: EditorKey,
+  path: LinkPoint[],
+  selected: boolean,
+}
+
+export type LinkState = { [key: EditorKey]: Link }
 // FLOW: TBD
-export type LinkState = {}
 export type CurrentLink = {}
 
 // NOTE: Type needs to be manually updated when PATH changes

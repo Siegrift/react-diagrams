@@ -5,13 +5,12 @@ import { setIn } from 'immutable'
 import { getWidgetByEditorKey } from './selectors'
 
 import type { Dispatch, State } from '../../reduxTypes'
-import type { EditorKey, Position, Dimension } from '../../commonTypes'
+import type { EditorKey, Center, Dimension } from '../../commonTypes'
 import type { Widget } from './state'
 
 export type DagreWidget = {
   key: EditorKey,
-  // position is the center of the node
-  widget: Position & Dimension,
+  widget: Center & Dimension,
 }
 
 export const onWidgetMouseDown = (editorKey: EditorKey, e: MouseEvent) => (dispatch: Dispatch) => {
@@ -22,6 +21,7 @@ export const onWidgetMouseDown = (editorKey: EditorKey, e: MouseEvent) => (dispa
 export const setFormattedWidgets = (dagreWidgets: DagreWidget[]) => ({
   type: 'Set Formatted widgets',
   undoable: false,
+  paylaod: dagreWidgets,
   reducer: (state: State) => {
     const widgets = dagreWidgets.map(
       ({ key, widget }: DagreWidget): Widget[] => ({

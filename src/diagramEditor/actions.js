@@ -188,16 +188,19 @@ export const formatDiagrams = () => (dispatch, getState) => {
     g.setNode(editorKey, { width: element.clientWidth, height: element.clientHeight })
   })
 
-  forEach(links, ({ source, destination }) => {
+  forEach(links, ({ source, destination, editorKey }) => {
     const sourceWidget = portByEditorKeySelector(state, source).widgetEditorKey
     const destinationWidget = portByEditorKeySelector(state, destination).widgetEditorKey
-    g.setEdge(sourceWidget, destinationWidget)
+    g.setEdge(sourceWidget, destinationWidget, { editorKey })
   })
 
   layout(g)
-  // FLOW: once flowed use flow declarations in widget/link actions
+  // FLOW: once flowed, use flow declarations in widget/link actions
   const dagreWidgets = g.nodes().map((key) => ({ key, widget: g.node(key) }))
-  const dagreLinks = g.edges().map((key) => ({ key, link: g.edge(key) }))
+  const dagreLinks = g.edges().map((key) => {
+    const edge = g.edge(key)
+    return { source: key.v, target: key.w, points: edge.points, linkKey: edge.editorKey }
+  })
 
   dispatch(setFormattedWidgets(dagreWidgets))
   dispatch(setFormattedLinks(dagreLinks))

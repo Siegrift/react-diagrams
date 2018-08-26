@@ -1,13 +1,24 @@
+// @flow
 import update from 'immutability-helper'
 import { setIn } from 'immutable'
 import { PATH_CURRENT_LINK_POINTS, PATH_LINKS } from './state'
-import { currentLinkPointsSelector, linksSelector } from './selectors'
+import { currentLinkPointsSelector, linksSelector, getLinkByEditorKey } from './selectors'
 import { relativeMousePoint } from '../mainEditor/selectors'
 import { setDragging, setSelectedNode } from '../mainEditor/actions'
 import { uniqueId } from 'lodash'
 import { getWidgetByEditorKey } from '../widgets/selectors'
 import { portByEditorKeySelector } from '../ports/selectors'
 import { distance, createDefaultLinkPoint } from './linkUtils'
+
+import type { State } from '../../reduxTypes'
+import type { Center } from '../../commonTypes'
+
+export type DagreLink = {
+  source: EditorKey,
+  target: EditorKey,
+  linkKey: EditorKey,
+  points: Center[],
+}
 
 const addPointToLink = (link, event) => ({
   type: 'Add point to link',
@@ -87,11 +98,36 @@ export const isInvalidLink = (state, sourceEditorKey, destinationEditorKey, link
   return !linkChecker(sourcePort, sourceWidget, destinationPort, destinationWidget)
 }
 
+// TODO: move to link point utils
+type LinkPoint = Position & {
+  editorKey: EditorKey,
+  linkKey: EditorKey,
+  selected: boolean,
+}
+
+// TODO: move to link point utils
+const createLinkPoint = (linkKey: EditorKey, { x, y }: Center): LinkPoint => ({
+  // link point is so small, so the difference between center and corner point is subtle
+  x,
+  y,
+  editorKey: uniqueId(),
+  linkKey,
+  selected: false,
+})
+
 // TODO: implementatian
-export const setFormattedLinks = (dagreLinks) => ({
+export const setFormattedLinks = (dagreLinks: DagreLink[]) => ({
   type: 'Set formatted links',
+  payload: dagreLinks,
   undoable: false,
-  reducer: (state) => {
-    return state
+  reducer: (state: State) => {
+    const links = dagreLinks.map(({ source, target, points, linkKey }: DagreLink) => {
+      const link = getLinkByEditorKey(state, linkKey)
+      return {
+        ...link,
+        path: points.map((point: Center) => createLinkPoint(link.editorKey, point)),
+      }
+    })
+    return setIn(state, PATH_LINKS, links)
   },
 })

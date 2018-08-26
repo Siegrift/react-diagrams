@@ -1,3 +1,4 @@
+// @flow
 import { get } from 'lodash'
 import {
   PATH_CURRENT_LINK,
@@ -6,10 +7,13 @@ import {
   getLinkPathByEditorKey,
 } from './state'
 
-export const currentLinkSelector = (state) => get(state, PATH_CURRENT_LINK)
-export const linksSelector = (state) => get(state, PATH_LINKS)
-export const currentLinkPointsSelector = (state) => get(state, PATH_CURRENT_LINK_POINTS)
+import type { EditorKey } from '../../commonTypes'
+import type { State } from '../../reduxTypes'
+
+export const currentLinkSelector = (state: State) => get(state, PATH_CURRENT_LINK)
+export const linksSelector = (state: State) => get(state, PATH_LINKS)
+export const currentLinkPointsSelector = (state: State) => get(state, PATH_CURRENT_LINK_POINTS)
 
 // TODO: make a selector
-export const getLinkByEditorKey = (state, editorKey) =>
+export const getLinkByEditorKey = (state: State, editorKey: EditorKey) =>
   get(state, getLinkPathByEditorKey(editorKey))

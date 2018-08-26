@@ -80,7 +80,6 @@ export const addToLinks = (link) => ({
 })
 
 export const isInvalidLink = (state, sourceEditorKey, destinationEditorKey, linkChecker) => {
-  console.log(sourceEditorKey, destinationEditorKey, 'aaaa')
   const sourcePort = portByEditorKeySelector(state, sourceEditorKey)
   const sourceWidget = getWidgetByEditorKey(state, sourcePort.widgetEditorKey)
   const destinationPort = portByEditorKeySelector(state, destinationEditorKey)

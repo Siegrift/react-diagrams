@@ -24,7 +24,7 @@ export type AppliedAppState = { app: AppState }
 
 export const setInitialState = (state: StateDraft): StateDraft & AppliedAppState => ({
   ...state,
-  [PATH_APP[0]]: {
+  [PATH_APP.toString()]: {
     topbarHeight: 40,
     sidebarWidth: 200,
     history: [],

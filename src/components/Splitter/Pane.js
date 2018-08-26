@@ -1,7 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+// @flow
+import * as React from 'react'
 
-const Pane = (props) => {
+type Props = {
+  vertical: boolean,
+  primary: boolean,
+  size: number,
+  percentage: boolean,
+  children: React.Node | React.Node[],
+}
+
+const Pane = (props: Props) => {
   const size = props.size || 0
   const unit = props.percentage ? '%' : 'px'
   let classes = 'layout-pane'
@@ -22,14 +30,7 @@ const Pane = (props) => {
   )
 }
 
-Pane.propTypes = {
-  vertical: PropTypes.bool,
-  primary: PropTypes.bool,
-  size: PropTypes.number,
-  percentage: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
-}
-
+// TODO: use defaultProps from recompose
 Pane.defaultProps = {
   vertical: false,
   primary: false,

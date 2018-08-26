@@ -1,11 +1,48 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+// @flow
+import * as React from 'react'
 import classnames from 'classnames'
 import Pane from './Pane'
+// FLOW: css/css imports are not recognized by flow
 import './_Splitter.scss'
 
-class SplitterLayout extends React.Component {
-  constructor(props) {
+type Props = {
+  className: string,
+  vertical: boolean,
+  percentage: boolean,
+  primaryIndex: number,
+  primaryMinSize: number,
+  secondarySize: number,
+  secondaryMinSize: number,
+  onChange?: Function,
+  children: React.Node[],
+}
+type State = {
+  resizing: boolean,
+}
+
+// FLOW: move to common types
+export type BoundingRectClient = {
+  top: number,
+  botton: number,
+  left: number,
+  right: number,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+}
+
+type ClientPosition = {
+  top: number,
+  left: number,
+}
+
+class SplitterLayout extends React.Component<Props, State> {
+  container: any
+  splitter: any
+  static defaultProps: Props
+
+  constructor(props: Props) {
     super(props)
     this.state = {
       resizing: false,
@@ -24,7 +61,12 @@ class SplitterLayout extends React.Component {
     document.removeEventListener('mousemove', this.handleMouseMove)
   }
 
-  getSecondaryPaneSize = (containerRect, splitterRect, clientPosition, offsetMouse) => {
+  getSecondaryPaneSize = (
+    containerRect: BoundingRectClient,
+    splitterRect: BoundingRectClient,
+    clientPosition: ClientPosition,
+    offsetMouse: boolean
+  ) => {
     const { primaryMinSize, secondaryMinSize, vertical, primaryIndex, percentage } = this.props
     let totalSize
     let splitterSize
@@ -87,7 +129,7 @@ class SplitterLayout extends React.Component {
     }
   }
 
-  handleMouseMove = (e) => {
+  handleMouseMove = (e: MouseEvent) => {
     if (this.state.resizing) {
       const containerRect = this.container.getBoundingClientRect()
       const splitterRect = this.splitter.getBoundingClientRect()
@@ -122,7 +164,7 @@ class SplitterLayout extends React.Component {
         vertical={this.props.vertical}
         percentage={this.props.percentage}
         primary={primaryIndex === index}
-        size={primaryIndex === index ? null : this.props.secondarySize}
+        size={primaryIndex === index ? 0 : this.props.secondarySize}
       >
         {child}
       </Pane>
@@ -153,27 +195,14 @@ class SplitterLayout extends React.Component {
   }
 }
 
-SplitterLayout.propTypes = {
-  className: PropTypes.string,
-  vertical: PropTypes.bool,
-  percentage: PropTypes.bool,
-  primaryIndex: PropTypes.number,
-  primaryMinSize: PropTypes.number,
-  secondarySize: PropTypes.number.isRequired,
-  secondaryMinSize: PropTypes.number,
-  onChange: PropTypes.func,
-  children: PropTypes.arrayOf(PropTypes.node),
-}
-
 SplitterLayout.defaultProps = {
   className: '',
   vertical: false,
   percentage: false,
   primaryIndex: 0,
   primaryMinSize: 0,
-  secondarySize: undefined,
+  secondarySize: 0,
   secondaryMinSize: 0,
-  onChange: null,
   children: [],
 }
 

@@ -1,8 +1,29 @@
+// @flow
 import { uniqueId } from 'lodash'
 
-export const createPorts = ({ inPorts, outPorts }, widgetEditorKey) => {
+import type { Port as SchemaPort } from '../../schemaTypes'
+import type { Port } from './state'
+import type { EditorKey } from '../../commonTypes'
+
+export type CreatedPorts = {
+  inPorts: Port[],
+  outPorts: Port[],
+}
+
+export const createPorts = (
+  { inPorts, outPorts }: { inPorts: SchemaPort[], outPorts: SchemaPort[] },
+  widgetEditorKey: EditorKey
+): CreatedPorts => {
   return {
-    inPorts: inPorts.map((port) => ({ ...port, editorKey: uniqueId(), widgetEditorKey })),
-    outPorts: outPorts.map((port) => ({ ...port, editorKey: uniqueId(), widgetEditorKey })),
+    inPorts: inPorts.map((port: SchemaPort) => ({
+      ...port,
+      editorKey: uniqueId(),
+      widgetEditorKey,
+    })),
+    outPorts: outPorts.map((port: SchemaPort) => ({
+      ...port,
+      editorKey: uniqueId(),
+      widgetEditorKey,
+    })),
   }
 }

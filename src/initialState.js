@@ -14,13 +14,11 @@ import type { AppliedPortState } from './DiagramEditor/Ports/state'
 
 export type State = AppliedAppState
 
-export type StateDraft =
-  | (?AppliedAppState &
-      ?AppliedEditorState &
-      ?AppliedWidgetState &
-      ?AppliedLinkState &
-      ?AppliedPortState)
-  | {}
+export type StateDraft = ?AppliedAppState &
+  ?AppliedEditorState &
+  ?AppliedWidgetState &
+  ?AppliedLinkState &
+  ?AppliedPortState
 
 export default (): State =>
   compose(

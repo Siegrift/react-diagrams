@@ -1,28 +1,31 @@
 // @flow
-import React from 'react'
+import * as React from 'react'
 import { Provider } from 'react-redux'
 import DiagramEditor from './DiagramEditor/DiagramEditor'
 import getConfiguredStore from './configureStore'
 
 import type { DiagramEditorApi } from './DiagramEditor/DiagramEditor'
-import type { Schema } from './flowTypes'
+import type { Schema } from './schemaTypes'
+import type { ExportedGraph } from './DiagramEditor/editorApi'
 
 const store = getConfiguredStore()
 
+type DiagramEditorRef = { getWrappedInstance: () => DiagramEditorApi };
+
 class DiagramEditorWrapper extends React.Component<Schema> {
   editorRef: ?DiagramEditorApi
-  store: any
 
-  exportGraph() {
+  exportGraph(): ?ExportedGraph {
     if (!this.editorRef) return undefined
     return this.editorRef.exportGraph()
   }
 
-  render() {
+  render(): React.Node {
     return (
       <Provider store={store}>
         <DiagramEditor
-          ref={(ref) => {
+          // FLOW: flow doesn't understand getWrappedInstance from connectAdvanced
+          ref={(ref: DiagramEditorRef) => {
             this.editorRef = ref.getWrappedInstance()
           }}
           {...this.props}

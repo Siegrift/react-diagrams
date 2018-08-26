@@ -34,7 +34,7 @@ export type AppliedEditorState = { editor: EditorState }
 
 export const setInitialState = (state: StateDraft): StateDraft & AppliedEditorState => ({
   ...state,
-  [PATH_EDITOR]: {
+  [PATH_EDITOR.toString()]: {
     mouse: {
       cursor: undefined,
       dragging: false,

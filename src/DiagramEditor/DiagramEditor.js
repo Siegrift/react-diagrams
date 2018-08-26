@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import TopPanel from './TopPanel/TopPanel'
+// FLOW: css/css imports are not recognized by flow
 import './_DiagramEditor.scss'
 import classnames from 'classnames'
 import { connectAdvanced } from 'react-redux'
@@ -18,7 +19,18 @@ export type DiagramEditorApi = {
   exportGraph: () => any,
 }
 
-class DiagramEditor extends React.Component {
+type Props = {
+  apiExportGraph: Function,
+  changeTopbarHeight: Function,
+  changeSidebarWidth: Function,
+  initializeEditor: Function,
+  className: string,
+  topbarHeight: number,
+  sidebarWidth: number,
+  schema: number,
+}
+
+class DiagramEditor extends React.Component<Props> {
   exportGraph = () => this.props.apiExportGraph()
 
   onTopbarHeightChange = (newTopbarHeight) => {

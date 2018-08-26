@@ -6,19 +6,7 @@ import { relativeMousePoint } from '../MainEditor/selectors'
 import { setDragging, setSelectedNode } from '../MainEditor/actions'
 import { concat, flatten, map, uniqueId } from 'lodash'
 import { widgetsSelector } from '../Widgets/selectors'
-
-// TODO: move to utils
-const distance = (p1, p2, p3) => {
-  return (
-    Math.abs(p1.x - p3.x) + Math.abs(p1.y - p3.y) + Math.abs(p2.x - p3.x) + Math.abs(p2.y - p3.y)
-  )
-}
-
-export const createDefaultLinkPoint = (position) => ({
-  ...position,
-  editorKey: uniqueId(),
-  selected: false,
-})
+import { distance, createDefaultLinkPoint } from './linkUtils'
 
 const addPointToLink = (link, event) => ({
   type: 'Add point to link',

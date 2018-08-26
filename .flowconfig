@@ -7,7 +7,6 @@
 [lints]
 
 [options]
-module.file_ext=.css
-module.file_ext=.scss
+suppress_comment= \\(.\\|\n\\)*\\FLOW:
 
 [strict]

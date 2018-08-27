@@ -186,12 +186,17 @@ export const formatDiagrams = () => (dispatch, getState) => {
     // TODO: remember ref in state
     const element = document.getElementById(editorKey)
     g.setNode(editorKey, { width: element.clientWidth, height: element.clientHeight })
+    console.log('SET NODE ', editorKey, {
+      width: element.clientWidth,
+      height: element.clientHeight,
+    })
   })
 
   forEach(links, ({ source, destination, editorKey }) => {
     const sourceWidget = portByEditorKeySelector(state, source).widgetEditorKey
     const destinationWidget = portByEditorKeySelector(state, destination).widgetEditorKey
     g.setEdge(sourceWidget, destinationWidget, { editorKey })
+    console.log('SET EDGE ', sourceWidget, destinationWidget, editorKey)
   })
 
   layout(g)

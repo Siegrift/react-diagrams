@@ -11,7 +11,7 @@ import { portByEditorKeySelector } from '../ports/selectors'
 import { distance, createDefaultLinkPoint } from './linkUtils'
 
 import type { State } from '../../reduxTypes'
-import type { Center } from '../../commonTypes'
+import type { Center, Position, EditorKey } from '../../commonTypes'
 
 export type DagreLink = {
   source: EditorKey,
@@ -121,13 +121,19 @@ export const setFormattedLinks = (dagreLinks: DagreLink[]) => ({
   payload: dagreLinks,
   undoable: false,
   reducer: (state: State) => {
-    const links = dagreLinks.map(({ source, target, points, linkKey }: DagreLink) => {
-      const link = getLinkByEditorKey(state, linkKey)
-      return {
-        ...link,
-        path: points.map((point: Center) => createLinkPoint(link.editorKey, point)),
-      }
-    })
+    const links = dagreLinks.reduce(
+      (acc: Object, { source, target, points, linkKey }: DagreLink) => {
+        const link = getLinkByEditorKey(state, linkKey)
+        return {
+          ...acc,
+          [linkKey]: {
+            ...link,
+            path: points.map((point: Center) => createLinkPoint(link.editorKey, point)),
+          },
+        }
+      },
+      {}
+    )
     return setIn(state, PATH_LINKS, links)
   },
 })

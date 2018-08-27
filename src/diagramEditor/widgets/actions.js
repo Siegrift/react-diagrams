@@ -6,7 +6,7 @@ import { getWidgetByEditorKey } from './selectors'
 
 import type { Dispatch, State } from '../../reduxTypes'
 import type { EditorKey, Center, Dimension } from '../../commonTypes'
-import type { Widget } from './state'
+import type { WidgetState } from './state'
 
 export type DagreWidget = {
   key: EditorKey,
@@ -23,12 +23,16 @@ export const setFormattedWidgets = (dagreWidgets: DagreWidget[]) => ({
   undoable: false,
   paylaod: dagreWidgets,
   reducer: (state: State) => {
-    const widgets = dagreWidgets.map(
-      ({ key, widget }: DagreWidget): Widget[] => ({
-        ...getWidgetByEditorKey(state, key),
-        x: widget.x,
-        y: widget.y,
-      })
+    const widgets = dagreWidgets.reduce(
+      (acc: Object, { key, widget }: DagreWidget): WidgetState => ({
+        ...acc,
+        [key]: {
+          ...getWidgetByEditorKey(state, key),
+          x: widget.x - widget.width / 2,
+          y: widget.y - widget.height / 2,
+        },
+      }),
+      {}
     )
     return setIn(state, PATH_WIDGETS, widgets)
   },

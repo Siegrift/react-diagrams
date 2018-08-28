@@ -6,7 +6,7 @@ import { setIn } from 'immutable'
 import { cancelCurrentSelection, setSelectedPort } from '../mainEditor/actions'
 import { addPointToCurrentLink, addToLinks, isInvalidLink } from '../links/actions'
 import { PATH_PORTS } from './state'
-import { getPorts } from './selectors'
+import { portsSelector } from './selectors'
 
 export const isValidLinkDefault = (
   sourcePort,
@@ -39,7 +39,7 @@ export const addPorts = (inPorts, outPorts) => ({
   reducer: (state) => {
     const ports = concat(inPorts, outPorts)
     return setIn(state, PATH_PORTS, {
-      ...getPorts(state),
+      ...portsSelector(state),
       ...ports.reduce((acc, port) => {
         return { ...acc, [port.editorKey]: port }
       }, {}),

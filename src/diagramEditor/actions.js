@@ -18,10 +18,6 @@ import { widgetsSelector } from './widgets/selectors'
 import { cancelCurrentSelection, setSelectedPort } from './mainEditor/actions'
 import { selectedNodesSelector } from './mainEditor/selectors'
 import shortcuts from './shortcuts'
-import { graphlib, layout } from 'dagre'
-import { portByEditorKeySelector } from './ports/selectors'
-import { setFormattedWidgets } from './widgets/actions'
-import { setFormattedLinks } from './links/actions'
 
 const keyboardEventToString = (event) => {
   const mods = []
@@ -171,42 +167,3 @@ export const localStorageLoad = () => ({
   reducer: (state) =>
     deepMergeFilterObject(state, saveFilter, JSON.parse(localStorage.getItem(LOCAL_STORAGE_PATH))),
 })
-
-// TODO: also take into account link points
-export const formatDiagrams = () => (dispatch, getState) => {
-  const state = getState()
-  const g = new graphlib.Graph()
-  g.setGraph({})
-  // Default to assigning a new object as a label for each new edge.
-  g.setDefaultEdgeLabel(() => ({}))
-  const widgets = widgetsSelector(state)
-  const links = linksSelector(state)
-
-  forEach(widgets, ({ editorKey }) => {
-    // TODO: remember ref in state
-    const element = document.getElementById(editorKey)
-    g.setNode(editorKey, { width: element.clientWidth, height: element.clientHeight })
-    console.log('SET NODE ', editorKey, {
-      width: element.clientWidth,
-      height: element.clientHeight,
-    })
-  })
-
-  forEach(links, ({ source, destination, editorKey }) => {
-    const sourceWidget = portByEditorKeySelector(state, source).widgetEditorKey
-    const destinationWidget = portByEditorKeySelector(state, destination).widgetEditorKey
-    g.setEdge(sourceWidget, destinationWidget, { editorKey })
-    console.log('SET EDGE ', sourceWidget, destinationWidget, editorKey)
-  })
-
-  layout(g)
-  // FLOW: once flowed, use flow declarations in widget/link actions
-  const dagreWidgets = g.nodes().map((key) => ({ key, widget: g.node(key) }))
-  const dagreLinks = g.edges().map((key) => {
-    const edge = g.edge(key)
-    return { source: key.v, target: key.w, points: edge.points, linkKey: edge.editorKey }
-  })
-
-  dispatch(setFormattedWidgets(dagreWidgets))
-  dispatch(setFormattedLinks(dagreLinks))
-}

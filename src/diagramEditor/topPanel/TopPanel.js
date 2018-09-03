@@ -8,7 +8,6 @@ import CancelIcon from 'react-icons/lib/md/cancel'
 import DeleteIcon from 'react-icons/lib/md/delete'
 import SaveIcon from 'react-icons/lib/md/save'
 import LoadIcon from 'react-icons/lib/md/file-download'
-import FormatIcon from 'react-icons/lib/md/format-shapes'
 import {
   cancelSelection,
   deleteSelection,
@@ -16,7 +15,6 @@ import {
   localStorageSave,
   redo,
   undo,
-  formatDiagrams,
 } from '../actions'
 import { selectedNodesSelector } from '../mainEditor/selectors'
 import {
@@ -62,9 +60,6 @@ const TopPanel = ({
     <PanelItem text="Load" onClick={localStorageLoad} disabled={!loadAvailable}>
       <LoadIcon />
     </PanelItem>
-    <PanelItem text="Format" onClick={formatDiagrams}>
-      <FormatIcon />
-    </PanelItem>
   </div>
 )
 
@@ -84,6 +79,5 @@ export default connect(
     deleteSelection,
     localStorageSave,
     localStorageLoad,
-    formatDiagrams,
   }
 )(TopPanel)

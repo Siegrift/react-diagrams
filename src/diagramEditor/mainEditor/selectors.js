@@ -3,6 +3,7 @@ import { createSelector } from 'reselect'
 import { PATH_EDITOR_REF, PATH_CURSOR, PATH_ZOOM, PATH_OFFSET, PATH_DRAGGING } from './state'
 import { linksSelector } from '../links/selectors'
 import { widgetsSelector } from '../widgets/selectors'
+import { linkPointsSelector } from '../linkPoints/selectors'
 
 export const editorRefSelector = (state) => get(state, PATH_EDITOR_REF)
 export const cursorSelector = (state) => get(state, PATH_CURSOR)
@@ -13,15 +14,11 @@ export const offsetSelector = (state) => get(state, PATH_OFFSET)
 export const selectedNodesSelector = createSelector(
   widgetsSelector,
   linksSelector,
-  (widgets, links) => {
+  linkPointsSelector,
+  (widgets, links, linkPoints) => {
     const selected = []
-    forEach({ ...widgets, ...links }, (node) => {
+    forEach({ ...widgets, ...links, ...linkPoints }, (node) => {
       if (node.selected) selected.push(node.editorKey)
-    })
-    forEach(links, (link) => {
-      forEach(link.path, (node) => {
-        if (node.selected) selected.push(node.editorKey)
-      })
     })
     return selected
   }

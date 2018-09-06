@@ -1,5 +1,5 @@
 import { getIn, setIn } from 'immutable'
-import { concat, reduce, forEach } from 'lodash'
+import { concat, reduce } from 'lodash'
 import { deepMergeFilterObject, filterObject } from '../utils'
 import { LOCAL_STORAGE_PATH, saveFilter, undoRedoFilter } from '../constants'
 import {
@@ -18,6 +18,8 @@ import { widgetsSelector } from './widgets/selectors'
 import { cancelCurrentSelection, setSelectedPort } from './mainEditor/actions'
 import { selectedNodesSelector } from './mainEditor/selectors'
 import shortcuts from './shortcuts'
+import { linkPointsSelector } from './linkPoints/selectors'
+import { PATH_LINK_POINTS } from './linkPoints/state'
 
 const keyboardEventToString = (event) => {
   const mods = []
@@ -132,17 +134,18 @@ export const deleteCurrentSelection = () => ({
       },
       {}
     )
-    newLinks = reduce(
-      newLinks,
-      (acc, link, key) => {
-        const newPoints = link.path.filter((point) => !selectedNodes.includes(point.editorKey))
-        if (selectedNodes.includes(key) || newPoints.length <= 2) return acc
-        else return { ...acc, [key]: { ...link, path: newPoints } }
+    // TODO: remove points and links with less than 2 points
+    const newLinkPoints = reduce(
+      linkPointsSelector(newState),
+      (acc, linkPoint, key) => {
+        if (selectedNodes.includes(key)) return acc
+        else return { ...acc, [key]: { ...linkPoint } }
       },
       {}
     )
     newState = setIn(newState, PATH_WIDGETS, newWidgets)
     newState = setIn(newState, PATH_LINKS, newLinks)
+    newState = setIn(newState, PATH_LINK_POINTS, newLinkPoints)
     return newState
   },
 })

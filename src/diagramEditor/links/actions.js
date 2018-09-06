@@ -1,33 +1,27 @@
 // @flow
-import update from 'immutability-helper'
 import { setIn } from 'immutable'
-import { PATH_CURRENT_LINK_POINTS, PATH_LINKS } from './state'
-import { currentLinkPointsSelector, linksSelector } from './selectors'
+import { PATH_CURRENT_LINK_POINTS, PATH_LINKS, getLinkPointsPathByLinkKey } from './state'
+import { currentLinkPointsSelector } from './selectors'
 import { relativeMousePoint } from '../mainEditor/selectors'
 import { setDragging, setSelectedNode } from '../mainEditor/actions'
 import { uniqueId } from 'lodash'
 import { getWidgetByEditorKey } from '../widgets/selectors'
 import { portByEditorKeySelector } from '../ports/selectors'
-import { distance, createDefaultLinkPoint } from './linkUtils'
-
-import type { Center, Position, EditorKey } from '../../commonTypes'
-
-export type DagreLink = {
-  source: EditorKey,
-  target: EditorKey,
-  linkKey: EditorKey,
-  points: Center[],
-}
+import { distance } from './linkUtils'
+import { createDefaultLinkPoint } from '../linkPoints/linkPointUtils'
+import { PATH_LINK_POINTS } from '../linkPoints/state'
+import { getLinkByEditorKey } from './selectors'
+import { linkPointsByEditorKeys, linkPointsSelector } from '../linkPoints/selectors'
 
 const addPointToLink = (link, event) => ({
   type: 'Add point to link',
   payload: { link, event },
   undoable: true,
   reducer: (state) => {
-    const links = linksSelector(state),
-      rawPoint = { x: event.clientX, y: event.clientY }
-    const path = links[link].path.slice(0),
-      point = relativeMousePoint(state, rawPoint)
+    const rawPoint = { x: event.clientX, y: event.clientY }
+    const linkPointKeys = [...getLinkByEditorKey(state, link).path]
+    const path = linkPointsByEditorKeys(linkPointKeys)(state)
+    const point = relativeMousePoint(state, rawPoint)
     const { pos } = path.reduce(
       (acc, value, index) => {
         if (index === 0) return acc
@@ -41,18 +35,14 @@ const addPointToLink = (link, event) => ({
       },
       { diff: Number.MAX_VALUE, pos: 0 }
     )
-    path.splice(pos, 0, createDefaultLinkPoint(point))
-    return update(state, {
-      editor: {
-        links: {
-          [link]: {
-            path: {
-              $set: path,
-            },
-          },
-        },
-      },
+    const linkPoint = createDefaultLinkPoint(point)
+    linkPointKeys.splice(pos, 0, linkPoint.editorKey)
+    let newState = setIn(state, PATH_LINK_POINTS, {
+      ...linkPointsSelector(state),
+      [linkPoint.editorKey]: linkPoint,
     })
+    newState = setIn(newState, getLinkPointsPathByLinkKey(link), linkPointKeys)
+    return newState
   },
 })
 
@@ -62,20 +52,19 @@ export const onLinkMouseDown = (event, editorKey) => (dispatch, getState) => {
   else dispatch(addPointToLink(editorKey, event))
 }
 
-export const onPointMouseDown = (event, editorKey) => (dispatch) => {
-  dispatch(setDragging(true))
-  dispatch(setSelectedNode(editorKey, event.ctrlKey))
-}
-
-export const addPointToCurrentLink = (point, isUndoable) => ({
+export const addPointToCurrentLink = (point: Position, isUndoable) => ({
   type: 'Add point to current link',
   payload: point,
   undoable: isUndoable ? isUndoable() : true,
-  reducer: (state) =>
-    setIn(state, PATH_CURRENT_LINK_POINTS, [
+  reducer: (state) => {
+    const linkPoint = createDefaultLinkPoint(relativeMousePoint(state, point))
+    // TODO: use imuty multiple setIn
+    const newState = setIn(state, [...PATH_LINK_POINTS, linkPoint.editorKey], linkPoint)
+    return setIn(newState, PATH_CURRENT_LINK_POINTS, [
       ...currentLinkPointsSelector(state),
-      createDefaultLinkPoint(relativeMousePoint(state, point)),
-    ]),
+      linkPoint.editorKey,
+    ])
+  },
 })
 
 // TODO: rename to "addLink"
@@ -96,20 +85,3 @@ export const isInvalidLink = (state, sourceEditorKey, destinationEditorKey, link
   const destinationWidget = getWidgetByEditorKey(state, destinationPort.widgetEditorKey)
   return !linkChecker(sourcePort, sourceWidget, destinationPort, destinationWidget)
 }
-
-// TODO: move to link point utils
-type LinkPoint = Position & {
-  editorKey: EditorKey,
-  linkKey: EditorKey,
-  selected: boolean,
-}
-
-// TODO: move to link point utils
-const createLinkPoint = (linkKey: EditorKey, { x, y }: Center): LinkPoint => ({
-  // link point is so small, so the difference between center and corner point is subtle
-  x,
-  y,
-  editorKey: uniqueId(),
-  linkKey,
-  selected: false,
-})

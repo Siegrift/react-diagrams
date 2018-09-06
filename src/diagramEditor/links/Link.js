@@ -1,8 +1,9 @@
 import React from 'react'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
-import { PATH_POINT_RADIUS, SELECTED_PATH_POINT_RADIUS } from '../../constants'
-import { addPointToCurrentLink, onLinkMouseDown, onPointMouseDown } from './actions'
+import LinkPoint from '../linkPoints/LinkPoint'
+import { onLinkMouseDown, addPointToCurrentLink } from './actions'
+import { linkPointsByEditorKeys } from '../linkPoints/selectors'
 
 // Properties of a line
 // I:  - pointA (array) [x,y]: coordinates
@@ -66,16 +67,18 @@ const bezierCommand = (point, i, a) => {
 //           - a (array): complete array of points coordinates
 //       O:  - (string) a svg path command
 // O:  - (string): a Svg <path> element
+// TODO: make stateless
 const Link = ({
   points,
   onLinkMouseDown,
-  onPointMouseDown,
+  addPointToCurrentLink,
   currentLink,
   selected,
   editorKey,
-  addPointToCurrentLink,
+  cursor,
 }) => {
-  const path = points.map((point) => [point.x, point.y])
+  const mergedPoints = cursor ? [...points, cursor] : points
+  const path = mergedPoints.map((point) => [point.x, point.y])
   // build the d attributes by looping over the points
   const d = path.reduce(
     (acc, point, i, a) =>
@@ -85,17 +88,9 @@ const Link = ({
   return (
     <g>
       <defs>
-        <marker
-          id="arrow"
-          markerWidth="5"
-          markerHeight="5"
-          refX="0"
-          refY="1"
-          orient="auto"
-          markerUnits="strokeWidth"
-        >
+        <marker id="arrow" markerWidth="7" markerHeight="7" refX="1" refY="3" orient="auto">
           <path
-            d="M0,0 L0,4 L4,2 z"
+            d="M1,1 L1,6 L5,3 L1,1"
             className={classNames({
               Marker__End: selected,
             })}
@@ -110,37 +105,23 @@ const Link = ({
         d={d}
         onMouseDown={(e) => {
           e.stopPropagation()
-          onLinkMouseDown(e, editorKey)
+          if (currentLink) addPointToCurrentLink({ x: e.clientX, y: e.clientY })
+          else onLinkMouseDown(e, editorKey)
         }}
       />
-      {points.map((point, index) => (
-        <circle
-          className={classNames('Editor__Inner__Svg__Circle', {
-            Editor__Inner__Svg__Circle__Selected: point.selected,
-          })}
-          cx={point.x}
-          cy={point.y}
-          r={point.selected ? SELECTED_PATH_POINT_RADIUS : PATH_POINT_RADIUS}
-          key={index}
-          onMouseDown={(event) => {
-            event.stopPropagation()
-            if (currentLink) {
-              addPointToCurrentLink({ x: event.clientX, y: event.clientY })
-            } else {
-              onPointMouseDown(event, point.editorKey)
-            }
-          }}
-        />
+      {mergedPoints.map((point) => (
+        <LinkPoint point={point} key={point.editorKey} />
       ))}
     </g>
   )
 }
 
 export default connect(
-  null,
+  (state, { points }) => ({
+    points: linkPointsByEditorKeys(points)(state),
+  }),
   {
     onLinkMouseDown,
-    onPointMouseDown,
     addPointToCurrentLink,
   }
 )(Link)

@@ -7,18 +7,17 @@ export const PATH_LINKS = ['links']
 export const PATH_CURRENT_LINK = ['currentLink']
 export const PATH_CURRENT_LINK_POINTS = [...PATH_CURRENT_LINK, 'path']
 export const getLinkPathByEditorKey = (editorKey: EditorKey): Path => [...PATH_LINKS, editorKey]
-
-// TODO: move to separate state
-export type LinkPoint = Position & {
-  editorKey: EditorKey,
-  selected: boolean,
-}
+export const getLinkPointsPathByLinkKey = (linkKey: EditorKey): Path => [
+  ...PATH_LINKS,
+  linkKey,
+  'path',
+]
 
 export type Link = {
   source: EditorKey,
   destination: EditorKey,
   editorKey: EditorKey,
-  path: LinkPoint[],
+  path: EditorKey[],
   selected: boolean,
 }
 

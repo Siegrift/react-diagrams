@@ -22,6 +22,7 @@ import {
 import WidgetEnhancer from '../widgets/WidgetEnhancer'
 import Link from '../links/Link'
 import { map } from 'lodash'
+import { createDefaultLinkPoint } from '../linkPoints/linkPointUtils'
 
 const MainEditor = ({
   schema,
@@ -59,7 +60,8 @@ const MainEditor = ({
     onWheel={(e) => {
       e.preventDefault()
       e.stopPropagation()
-      updateZoom(e.deltaY, 0.001)
+      // TODO: magic number
+      updateZoom(e.deltaY * 0.00097)
     }}
   >
     <svg
@@ -74,8 +76,10 @@ const MainEditor = ({
       {currentLink && (
         <Link
           currentLink
-          points={cursor ? [...currentLink.path, cursor] : currentLink.path}
+          points={currentLink.path}
           selected
+          // TODO: this reserves unique id too often
+          cursor={createDefaultLinkPoint(cursor, false)}
         />
       )}
     </svg>
@@ -85,7 +89,9 @@ const MainEditor = ({
         transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
       }}
     >
-      {map(widgets, (widget) => <WidgetEnhancer key={widget.editorKey} widget={widget} />)}
+      {map(widgets, (widget) => (
+        <WidgetEnhancer key={widget.editorKey} widget={widget} />
+      ))}
     </div>
   </div>
 )

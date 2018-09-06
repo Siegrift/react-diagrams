@@ -1,0 +1,24 @@
+.LinkPoint {
+  cursor: pointer;
+  &:hover {
+    fill: rgb(0, 50, 0);
+  }
+  fill: green;
+  &__Selected {
+    stroke: rgb(0, 192, 255) !important;
+    stroke-dasharray: 10, 2;
+    animation: dash 1s linear infinite;
+    stroke-width: 3;
+    @keyframes dash {
+      from {
+        stroke-dashoffset: 24;
+      }
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+  }
+  &__hidden {
+    visibility: hidden;
+  }
+}

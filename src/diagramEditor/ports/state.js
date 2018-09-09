@@ -1,8 +1,8 @@
 // @flow
 import type { StateDraft } from '../../initialState'
 
-import type { EditorKey } from '../../commonTypes'
-import type { Port as SchemaPort } from '../../schemaTypes'
+import type { EditorKey } from '../../flow/commonTypes'
+import type { Port as SchemaPort } from '../../flow/schemaTypes'
 
 export const PATH_PORTS = ['ports']
 

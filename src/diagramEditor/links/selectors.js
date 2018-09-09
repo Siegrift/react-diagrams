@@ -7,8 +7,8 @@ import {
   getLinkPathByEditorKey,
 } from './state'
 
-import type { EditorKey } from '../../commonTypes'
-import type { State } from '../../reduxTypes'
+import type { EditorKey } from '../../flow/commonTypes'
+import type { State } from '../../flow/reduxTypes'
 
 export const currentLinkSelector = (state: State) => get(state, PATH_CURRENT_LINK)
 export const linksSelector = (state: State) => get(state, PATH_LINKS)

@@ -13,7 +13,7 @@ import MainEditor from './mainEditor/MainEditor'
 import { bindActionCreators } from 'redux'
 import { shallowEqual } from '../utils'
 import { apiExportGraph } from './editorApi'
-import type { State, Dispatch } from '../reduxTypes'
+import type { State, Dispatch } from '../flow/reduxTypes'
 import type { Dispatch as GeneralDispatch } from 'redux'
 
 // TODO: TBD

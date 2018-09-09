@@ -5,7 +5,7 @@ import DiagramEditor from './diagramEditor/DiagramEditor'
 import getConfiguredStore from './configureStore'
 
 import type { DiagramEditorApi } from './diagramEditor/DiagramEditor'
-import type { Schema } from './schemaTypes'
+import type { Schema } from './flow/schemaTypes'
 import type { ExportedGraph } from './diagramEditor/editorApi'
 
 const store = getConfiguredStore()

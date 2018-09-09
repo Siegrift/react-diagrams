@@ -1,6 +1,6 @@
 // @flow
-import type { Path } from './commonTypes'
-import type { InitialState } from './initialState'
+import type { Path } from './../flow/commonTypes'
+import type { InitialState } from '../initialState'
 
 // re-export State as it's imported mainly in redux actions
 export type State = InitialState

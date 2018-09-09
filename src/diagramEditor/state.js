@@ -6,7 +6,7 @@ import { selectedNodesSelector } from './mainEditor/selectors'
 import { currentLinkSelector } from './links/selectors'
 
 import type { StateDraft } from '../initialState'
-import type { State } from '../reduxTypes'
+import type { State } from '../flow/reduxTypes'
 import type { CurrentLink } from './links/state'
 
 export const PATH_APP = ['app']

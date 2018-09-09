@@ -2,11 +2,11 @@
 import { omit, reduce } from 'lodash'
 import { widgetsSelector } from './widgets/selectors'
 import { linksSelector } from './links/selectors'
-import type { Dispatch, GetState } from '../reduxTypes'
+import type { Dispatch, GetState } from '../flow/reduxTypes'
 
 import type { Widget } from './widgets/state'
 import type { Link } from './links/state'
-import type { EditorKey } from '../commonTypes'
+import type { EditorKey } from '../flow/commonTypes'
 
 // TODO: TBD
 export type ExportedGraph = {

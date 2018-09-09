@@ -3,8 +3,8 @@ import { get } from 'lodash'
 import { PATH_LINK_POINTS } from './state'
 import { createSelector } from 'reselect'
 
-import type { State } from '../../reduxTypes'
-import type { EditorKey } from '../../commonTypes'
+import type { State } from '../../flow/reduxTypes'
+import type { EditorKey } from '../../flow/commonTypes'
 import type { LinkPointsState } from './state'
 
 export const linkPointsSelector = (state: State) => get(state, PATH_LINK_POINTS)

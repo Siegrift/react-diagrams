@@ -1,6 +1,6 @@
 // @flow
 import type { StateDraft } from '../../initialState'
-import type { EditorKey, Path, Position } from '../../commonTypes'
+import type { EditorKey, Path, Position } from '../../flow/commonTypes'
 
 export const PATH_WIDGETS = ['widgets']
 export const getWidgetPathByEditorKey = (editorKey: EditorKey): Path => [...PATH_WIDGETS, editorKey]

@@ -1,5 +1,5 @@
 // @flow
-import type { Position } from '../../commonTypes'
+import type { Position } from '../../flow/commonTypes'
 
 /** Returns the distance from p1 to p3 + p2 to p3. */
 export const distance = (p1: Position, p2: Position, p3: Position): number => {

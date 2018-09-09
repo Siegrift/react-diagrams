@@ -1,9 +1,9 @@
 // @flow
 import { uniqueId } from 'lodash'
 
-import type { Port as SchemaPort } from '../../schemaTypes'
+import type { Port as SchemaPort } from '../../flow/schemaTypes'
 import type { Port } from './state'
-import type { EditorKey } from '../../commonTypes'
+import type { EditorKey } from '../../flow/commonTypes'
 
 export type CreatedPorts = {
   inPorts: Port[],

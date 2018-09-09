@@ -1,11 +1,11 @@
 import { get, forEach } from 'lodash'
 import { createSelector } from 'reselect'
-import { PATH_EDITOR_REF, PATH_CURSOR, PATH_ZOOM, PATH_OFFSET, PATH_DRAGGING } from './state'
+import { PATH_EDITOR_BOUNDS, PATH_CURSOR, PATH_ZOOM, PATH_OFFSET, PATH_DRAGGING } from './state'
 import { linksSelector } from '../links/selectors'
 import { widgetsSelector } from '../widgets/selectors'
 import { linkPointsSelector } from '../linkPoints/selectors'
 
-export const editorRefSelector = (state) => get(state, PATH_EDITOR_REF)
+export const editorBoundsSelector = (state) => get(state, PATH_EDITOR_BOUNDS)
 export const cursorSelector = (state) => get(state, PATH_CURSOR)
 export const draggingSelector = (state) => get(state, PATH_DRAGGING)
 export const zoomSelector = (state) => get(state, PATH_ZOOM)
@@ -26,7 +26,7 @@ export const selectedNodesSelector = createSelector(
 
 // TODO: make a selector
 export const relativeMousePoint = (state, { x, y }) => {
-  const boundingRect = editorRefSelector(state).getBoundingClientRect()
+  const boundingRect = editorBoundsSelector(state)
   const zoom = zoomSelector(state),
     offset = offsetSelector(state)
   return {

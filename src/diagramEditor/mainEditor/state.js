@@ -4,7 +4,7 @@ import type { StateDraft } from '../../initialState'
 export const PATH_EDITOR = ['editor']
 export const PATH_MOUSE = [...PATH_EDITOR, 'mouse']
 export const PATH_CANVAS = [...PATH_EDITOR, 'canvas']
-export const PATH_EDITOR_REF = [...PATH_EDITOR, 'editorRef']
+export const PATH_EDITOR_BOUNDS = [...PATH_EDITOR, 'editorBounds']
 export const PATH_DRAGGING = [...PATH_MOUSE, 'dragging']
 export const PATH_CURSOR = [...PATH_MOUSE, 'cursor']
 export const PATH_ZOOM = [...PATH_CANVAS, 'zoom']
@@ -26,7 +26,7 @@ export type EditorState = {
     zoom: number,
   },
   // TODO: TBD
-  editorRef: any,
+  editorBounds: any,
 }
 
 // NOTE: Type needs to be manually updated when PATH changes
@@ -46,6 +46,6 @@ export const setInitialState = (state: StateDraft): StateDraft & AppliedEditorSt
       },
       zoom: 1,
     },
-    editorRef: undefined,
+    editorBounds: undefined,
   },
 })

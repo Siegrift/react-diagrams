@@ -1,5 +1,4 @@
-// @flow
-import { setIn } from 'immutable'
+import { setIn, multiSetIn } from '../../imuty'
 import { PATH_CURRENT_LINK_POINTS, PATH_LINKS, getLinkPointsPathByLinkKey } from './state'
 import { currentLinkPointsSelector } from './selectors'
 import { relativeMousePoint } from '../mainEditor/selectors'
@@ -37,12 +36,17 @@ const addPointToLink = (link, event) => ({
     )
     const linkPoint = createDefaultLinkPoint(point)
     linkPointKeys.splice(pos, 0, linkPoint.editorKey)
-    let newState = setIn(state, PATH_LINK_POINTS, {
-      ...linkPointsSelector(state),
-      [linkPoint.editorKey]: linkPoint,
-    })
-    newState = setIn(newState, getLinkPointsPathByLinkKey(link), linkPointKeys)
-    return newState
+    return multiSetIn(
+      state,
+      [
+        PATH_LINK_POINTS,
+        {
+          ...linkPointsSelector(state),
+          [linkPoint.editorKey]: linkPoint,
+        },
+      ],
+      [getLinkPointsPathByLinkKey(link), linkPointKeys]
+    )
   },
 })
 
@@ -52,24 +56,23 @@ export const onLinkMouseDown = (event, editorKey) => (dispatch, getState) => {
   else dispatch(addPointToLink(editorKey, event))
 }
 
-export const addPointToCurrentLink = (point: Position, isUndoable) => ({
+export const addPointToCurrentLink = (point, isUndoable) => ({
   type: 'Add point to current link',
   payload: point,
   undoable: isUndoable ? isUndoable() : true,
   reducer: (state) => {
     const linkPoint = createDefaultLinkPoint(relativeMousePoint(state, point))
-    // TODO: use imuty multiple setIn
-    const newState = setIn(state, [...PATH_LINK_POINTS, linkPoint.editorKey], linkPoint)
-    return setIn(newState, PATH_CURRENT_LINK_POINTS, [
-      ...currentLinkPointsSelector(state),
-      linkPoint.editorKey,
-    ])
+    return setIn(
+      state,
+      [[...PATH_LINK_POINTS, linkPoint.editorKey], linkPoint],
+      [PATH_CURRENT_LINK_POINTS, [...currentLinkPointsSelector(state), linkPoint.editorKey]]
+    )
   },
 })
 
 // TODO: rename to "addLink"
-export const addToLinks = (link) => ({
-  type: 'Add to links',
+export const addLink = (link) => ({
+  type: 'Add link',
   payload: link,
   undoable: true,
   reducer: (state) => {

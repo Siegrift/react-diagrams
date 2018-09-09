@@ -6,9 +6,9 @@ import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
 import { currentLinkSelector, linksSelector } from '../links/selectors'
 import {
   zoomSelector,
-  editorRefSelector,
   offsetSelector,
   relativeCursorPointSelector,
+  editorBoundsSelector,
 } from './selectors'
 import { widgetsSelector } from '../widgets/selectors'
 import {
@@ -16,20 +16,20 @@ import {
   onEditorMouseDown,
   onEditorMouseMove,
   onEditorMouseUp,
-  setEditorRef,
+  setEditorBounds,
   updateZoom,
 } from './actions'
 import WidgetEnhancer from '../widgets/WidgetEnhancer'
 import Link from '../links/Link'
-import { map } from 'lodash'
+import { map, isEqual } from 'lodash'
 import { createDefaultLinkPoint } from '../linkPoints/linkPointUtils'
+import { extractBoundingBox } from './mainEditorUtils'
 
 const MainEditor = ({
   schema,
   widgets,
   onWidgetDrop,
-  setEditorRef,
-  editorRef,
+  setEditorBounds,
   onEditorMouseMove,
   onEditorMouseDown,
   onEditorMouseUp,
@@ -39,9 +39,15 @@ const MainEditor = ({
   currentLink,
   links,
   cursor,
+  bounds,
 }) => (
   <div
-    ref={(ref) => ref && setEditorRef(ref)}
+    ref={(ref) => {
+      const boundingBox = ref ? extractBoundingBox(ref.getBoundingClientRect()) : null
+      if (boundingBox && !isEqual(boundingBox, bounds)) {
+        setEditorBounds(boundingBox)
+      }
+    }}
     onDrop={(event) => {
       const dataKey = event.dataTransfer.getData(DATA_TRANSFER_WIDGET_KEY)
       // sometimes called from widget with dragable = false
@@ -99,16 +105,16 @@ const MainEditor = ({
 export default connect(
   (state) => ({
     widgets: widgetsSelector(state),
-    editorRef: editorRefSelector(state),
     zoom: zoomSelector(state),
     offset: offsetSelector(state),
     currentLink: currentLinkSelector(state),
     links: linksSelector(state),
     cursor: relativeCursorPointSelector(state),
+    bounds: editorBoundsSelector(state),
   }),
   {
     onWidgetDrop,
-    setEditorRef,
+    setEditorBounds,
     onEditorMouseMove,
     onEditorMouseDown,
     onEditorMouseUp,

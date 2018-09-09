@@ -16,3 +16,14 @@ export type Position = {
 export type Center = Position
 
 export type EditorKey = string
+
+export type BoundingBox = {
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  top: number,
+  bottom: number,
+  left: number,
+  right: number,
+}

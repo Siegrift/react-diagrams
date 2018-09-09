@@ -1,10 +1,10 @@
 import { currentLinkSelector } from '../links/selectors'
 import { concat } from 'lodash'
 
-import { setIn } from 'immutable'
+import { setIn } from '../../imuty'
 
 import { cancelCurrentSelection, setSelectedPort } from '../mainEditor/actions'
-import { addPointToCurrentLink, addToLinks, isInvalidLink } from '../links/actions'
+import { addPointToCurrentLink, addLink, isInvalidLink } from '../links/actions'
 import { PATH_PORTS } from './state'
 import { portsSelector } from './selectors'
 
@@ -24,7 +24,7 @@ export const onPortMouseDown = (editorKey, event, linkChecker) => (dispatch, get
   if (currentLink) {
     if (isInvalidLink(getState(), currentLink.source, editorKey, linkChecker)) return
     dispatch(addPointToCurrentLink(point, () => false))
-    dispatch(addToLinks({ ...currentLinkSelector(getState()), destination: editorKey }))
+    dispatch(addLink({ ...currentLinkSelector(getState()), destination: editorKey }))
     dispatch(setSelectedPort(-1))
   } else {
     dispatch(setSelectedPort(editorKey, point))

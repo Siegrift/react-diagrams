@@ -1,4 +1,4 @@
-import { getIn, setIn } from 'immutable'
+import { getIn, setIn } from '../imuty'
 import { concat, reduce } from 'lodash'
 import { deepMergeFilterObject, filterObject } from '../utils'
 import { LOCAL_STORAGE_PATH, saveFilter, undoRedoFilter } from '../constants'

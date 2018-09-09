@@ -1,8 +1,8 @@
 import { pick, filter, find, map, reduce, some, uniqueId } from 'lodash'
-import { setIn } from 'immutable'
+import { setIn, multiSetIn } from '../../imuty'
 import update from '../../update'
 import { MIN_ZOOM } from '../../constants'
-import { PATH_CURSOR, PATH_DRAGGING, PATH_EDITOR_REF, PATH_ZOOM } from './state'
+import { PATH_CURSOR, PATH_DRAGGING, PATH_EDITOR_BOUNDS, PATH_ZOOM } from './state'
 import { PATH_LINKS, getLinkPathByEditorKey, PATH_CURRENT_LINK } from '../links/state'
 import { getLinkByEditorKey, linksSelector } from '../links/selectors'
 import {
@@ -97,11 +97,12 @@ export const cancelCurrentSelection = () => ({
       }),
       {}
     )
-    // TODO: use imuty and multiple setIn
-    let newState = setIn(state, PATH_WIDGETS, widgets)
-    newState = setIn(newState, PATH_LINKS, links)
-    newState = setIn(newState, PATH_LINK_POINTS, linkPoints)
-    return newState
+    return multiSetIn(
+      state,
+      [PATH_WIDGETS, widgets],
+      [PATH_LINKS, links],
+      [PATH_LINK_POINTS, linkPoints],
+    )
   },
 })
 
@@ -146,11 +147,13 @@ export const setSelectedNode = (nodeKey, onlyAppend) => (dispatch) => {
   dispatch(setDragging(true))
 }
 
-export const setEditorRef = (ref) => ({
-  type: 'Set editor ref',
-  payload: { ref },
+export const setEditorBounds = (bounds) => ({
+  type: 'Set editor bounds',
+  payload: bounds,
   notLogable: true,
-  reducer: (state) => setIn(state, PATH_EDITOR_REF, ref),
+  reducer: (state) => {
+    return setIn(state, PATH_EDITOR_BOUNDS, bounds)
+  },
 })
 
 // TODO: split this function and also remove ports

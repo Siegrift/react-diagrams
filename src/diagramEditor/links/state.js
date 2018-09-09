@@ -28,7 +28,7 @@ export type CurrentLink = {}
 // NOTE: Type needs to be manually updated when PATH changes
 export type AppliedLinkState = { links: LinkState, currrentLink: CurrentLink }
 
-export const setInitialState = (state: StateDraft): StateDraft & LinkState => ({
+export const setInitialState = (state: StateDraft): StateDraft & AppliedLinkState => ({
   ...state,
   [PATH_LINKS.toString()]: {},
   [PATH_CURRENT_LINK.toString()]: undefined,

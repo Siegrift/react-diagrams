@@ -24,7 +24,7 @@ export const onPortMouseDown = (editorKey, event, linkChecker) => (dispatch, get
   dispatch(cancelCurrentSelection())
   if (currentLink) {
     if (isInvalidLink(getState(), currentLink.source, editorKey, linkChecker)) return
-    dispatch(addPointToCurrentLink(point, () => false))
+    dispatch(addPointToCurrentLink(point, false))
     dispatch(addLink({ ...currentLinkSelector(getState()), destination: editorKey }))
     dispatch(setSelectedPort(-1))
     dispatch(checkpoint())

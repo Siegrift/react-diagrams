@@ -1,19 +1,18 @@
 // @flow
-import type { Path } from './../flow/commonTypes'
 import type { InitialState } from '../initialState'
 
 // re-export State as it's imported mainly in redux actions
 export type State = InitialState
 
 export type SegmentReducer<Segment, Payload> = (state: Segment, payload: Payload) => Segment
-export type GenericAction<Segment, Payload> = {
+export type GenericAction<Payload> = {
   type: string,
-  path: Path | ((s: State) => Path),
   payload: Payload,
-  reducer: SegmentReducer<Segment, Payload>,
+  reducer: SegmentReducer<State, Payload>,
   undoable?: boolean,
+  loggable?: boolean,
 }
 
-export type Dispatch = (action: GenericAction<*, *>) => null
+export type Dispatch = (action: GenericAction<*>) => null
 export type GetState = () => State
-export type Thunk = (dispatch: Dispatch, getState: any) => Promise<void>
+export type Thunk = (dispatch: Dispatch, getState: any) => ?Promise<void>

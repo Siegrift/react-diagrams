@@ -1,15 +1,15 @@
-import { setIn, multiSetIn } from '../../imuty'
+import { setIn, multiSetIn, mergeIn } from '../../imuty'
 import { PATH_CURRENT_LINK_POINTS, PATH_LINKS, getLinkPointsPathByLinkKey } from './state'
 import { currentLinkPointsSelector } from './selectors'
 import { relativeMousePoint } from '../mainEditor/selectors'
 import { setDragging, setSelectedNode } from '../mainEditor/actions'
-import { uniqueId } from 'lodash'
+import { uniqueId, map, flatten } from 'lodash'
 import { getWidgetByEditorKey } from '../widgets/selectors'
 import { portByEditorKeySelector } from '../ports/selectors'
 import { distance } from './linkUtils'
 import { createDefaultLinkPoint } from '../linkPoints/linkPointUtils'
 import { PATH_LINK_POINTS } from '../linkPoints/state'
-import { getLinkByEditorKey } from './selectors'
+import { getLinkByEditorKey, linksToMoveSelector } from './selectors'
 import { linkPointsByEditorKeys, linkPointsSelector } from '../linkPoints/selectors'
 
 const addPointToLink = (link, event) => ({
@@ -59,7 +59,7 @@ export const onLinkMouseDown = (event, editorKey) => (dispatch, getState) => {
 export const addPointToCurrentLink = (point, isUndoable) => ({
   type: 'Add point to current link',
   payload: point,
-  undoable: isUndoable ? isUndoable() : true,
+  undoable: isUndoable !== undefined ? isUndoable : true,
   reducer: (state) => {
     const linkPoint = createDefaultLinkPoint(relativeMousePoint(state, point))
     return multiSetIn(
@@ -80,6 +80,7 @@ export const addLink = (link) => ({
   },
 })
 
+// TODO: move to link utils
 export const isInvalidLink = (state, sourceEditorKey, destinationEditorKey, linkChecker) => {
   const sourcePort = portByEditorKeySelector(state, sourceEditorKey)
   const sourceWidget = getWidgetByEditorKey(state, sourcePort.widgetEditorKey)
@@ -87,3 +88,30 @@ export const isInvalidLink = (state, sourceEditorKey, destinationEditorKey, link
   const destinationWidget = getWidgetByEditorKey(state, destinationPort.widgetEditorKey)
   return !linkChecker(sourcePort, sourceWidget, destinationPort, destinationWidget)
 }
+
+export const moveSelectedLinks = (diff) => ({
+  type: 'Move selected links',
+  payload: diff,
+  loggable: false,
+  undoable: false,
+  reducer: (state) => {
+    const linkstoMove = linksToMoveSelector(state)
+    const pointsToMove = flatten(map(linkstoMove, (link) => link.path.slice(1, -1)))
+    const linkPoints = linkPointsSelector(state)
+    return mergeIn(
+      state,
+      PATH_LINK_POINTS,
+      pointsToMove.reduce(
+        (acc, pointKey) => ({
+          ...acc,
+          [linkPoints[pointKey].editorKey]: {
+            ...linkPoints[pointKey],
+            x: linkPoints[pointKey].x + diff.x,
+            y: linkPoints[pointKey].y + diff.y,
+          },
+        }),
+        {}
+      )
+    )
+  },
+})

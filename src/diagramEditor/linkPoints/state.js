@@ -1,7 +1,7 @@
 // @flow
 import type { StateDraft } from '../../initialState'
 
-import type { EditorKey, Path } from '../../flow/commonTypes'
+import type { EditorKey, Path, Position } from '../../flow/commonTypes'
 
 export const PATH_LINK_POINTS = ['linkPoints']
 export const linkPointPathByEditorKey = (editorKey: EditorKey): Path => [
@@ -11,7 +11,6 @@ export const linkPointPathByEditorKey = (editorKey: EditorKey): Path => [
 
 export type LinkPoint = Position & {
   editorKey: EditorKey,
-  linkKey: EditorKey,
   selected: boolean,
   visible: boolean,
 }

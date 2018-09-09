@@ -40,6 +40,7 @@ const handleKeyStroke = (event) => (dispatch, getState, { logger }) => {
   if (shortcut) shortcut.action(dispatch, getState)
 }
 
+// TODO: move to generic actions
 export const checkpoint = () => ({
   type: 'Trigger save',
   undoable: true,

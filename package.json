@@ -38,7 +38,6 @@
   "scripts": {
     "eslint": "eslint src *.js || exit 0",
     "lint": "prettier-eslint --write \"src/**/*.{js,jsx,json,scss}\"",
-    "test": "jest --watch --env=jsdom",
     "flow": "python3 ./check_flow.py & flow & flow-coverage-report"
   },
   "flow-coverage-report": {

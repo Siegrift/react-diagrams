@@ -1,3 +1,4 @@
+// TODO: remove this and use setIn from imuty instead of immutability helper
 import update from 'immutability-helper'
 
 // add any extensions to update here, then export the updated update :)

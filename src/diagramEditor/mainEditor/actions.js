@@ -16,7 +16,6 @@ import { createPorts } from '../ports/portUtils'
 import { addPorts } from '../ports/actions'
 import { getWidgetPathByEditorKey, PATH_WIDGETS } from '../widgets/state'
 import { widgetsSelector, getWidgetByEditorKey } from '../widgets/selectors'
-import { checkpoint } from '../actions'
 import { linkPointsSelector, linkPointByEditorKeySelector } from '../linkPoints/selectors'
 import { PATH_LINK_POINTS, linkPointPathByEditorKey } from '../linkPoints/state'
 
@@ -64,7 +63,6 @@ export const onWidgetDrop = (command, pos) => (dispatch, getState) => {
       widgetEditorKey
     )
   )
-  dispatch(checkpoint())
 }
 
 export const cancelCurrentSelection = () => ({

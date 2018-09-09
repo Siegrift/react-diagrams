@@ -1,6 +1,6 @@
 import { addToHistory } from './diagramEditor/actions'
-import { undoRedoFilter } from './constants'
-import { filterObject } from './utils'
+import { undoRedoFilters } from './objectFilterPaths'
+import { filterObject } from './imuty'
 
 const historyMiddleware = ({ dispatch, getState }) => (next) => (action) => {
   const prevState = getState()
@@ -10,7 +10,7 @@ const historyMiddleware = ({ dispatch, getState }) => (next) => (action) => {
     action.undoable &&
     (typeof action.undoable !== 'function' || action.undoable(prevState, nextState))
   ) {
-    dispatch(addToHistory(filterObject(nextState, undoRedoFilter)))
+    dispatch(addToHistory(filterObject(nextState, ...undoRedoFilters)))
   }
 }
 

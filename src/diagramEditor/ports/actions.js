@@ -7,6 +7,7 @@ import { cancelCurrentSelection, setSelectedPort } from '../mainEditor/actions'
 import { addPointToCurrentLink, addLink, isInvalidLink } from '../links/actions'
 import { PATH_PORTS } from './state'
 import { portsSelector } from './selectors'
+import { checkpoint } from '../actions'
 
 export const isValidLinkDefault = (
   sourcePort,
@@ -26,6 +27,7 @@ export const onPortMouseDown = (editorKey, event, linkChecker) => (dispatch, get
     dispatch(addPointToCurrentLink(point, () => false))
     dispatch(addLink({ ...currentLinkSelector(getState()), destination: editorKey }))
     dispatch(setSelectedPort(-1))
+    dispatch(checkpoint())
   } else {
     dispatch(setSelectedPort(editorKey, point))
     dispatch(addPointToCurrentLink(point))

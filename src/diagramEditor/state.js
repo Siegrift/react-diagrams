@@ -30,6 +30,7 @@ export const setInitialState = (state: StateDraft): StateDraft & AppliedAppState
     topbarHeight: 40,
     sidebarWidth: 200,
     history: [],
+    // -1 because when editor is initialized, we trigger a save (so there is a base history state)
     historyIndex: -1,
   },
 })

@@ -1,5 +1,4 @@
 // TODO: once imuty is published to npm use the npm version
-
 function shallowCopy(value) {
   if (Array.isArray(value)) return value.slice()
   if (typeof value === 'object') return Object.assign({}, value)
@@ -69,9 +68,29 @@ function multiSetIn(object, ...transforms) {
   return changed
 }
 
+function pathExists(object, path) {
+  if (!isValidPath(path)) return false
+  let obj = object
+  let index = -1
+  while (++index < path.length) {
+    if (!obj.hasOwnProperty(path[index])) return false
+    obj = obj[path[index]]
+  }
+  return true
+}
+
+function filterObject(object, ...paths) {
+  return paths.reduce((acc, path) => {
+    if (!pathExists(object, path)) return acc
+    return baseSet(acc, path, baseGet(object, path, null, 0), 0)
+  }, {})
+}
+
 module.exports = {
   setIn,
   multiSetIn,
   getIn,
   isValidPath,
+  filterObject,
+  pathExists,
 }

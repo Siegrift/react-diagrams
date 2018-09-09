@@ -62,7 +62,7 @@ export const addPointToCurrentLink = (point, isUndoable) => ({
   undoable: isUndoable ? isUndoable() : true,
   reducer: (state) => {
     const linkPoint = createDefaultLinkPoint(relativeMousePoint(state, point))
-    return setIn(
+    return multiSetIn(
       state,
       [[...PATH_LINK_POINTS, linkPoint.editorKey], linkPoint],
       [PATH_CURRENT_LINK_POINTS, [...currentLinkPointsSelector(state), linkPoint.editorKey]]
@@ -70,11 +70,10 @@ export const addPointToCurrentLink = (point, isUndoable) => ({
   },
 })
 
-// TODO: rename to "addLink"
 export const addLink = (link) => ({
   type: 'Add link',
   payload: link,
-  undoable: true,
+  undoable: false,
   reducer: (state) => {
     const editorKey = uniqueId()
     return setIn(state, [...PATH_LINKS, editorKey], { ...link, selected: false, editorKey })

@@ -1,7 +1,7 @@
-import { getIn, setIn } from '../imuty'
+import { getIn, setIn, filterObject, multiSetIn } from '../imuty'
 import { concat, reduce } from 'lodash'
-import { deepMergeFilterObject, filterObject } from '../utils'
-import { LOCAL_STORAGE_PATH, saveFilter, undoRedoFilter } from '../constants'
+import { LOCAL_STORAGE_PATH } from '../constants'
+import { saveFilters, undoRedoFilters } from '../objectFilterPaths'
 import {
   PATH_HISTORY,
   PATH_HISTORY_INDEX,
@@ -20,15 +20,7 @@ import { selectedNodesSelector } from './mainEditor/selectors'
 import shortcuts from './shortcuts'
 import { linkPointsSelector } from './linkPoints/selectors'
 import { PATH_LINK_POINTS } from './linkPoints/state'
-
-const keyboardEventToString = (event) => {
-  const mods = []
-  if (event.ctrlKey) mods.push('Ctrl')
-  if (event.shiftKey) mods.push('Shift')
-  if (event.altKey) mods.push('Alt')
-  mods.push(event.code)
-  return mods.join('+')
-}
+import { keyboardEventToString } from './diagramUtils'
 
 export const changeTopbarHeight = (height) => ({
   type: 'Change topbar height',
@@ -44,7 +36,6 @@ export const changeSidebarWidth = (width) => ({
 
 const handleKeyStroke = (event) => (dispatch, getState, { logger }) => {
   const eventKeyStroke = keyboardEventToString(event)
-  //console.log(`KEY STROKE ${eventKeyStroke}`)
   const shortcut = shortcuts.find((shortcut) => shortcut.keyStroke === eventKeyStroke)
   if (shortcut) shortcut.action(dispatch, getState)
 }
@@ -79,8 +70,12 @@ export const undo = () => ({
     if (!undoableSelector(state)) return state
     const history = getIn(state, PATH_HISTORY),
       index = getIn(state, PATH_HISTORY_INDEX)
-    const newState = deepMergeFilterObject(state, undoRedoFilter, history[index - 1])
-    return setIn(newState, PATH_HISTORY_INDEX, index - 1)
+    const filteredState = history[index - 1]
+    return multiSetIn(
+      state,
+      ...undoRedoFilters.map((filter) => [filter, getIn(filteredState, filter)]),
+      [PATH_HISTORY_INDEX, index - 1]
+    )
   },
 })
 
@@ -90,8 +85,12 @@ export const redo = () => ({
     if (!redoableSelector(state)) return state
     const history = getIn(state, PATH_HISTORY),
       index = getIn(state, PATH_HISTORY_INDEX)
-    const newState = deepMergeFilterObject(state, undoRedoFilter, history[index + 1])
-    return setIn(newState, PATH_HISTORY_INDEX, index + 1)
+    const filteredState = history[index + 1]
+    return multiSetIn(
+      state,
+      ...undoRedoFilters.map((filter) => [filter, getIn(filteredState, filter)]),
+      [PATH_HISTORY_INDEX, index + 1]
+    )
   },
 })
 
@@ -162,11 +161,16 @@ export const deleteSelection = () => (dispatch, getState) => {
 
 export const localStorageSave = () => (dispatch, getState, { logger }) => {
   logger.log('Save editor state')
-  localStorage.setItem(LOCAL_STORAGE_PATH, JSON.stringify(filterObject(getState(), saveFilter)))
+  localStorage.setItem(LOCAL_STORAGE_PATH, JSON.stringify(filterObject(getState(), ...saveFilters)))
 }
 
 export const localStorageLoad = () => ({
   type: 'Load editor state',
-  reducer: (state) =>
-    deepMergeFilterObject(state, saveFilter, JSON.parse(localStorage.getItem(LOCAL_STORAGE_PATH))),
+  reducer: (state) => {
+    const loadedFilteredState = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PATH))
+    return multiSetIn(
+      state,
+      ...saveFilters.map((filter) => [filter, getIn(loadedFilteredState, filter)])
+    )
+  },
 })

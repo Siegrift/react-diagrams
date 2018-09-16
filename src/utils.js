@@ -33,3 +33,6 @@ export const shallowEqual = (objA: any, objB: any) => {
 
   return true
 }
+
+export const compose = (...funcs: Function[]) =>
+  funcs.reduce((a: Function, b: Function) => (...args: *[]) => a(b(...args)), (arg: *) => arg)

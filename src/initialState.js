@@ -1,5 +1,5 @@
 // @flow
-import { compose } from 'recompose'
+import { compose } from './utils'
 import { setInitialState as appInitialState } from './diagramEditor/state'
 import { setInitialState as editorInitialState } from './diagramEditor/mainEditor/state'
 import { setInitialState as widgetsInitialState } from './diagramEditor/widgets/state'

@@ -30,7 +30,6 @@ const Pane = (props: Props) => {
   )
 }
 
-// TODO: use defaultProps from recompose
 Pane.defaultProps = {
   vertical: false,
   primary: false,

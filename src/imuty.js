@@ -1,6 +1,3 @@
-// TODO: once imuty is published to npm use the npm version
-// TODO: throw error instead of silent fail
-// TODO: documentation
 function shallowCopy(value) {
   if (Array.isArray(value)) return value.slice()
   if (typeof value === 'object') return Object.assign({}, value)

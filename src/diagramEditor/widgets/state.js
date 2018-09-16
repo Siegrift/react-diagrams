@@ -11,7 +11,6 @@ export type Widget = {
   inPortKeys: EditorKey[],
   outPortKeys: EditorKey[],
   name: string,
-  // top right corner TODO: really?
 } & Position &
   Node
 export type WidgetState = { [key: EditorKey]: Widget }

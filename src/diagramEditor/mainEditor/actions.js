@@ -62,14 +62,12 @@ const addWidget = (
   },
 })
 
-// TODO: move  to widget actions
 export const onWidgetDrop = (command: Command, pos: Position) => (
   dispatch: Dispatch,
   getState: GetState
 ) => {
   const widgetEditorKey = uniqueId()
   const { inPorts, outPorts } = createPorts(command, widgetEditorKey)
-  // TODO: why exactly has to be this called?
   dispatch(setDragging(false))
   dispatch(addPorts(inPorts, outPorts))
   dispatch(

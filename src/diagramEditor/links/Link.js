@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { connect } from 'react-redux'
 import LinkPoint from '../linkPoints/LinkPoint'
 import { onLinkMouseDown, addPointToCurrentLink } from './actions'
-import { linkPointsByEditorKeys } from '../linkPoints/selectors'
+import { linkPointsByEditorKeysSelector } from '../linkPoints/selectors'
 
 // Properties of a line
 // I:  - pointA (array) [x,y]: coordinates
@@ -59,15 +59,6 @@ const bezierCommand = (point, i, a) => {
   return `C ${cps[0]},${cps[1]} ${cpe[0]},${cpe[1]} ${point[0]},${point[1]}`
 }
 
-// Render the svg <path> element
-// I:  - points (array): points coordinates
-//     - command (function)
-//       I:  - point (array) [x,y]: current point coordinates
-//           - i (integer): index of 'point' in the array 'a'
-//           - a (array): complete array of points coordinates
-//       O:  - (string) a svg path command
-// O:  - (string): a Svg <path> element
-// TODO: make stateless
 const Link = ({
   points,
   onLinkMouseDown,
@@ -122,7 +113,7 @@ const Link = ({
 
 export default connect(
   (state, { points }) => ({
-    points: linkPointsByEditorKeys(points)(state),
+    points: linkPointsByEditorKeysSelector(points)(state),
   }),
   {
     onLinkMouseDown,

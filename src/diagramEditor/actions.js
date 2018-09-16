@@ -22,8 +22,9 @@ import { shortcuts } from './shortcuts'
 import { linkPointsSelector } from './linkPoints/selectors'
 import { PATH_LINK_POINTS } from './linkPoints/state'
 import { keyboardEventToString } from './diagramUtils'
+import { checkpoint } from '../generalActions'
 
-import type { State, Dispatch, GetState, Logger, GenericAction } from '../flow/reduxTypes'
+import type { State, Dispatch, GetState, Logger } from '../flow/reduxTypes'
 import type { Path, EditorKey } from '../flow/commonTypes'
 import type { Shortcut } from './shortcuts'
 
@@ -50,13 +51,6 @@ const handleKeyStroke = (event: KeyboardEvent) => (
   const shortcut = shortcuts.find((shortcut: Shortcut) => shortcut.keyStroke === eventKeyStroke)
   if (shortcut) shortcut.action(dispatch, getState)
 }
-
-// TODO: move to generic actions
-export const checkpoint = (): GenericAction<*> => ({
-  type: 'Trigger save',
-  undoable: true,
-  reducer: (state: State) => state,
-})
 
 export const initializeEditor = () => (dispatch: Dispatch, getState: GetState, logger: Logger) => {
   logger.log('Initialize editor')

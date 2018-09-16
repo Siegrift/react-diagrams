@@ -9,7 +9,7 @@ import { addPointToCurrentLink, addLink } from '../links/actions'
 import { isInvalidLink } from '../links/linkUtils'
 import { PATH_PORTS } from './state'
 import { portsSelector } from './selectors'
-import { checkpoint } from '../actions'
+import { checkpoint } from '../../generalActions'
 
 import type { EditorKey } from '../../flow/commonTypes'
 import type { Dispatch, GetState, State } from '../../flow/reduxTypes'

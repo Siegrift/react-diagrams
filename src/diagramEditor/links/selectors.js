@@ -16,7 +16,6 @@ export const currentLinkSelector = (state: State) => get(state, PATH_CURRENT_LIN
 export const linksSelector = (state: State) => get(state, PATH_LINKS)
 export const currentLinkPointsSelector = (state: State) => get(state, PATH_CURRENT_LINK_POINTS)
 
-// TODO: make a selector
 export const getLinkByEditorKey = (state: State, editorKey: EditorKey) =>
   get(state, getLinkPathByEditorKey(editorKey))
 

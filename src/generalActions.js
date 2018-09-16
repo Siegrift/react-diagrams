@@ -2,7 +2,7 @@
 import { setIn } from './imuty'
 
 import type { Path } from './flow/commonTypes'
-import type { State } from './flow/reduxTypes'
+import type { State, GenericAction } from './flow/reduxTypes'
 
 type SetValueOptions = { type?: string, undoable?: boolean, loggable?: boolean }
 
@@ -22,4 +22,10 @@ export const setValueAt = (path: Path, value: any, other?: SetValueOptions) => (
   undoable: isUndoable(other),
   loggable: isLoggable(other),
   reducer: (state: State) => setIn(state, path, value),
+})
+
+export const checkpoint = (): GenericAction<*> => ({
+  type: 'Trigger save',
+  undoable: true,
+  reducer: (state: State) => state,
 })

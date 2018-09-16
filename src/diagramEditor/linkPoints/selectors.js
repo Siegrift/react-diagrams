@@ -13,8 +13,7 @@ import type { LinkState, Link } from '../links/state'
 export const linkPointsSelector = (state: State) => get(state, PATH_LINK_POINTS)
 export const linkPointByEditorKeySelector = (editorKey: EditorKey) =>
   createSelector(linkPointsSelector, (linkPoints: LinkPointsState) => linkPoints[editorKey])
-// TODO: add selector suffix
-export const linkPointsByEditorKeys = (editorKeys: EditorKey[]) =>
+export const linkPointsByEditorKeysSelector = (editorKeys: EditorKey[]) =>
   createSelector(linkPointsSelector, (linkPoints: LinkPointsState) =>
     editorKeys.map((key: EditorKey) => linkPoints[key])
   )

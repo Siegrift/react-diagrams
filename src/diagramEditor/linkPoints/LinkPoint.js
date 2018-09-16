@@ -5,7 +5,6 @@ import { PATH_POINT_RADIUS, SELECTED_PATH_POINT_RADIUS } from '../../constants'
 import { onPointMouseDown } from './actions'
 import { connect } from 'react-redux'
 
-// TODO: make stateless
 const LinkPoint = ({ point, onPointMouseDown }) => (
   <circle
     className={classNames('LinkPoint', {

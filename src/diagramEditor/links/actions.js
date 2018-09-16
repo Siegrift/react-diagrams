@@ -9,7 +9,7 @@ import { distance } from './linkUtils'
 import { createDefaultLinkPoint } from '../linkPoints/linkPointUtils'
 import { PATH_LINK_POINTS } from '../linkPoints/state'
 import { getLinkByEditorKey, linksToMoveSelector } from './selectors'
-import { linkPointsByEditorKeys, linkPointsSelector } from '../linkPoints/selectors'
+import { linkPointsByEditorKeysSelector, linkPointsSelector } from '../linkPoints/selectors'
 
 import type { CurrentLink, Link } from './state'
 import type { LinkPoint } from '../linkPoints/state'
@@ -23,7 +23,7 @@ const addPointToLink = (linkKey: EditorKey, event: MouseEvent) => ({
   reducer: (state: State) => {
     const rawPoint = { x: event.clientX, y: event.clientY }
     const linkPointKeys = [...getLinkByEditorKey(state, linkKey).path]
-    const path = linkPointsByEditorKeys(linkPointKeys)(state)
+    const path = linkPointsByEditorKeysSelector(linkPointKeys)(state)
     const point = relativeMousePoint(state, rawPoint)
     const { pos } = path.reduce(
       (acc: Object, value: LinkPoint, index: number) => {

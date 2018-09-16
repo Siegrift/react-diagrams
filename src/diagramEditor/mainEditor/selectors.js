@@ -31,7 +31,6 @@ export const selectedNodesSelector = createSelector(
   }
 )
 
-// TODO: make a selector
 export const relativeMousePoint = (state: State, { x, y }: Position) => {
   const boundingRect = editorBoundsSelector(state)
   const zoom = zoomSelector(state),

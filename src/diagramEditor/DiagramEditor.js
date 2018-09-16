@@ -13,7 +13,9 @@ import MainEditor from './mainEditor/MainEditor'
 import { bindActionCreators } from 'redux'
 import { shallowEqual } from '../utils'
 import { apiExportGraph } from './editorApi'
+
 import type { State, Dispatch } from '../flow/reduxTypes'
+import type { Schema } from '../flow/schemaTypes'
 import type { Dispatch as GeneralDispatch } from 'redux'
 
 // TODO: TBD
@@ -29,7 +31,7 @@ type Props = {
   className: string,
   topbarHeight: number,
   sidebarWidth: number,
-  schema: number,
+  schema: Schema,
 }
 
 class DiagramEditor extends React.Component<Props> {

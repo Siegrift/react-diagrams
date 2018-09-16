@@ -20,6 +20,7 @@ import {
 import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
 import { currentLinkSelector, linksSelector } from '../links/selectors'
 import { widgetsSelector } from '../widgets/selectors'
+import { addPointToCurrentLink } from '../links/actions'
 import WidgetEnhancer from '../widgets/WidgetEnhancer'
 import Link from '../links/Link'
 import { createDefaultLinkPoint } from '../linkPoints/linkPointUtils'
@@ -40,6 +41,7 @@ const MainEditor = ({
   links,
   cursor,
   bounds,
+  addPointToCurrentLink,
 }) => (
   <div
     ref={(ref) => {
@@ -60,7 +62,9 @@ const MainEditor = ({
     onMouseMove={(e) => onEditorMouseMove({ x: e.clientX, y: e.clientY })}
     onMouseDown={(e) => {
       e.stopPropagation()
-      onEditorMouseDown({ x: e.clientX, y: e.clientY })
+      // for some strange bug mouse event on current link is not fired reliably in the Link
+      if (currentLink) addPointToCurrentLink({ x: e.clientX, y: e.clientY })
+      else onEditorMouseDown({ x: e.clientX, y: e.clientY })
     }}
     onMouseUp={(e) => onEditorMouseUp()}
     onWheel={(e) => {
@@ -84,7 +88,6 @@ const MainEditor = ({
           currentLink
           points={currentLink.path}
           selected
-          // TODO: this reserves unique id too often
           cursor={createDefaultLinkPoint(cursor, false)}
         />
       )}
@@ -119,5 +122,6 @@ export default connect(
     onEditorMouseDown,
     onEditorMouseUp,
     updateZoom,
+    addPointToCurrentLink,
   }
 )(MainEditor)

@@ -88,9 +88,9 @@ const Link = ({
   return (
     <g>
       <defs>
-        <marker id="arrow" markerWidth="7" markerHeight="7" refX="1" refY="3" orient="auto">
+        <marker id="arrow" markerWidth="5" markerHeight="5" refX="1" refY="3" orient="auto">
           <path
-            d="M1,1 L1,6 L5,3 L1,1"
+            d="M1,1 L1,5 L5,3 L1,1"
             className={classNames({
               Marker__End: selected,
             })}
@@ -101,12 +101,16 @@ const Link = ({
         markerEnd="url(#arrow)"
         className={classNames('Editor__Inner__Svg__Path', {
           Editor__Inner__Svg__Path__Selected: selected,
+          hoverable: !currentLink,
         })}
         d={d}
         onMouseDown={(e) => {
-          e.stopPropagation()
-          if (currentLink) addPointToCurrentLink({ x: e.clientX, y: e.clientY })
-          else onLinkMouseDown(e, editorKey)
+          // for some strange bug the event was not fired on a current link
+          // mouse down event for current link is handled in MainEditor
+          if (!currentLink) {
+            onLinkMouseDown(e, editorKey)
+            e.stopPropagation()
+          }
         }}
       />
       {mergedPoints.map((point) => (

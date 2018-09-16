@@ -25,9 +25,6 @@
     fill: none;
     stroke: grey;
     stroke-width: 4;
-    &:hover {
-      stroke-width: 5;
-    }
     &__Selected {
       stroke: rgb(0, 192, 255) !important;
       stroke-dasharray: 10, 2;
@@ -41,5 +38,11 @@
         }
       }
     }
+  }
+}
+
+.hoverable {
+  &:hover {
+    stroke-width: 5;
   }
 }

@@ -246,7 +246,7 @@ export const setSelectedPort = (
         : {
           source: editorKey,
           path: [],
-          destination: undefined,
+          target: undefined,
         }
     ),
 })

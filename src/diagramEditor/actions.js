@@ -134,7 +134,7 @@ export const deleteCurrentSelection = () => ({
           newLinks = reduce(
             newLinks,
             (acc: Object, link: any, linkKey: EditorKey) => {
-              if (widgetPorts.includes(link.source) || widgetPorts.includes(link.destination)) {
+              if (widgetPorts.includes(link.source) || widgetPorts.includes(link.target)) {
                 return acc
               }
               return { ...acc, [linkKey]: link }

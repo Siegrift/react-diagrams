@@ -34,8 +34,8 @@ export const createPorts = (
 export const isValidLinkDefault = (
   sourcePort: Port,
   sourceWidget: Widget,
-  destinationPort: Port,
-  destinationWidget: Widget
+  targetPort: Port,
+  targetWidget: Widget
 ) => {
-  return !sourcePort.isInPort && destinationPort.isInPort
+  return !sourcePort.isInPort && targetPort.isInPort
 }

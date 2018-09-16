@@ -15,14 +15,14 @@ export const getLinkPointsPathByLinkKey = (linkKey: EditorKey): Path => [
 
 export type Link = Node & {
   source: EditorKey,
-  destination: EditorKey,
+  target: EditorKey,
   path: EditorKey[],
 }
 
 export type LinkState = { [key: EditorKey]: Link }
 export type CurrentLink = {
   source: EditorKey,
-  destination?: EditorKey,
+  target?: EditorKey,
   path: EditorKey[],
 }
 

@@ -77,7 +77,7 @@ export const addPointToCurrentLink = (point: Position, isUndoable?: boolean) => 
   },
 })
 
-export const addLink = (link: CurrentLink & { destination: EditorKey }) => ({
+export const addLink = (link: CurrentLink & { target: EditorKey }) => ({
   type: 'Add link',
   payload: link,
   undoable: false,

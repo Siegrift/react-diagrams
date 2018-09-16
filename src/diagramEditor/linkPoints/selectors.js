@@ -26,11 +26,11 @@ export const linkPointsToMoveSelector = createSelector(
   portsToMoveSelector,
   (linkPoints: LinkPointsState, links: LinkState, linksToMove: LinkState, ports: EditorKey[]) => {
     const movedPorts = new Set(ports)
-    // move link points of links, that have source or destination in dragged widgets
+    // move link points of links, that have source or target in dragged widgets
     const pointsToMove = map(links, (link: Link) =>
       concat(
         movedPorts.has(link.source) ? [link.path[0]] : [],
-        movedPorts.has(link.destination) ? [link.path[link.path.length - 1]] : []
+        movedPorts.has(link.target) ? [link.path[link.path.length - 1]] : []
       )
     )
     const movedByLinks = new Set(flatten(map(linksToMove, (link: Link) => link.path)))

@@ -14,12 +14,12 @@ export const distance = (p1: Position, p2: Position, p3: Position): number => {
 export const isInvalidLink = (
   state: State,
   sourceEditorKey: EditorKey,
-  destinationEditorKey: EditorKey,
+  targetEditorKey: EditorKey,
   linkChecker: Function
 ) => {
   const sourcePort = portByEditorKeySelector(state, sourceEditorKey)
   const sourceWidget = getWidgetByEditorKey(state, sourcePort.widgetEditorKey)
-  const destinationPort = portByEditorKeySelector(state, destinationEditorKey)
-  const destinationWidget = getWidgetByEditorKey(state, destinationPort.widgetEditorKey)
-  return !linkChecker(sourcePort, sourceWidget, destinationPort, destinationWidget)
+  const targetPort = portByEditorKeySelector(state, targetEditorKey)
+  const targetWidget = getWidgetByEditorKey(state, targetPort.widgetEditorKey)
+  return !linkChecker(sourcePort, sourceWidget, targetPort, targetWidget)
 }

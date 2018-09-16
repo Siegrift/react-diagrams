@@ -1,8 +1,8 @@
 import React from 'react'
 import classnames from 'classnames'
-import './_Widget.scss'
 import { map } from 'lodash'
 import Port from '../ports/Port'
+import './_Widget.scss'
 
 const Widget = ({
   className,
@@ -31,8 +31,16 @@ const Widget = ({
   >
     <p className="diagram-widget__name">{name}</p>
     <div className="ports">
-      <div className="ports__in">{map(inPorts, (port) => <Port {...port} isInPort />)}</div>
-      <div className="ports__out">{map(outPorts, (port) => <Port {...port} />)}</div>
+      <div className="ports__in">
+        {map(inPorts, (port) => (
+          <Port {...port} isInPort />
+        ))}
+      </div>
+      <div className="ports__out">
+        {map(outPorts, (port) => (
+          <Port {...port} />
+        ))}
+      </div>
     </div>
     {children}
   </div>

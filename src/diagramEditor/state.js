@@ -1,7 +1,6 @@
 // @flow
 import { get } from 'lodash'
 import { createSelector } from 'reselect'
-import { LOCAL_STORAGE_PATH } from '../constants'
 import { selectedNodesSelector } from './mainEditor/selectors'
 import { currentLinkSelector } from './links/selectors'
 
@@ -58,6 +57,3 @@ export const cancelableSelector = createSelector(
     return currentLink || selectedNodes.length
   }
 )
-
-export const loadAvailableSelector = (state: State) =>
-  localStorage.getItem(LOCAL_STORAGE_PATH) !== null

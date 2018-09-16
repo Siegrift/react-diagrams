@@ -2,7 +2,8 @@ import React from 'react'
 import classnames from 'classnames'
 import './_Port.scss'
 import { connect } from 'react-redux'
-import { isValidLinkDefault, onPortMouseDown } from './actions.js'
+import { onPortMouseDown } from './actions'
+import { isValidLinkDefault } from './portUtils'
 
 const Port = ({ className, isInPort, name, type, editorKey, onPortMouseDown, isValidLink }) => {
   return (

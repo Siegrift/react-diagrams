@@ -1,24 +1,24 @@
+// @flow
 import { currentLinkSelector } from '../links/selectors'
 import { concat } from 'lodash'
 
 import { setIn } from '../../imuty'
 
 import { cancelCurrentSelection, setSelectedPort } from '../mainEditor/actions'
-import { addPointToCurrentLink, addLink, isInvalidLink } from '../links/actions'
+import { addPointToCurrentLink, addLink } from '../links/actions'
+import { isInvalidLink } from '../links/linkUtils'
 import { PATH_PORTS } from './state'
 import { portsSelector } from './selectors'
 import { checkpoint } from '../actions'
 
-export const isValidLinkDefault = (
-  sourcePort,
-  sourceWidget,
-  destinationPort,
-  destinationWidget
-) => {
-  return !sourcePort.isInPort && destinationPort.isInPort
-}
+import type { EditorKey } from '../../flow/commonTypes'
+import type { Dispatch, GetState, State } from '../../flow/reduxTypes'
+import type { Port } from './state'
 
-export const onPortMouseDown = (editorKey, event, linkChecker) => (dispatch, getState) => {
+export const onPortMouseDown = (editorKey: EditorKey, event: MouseEvent, linkChecker: Function) => (
+  dispatch: Dispatch,
+  getState: GetState
+) => {
   const currentLink = currentLinkSelector(getState())
   const point = { x: event.clientX, y: event.clientY }
   dispatch(cancelCurrentSelection())
@@ -34,15 +34,15 @@ export const onPortMouseDown = (editorKey, event, linkChecker) => (dispatch, get
   }
 }
 
-export const addPorts = (inPorts, outPorts) => ({
+export const addPorts = (inPorts: Port[], outPorts: Port[]) => ({
   type: 'Add ports',
   undoable: false,
   payload: { inPorts, outPorts },
-  reducer: (state) => {
-    const ports = concat(inPorts, outPorts)
+  reducer: (state: State) => {
+    const ports: Port[] = concat(inPorts, outPorts)
     return setIn(state, PATH_PORTS, {
       ...portsSelector(state),
-      ...ports.reduce((acc, port) => {
+      ...ports.reduce((acc: Object, port: Port) => {
         return { ...acc, [port.editorKey]: port }
       }, {}),
     })

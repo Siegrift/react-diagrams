@@ -12,8 +12,7 @@ export type Port = SchemaPort & {
   isInPort: boolean,
 }
 
-// FLOW: TBD, key is actually editorKey
-export type PortState = { [key: EditorKey]: any }
+export type PortState = { [key: EditorKey]: Port }
 
 // NOTE: Type needs to be manually updated when PATH changes
 export type AppliedPortState = {

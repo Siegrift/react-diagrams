@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.2.6",
-    "eslint": "^5.4.0",
+    "eslint": "^5.6.0",
     "eslint-config-vacuumlabs": "^1.5.0",
     "eslint-plugin-flowtype": "^2.50.0",
     "eslint-plugin-import": "^2.14.0",

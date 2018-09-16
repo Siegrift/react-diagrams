@@ -1,3 +1,4 @@
+// @flow
 import { pick, reduce, uniqueId } from 'lodash'
 import { setIn, multiSetIn } from '../../imuty'
 import { MIN_ZOOM } from '../../constants'
@@ -26,17 +27,30 @@ import {
 import { PATH_LINK_POINTS, linkPointPathByEditorKey } from '../linkPoints/state'
 import { setValueAt } from '../../generalActions'
 
-export const setDragging = (dragging) => ({
-  type: `Set dragging to ${dragging}`,
+import type { State, Dispatch, GetState } from '../../flow/reduxTypes'
+import type { Position, EditorKey, BoundingBox } from '../../flow/commonTypes'
+import type { Command } from '../../flow/schemaTypes'
+import type { Port } from '../ports/state'
+import type { Link } from '../links/state'
+import type { Widget } from '../widgets/state'
+import type { LinkPoint } from '../linkPoints/state'
+
+export const setDragging = (dragging: boolean) => ({
+  type: `Set dragging to ${dragging.toString()}`,
   payload: dragging,
-  reducer: (state) => setIn(state, PATH_DRAGGING, dragging),
+  reducer: (state: State) => setIn(state, PATH_DRAGGING, dragging),
 })
 
-const addWidget = (command, pos, portKeys, widgetEditorKey) => ({
+const addWidget = (
+  command: Command,
+  pos: Position,
+  portKeys: { in: EditorKey[], out: EditorKey[] },
+  widgetEditorKey: EditorKey
+) => ({
   type: 'Add widget to editor',
   payload: { command, pos, portKeys, widgetEditorKey },
   undoable: true,
-  reducer: (state) => {
+  reducer: (state: State) => {
     return setIn(state, getWidgetPathByEditorKey(widgetEditorKey), {
       ...pick(command, ['name', 'desc', 'color']),
       inPortKeys: portKeys.in,
@@ -49,7 +63,10 @@ const addWidget = (command, pos, portKeys, widgetEditorKey) => ({
 })
 
 // TODO: move  to widget actions
-export const onWidgetDrop = (command, pos) => (dispatch, getState) => {
+export const onWidgetDrop = (command: Command, pos: Position) => (
+  dispatch: Dispatch,
+  getState: GetState
+) => {
   const widgetEditorKey = uniqueId()
   const { inPorts, outPorts } = createPorts(command, widgetEditorKey)
   // TODO: why exactly has to be this called?
@@ -60,8 +77,8 @@ export const onWidgetDrop = (command, pos) => (dispatch, getState) => {
       command,
       pos,
       {
-        in: inPorts.map((p) => p.editorKey),
-        out: outPorts.map((p) => p.editorKey),
+        in: inPorts.map((p: Port) => p.editorKey),
+        out: outPorts.map((p: Port) => p.editorKey),
       },
       widgetEditorKey
     )
@@ -70,15 +87,18 @@ export const onWidgetDrop = (command, pos) => (dispatch, getState) => {
 
 export const cancelCurrentSelection = () => ({
   type: 'Cancel current selection',
-  reducer: (state) => {
+  reducer: (state: State) => {
     const widgets = reduce(
       widgetsSelector(state),
-      (acc, value, key) => ({ ...acc, [key]: { ...value, selected: false } }),
+      (acc: Object, value: Widget, key: EditorKey) => ({
+        ...acc,
+        [key]: { ...value, selected: false },
+      }),
       {}
     )
     const links = reduce(
       linksSelector(state),
-      (acc, value, key) => ({
+      (acc: Object, value: Link, key: EditorKey) => ({
         ...acc,
         [key]: {
           ...value,
@@ -89,7 +109,7 @@ export const cancelCurrentSelection = () => ({
     )
     const linkPoints = reduce(
       linkPointsSelector(state),
-      (acc, value, key) => ({
+      (acc: Object, value: LinkPoint, key: EditorKey) => ({
         ...acc,
         [key]: {
           ...value,
@@ -107,11 +127,11 @@ export const cancelCurrentSelection = () => ({
   },
 })
 
-export const addToCurrentSelection = (nodeKey) => ({
+export const addToCurrentSelection = (nodeKey: EditorKey) => ({
   type: 'Add to current selection',
   undoable: true,
   payload: nodeKey,
-  reducer: (state) => {
+  reducer: (state: State) => {
     let newState = state
     if (getWidgetByEditorKey(newState, nodeKey)) {
       newState = setIn(
@@ -138,23 +158,28 @@ export const addToCurrentSelection = (nodeKey) => ({
   },
 })
 
-export const setSelectedNode = (nodeKey, onlyAppend) => (dispatch) => {
+export const setSelectedNode = (nodeKey: EditorKey, onlyAppend: boolean) => (
+  dispatch: Dispatch
+) => {
   if (!onlyAppend) dispatch(cancelCurrentSelection())
   if (nodeKey === -1) throw new Error('Use cancel current selection')
   dispatch(addToCurrentSelection(nodeKey))
   dispatch(setDragging(true))
 }
 
-export const setEditorBounds = (bounds) => ({
+export const setEditorBounds = (bounds: BoundingBox) => ({
   type: 'Set editor bounds',
   payload: bounds,
   loggable: false,
-  reducer: (state) => {
+  reducer: (state: State) => {
     return setIn(state, PATH_EDITOR_BOUNDS, bounds)
   },
 })
 
-export const onEditorMouseMove = (position) => (dispatch, getState) => {
+export const onEditorMouseMove = (position: Position) => (
+  dispatch: Dispatch,
+  getState: GetState
+) => {
   const previousCursor = cursorSelector(getState())
   dispatch(setValueAt(PATH_CURSOR, position, { loggable: false, undoable: false }))
   if (!previousCursor) return
@@ -184,20 +209,20 @@ export const onEditorMouseMove = (position) => (dispatch, getState) => {
 }
 
 // FIXME: this is sometimes called instead of onLinkMouseDoown
-export const onEditorMouseDown = (point) => (dispatch, getState) => {
+export const onEditorMouseDown = (point: Position) => (dispatch: Dispatch, getState: GetState) => {
   dispatch(setDragging(true))
   dispatch(cancelCurrentSelection())
 }
 
 export const onEditorMouseUp = () => ({
   type: 'Editor mouse up',
-  reducer: (state) => setIn(state, PATH_DRAGGING, false),
+  reducer: (state: State) => setIn(state, PATH_DRAGGING, false),
 })
 
-export const updateZoom = (zoomFactor) => ({
+export const updateZoom = (zoomFactor: number) => ({
   type: 'Update zoom',
   payload: { zoomFactor },
-  reducer: (state) =>
+  reducer: (state: State) =>
     setIn(
       state,
       PATH_ZOOM,
@@ -205,10 +230,14 @@ export const updateZoom = (zoomFactor) => ({
     ),
 })
 
-export const setSelectedPort = (editorKey, point, undoable) => ({
+export const setSelectedPort = (
+  editorKey: EditorKey | -1,
+  point?: Position,
+  undoable?: boolean
+) => ({
   type: 'Set selected port',
-  payload: { editorKey, point },
-  reducer: (state) =>
+  payload: { editorKey, point, undoable },
+  reducer: (state: State) =>
     setIn(
       state,
       PATH_CURRENT_LINK,

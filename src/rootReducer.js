@@ -1,10 +1,10 @@
+// @flow
 import getInitialState from './initialState'
 
-const rootReducer = (state = getInitialState(), action) => {
+import type { State, GenericAction } from './flow/reduxTypes'
+
+const rootReducer = (state: State = getInitialState(), action: GenericAction<*>) => {
   if (!action.reducer) return state // fallback for actions from different sources
-  if (action.path) {
-    throw new Error(`Support for paths have been removed! (type: ${action.type})`)
-  }
   return action.reducer(state, action.payload)
 }
 

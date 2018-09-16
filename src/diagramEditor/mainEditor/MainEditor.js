@@ -1,16 +1,14 @@
 import React from 'react'
 import classnames from 'classnames'
-import './_MainEditor.scss'
+import { map, isEqual } from 'lodash'
 import { connect } from 'react-redux'
-import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
-import { currentLinkSelector, linksSelector } from '../links/selectors'
 import {
   zoomSelector,
   offsetSelector,
   relativeCursorPointSelector,
   editorBoundsSelector,
 } from './selectors'
-import { widgetsSelector } from '../widgets/selectors'
+import { extractBoundingBox } from './mainEditorUtils'
 import {
   onWidgetDrop,
   onEditorMouseDown,
@@ -19,11 +17,13 @@ import {
   setEditorBounds,
   updateZoom,
 } from './actions'
+import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
+import { currentLinkSelector, linksSelector } from '../links/selectors'
+import { widgetsSelector } from '../widgets/selectors'
 import WidgetEnhancer from '../widgets/WidgetEnhancer'
 import Link from '../links/Link'
-import { map, isEqual } from 'lodash'
 import { createDefaultLinkPoint } from '../linkPoints/linkPointUtils'
-import { extractBoundingBox } from './mainEditorUtils'
+import './_MainEditor.scss'
 
 const MainEditor = ({
   schema,

@@ -19,11 +19,11 @@ import {
 import { selectedNodesSelector } from '../mainEditor/selectors'
 import {
   cancelableSelector,
-  loadAvailableSelector,
   redoableSelector,
   topbarHeightSelector,
   undoableSelector,
 } from '../state'
+import { isLoadingAvailable } from '../diagramUtils'
 import PanelItem from './panelItem/PanelItem'
 
 const TopPanel = ({
@@ -38,8 +38,6 @@ const TopPanel = ({
   currentSelection,
   localStorageSave,
   localStorageLoad,
-  loadAvailable,
-  formatDiagrams,
 }) => (
   <div className="TopPanel" style={{ height: topbarHeight }}>
     <PanelItem text="Undo" onClick={undo} disabled={!undoable}>
@@ -57,7 +55,7 @@ const TopPanel = ({
     <PanelItem text="Save" onClick={localStorageSave}>
       <SaveIcon />
     </PanelItem>
-    <PanelItem text="Load" onClick={localStorageLoad} disabled={!loadAvailable}>
+    <PanelItem text="Load" onClick={localStorageLoad} disabled={!isLoadingAvailable()}>
       <LoadIcon />
     </PanelItem>
   </div>
@@ -70,7 +68,6 @@ export default connect(
     redoable: redoableSelector(state),
     cancelable: cancelableSelector(state),
     currentSelection: selectedNodesSelector(state),
-    loadAvailable: loadAvailableSelector(state),
   }),
   {
     undo,

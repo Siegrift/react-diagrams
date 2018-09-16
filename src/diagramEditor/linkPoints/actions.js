@@ -5,10 +5,10 @@ import { mergeIn } from '../../imuty'
 import { PATH_LINK_POINTS } from './state'
 
 import type { EditorKey, Position } from '../../flow/commonTypes'
-import type { Thunk, Dispatch, GenericAction, State } from '../../flow/reduxTypes'
+import type { Dispatch, GenericAction, State } from '../../flow/reduxTypes'
 import type { LinkPoint } from './state'
 
-export const onPointMouseDown = (event: MouseEvent, editorKey: EditorKey): Thunk => (
+export const onPointMouseDown = (event: MouseEvent, editorKey: EditorKey) => (
   dispatch: Dispatch
 ) => {
   dispatch(setDragging(true))

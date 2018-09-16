@@ -7,12 +7,16 @@ export type State = InitialState
 export type SegmentReducer<Segment, Payload> = (state: Segment, payload: Payload) => Segment
 export type GenericAction<Payload> = {
   type: string,
-  payload: Payload,
+  payload?: Payload,
   reducer: SegmentReducer<State, Payload>,
   undoable?: boolean,
   loggable?: boolean,
 }
 
-export type Dispatch = (action: GenericAction<*>) => null
+export type Dispatch = (action: GenericAction<*> | Function) => null
 export type GetState = () => State
-export type Thunk = (dispatch: Dispatch, getState: any) => ?Promise<void>
+export type Logger = () => void
+export type MiddlewareProps = {
+  +dispatch: Dispatch,
+  +getState: GetState,
+}

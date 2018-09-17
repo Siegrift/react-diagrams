@@ -1,7 +1,7 @@
 // @flow
 import { mergeIn } from '../../imuty'
 import { setDragging, setSelectedNode } from '../mainEditor/actions'
-import { widgetsToMoveSelector } from './selectors'
+import { selectedWidgetsSelector } from './selectors'
 import { PATH_WIDGETS } from './state'
 
 import type { State, Dispatch } from '../../flow/reduxTypes'
@@ -19,7 +19,7 @@ export const moveSelectedWidgets = (diff: Position) => ({
   loggable: false,
   undoable: false,
   reducer: (state: State) => {
-    const toMove = widgetsToMoveSelector(state)
+    const toMove = selectedWidgetsSelector(state)
     return mergeIn(
       state,
       PATH_WIDGETS,

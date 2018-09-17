@@ -4,7 +4,7 @@ import { setIn, multiSetIn } from '../../imuty'
 import { MIN_ZOOM } from '../../constants'
 import { PATH_CURSOR, PATH_DRAGGING, PATH_EDITOR_BOUNDS, PATH_ZOOM, PATH_OFFSET } from './state'
 import { PATH_LINKS, getLinkPathByEditorKey, PATH_CURRENT_LINK } from '../links/state'
-import { getLinkByEditorKey, linksSelector, linksToMoveSelector } from '../links/selectors'
+import { getLinkByEditorKey, linksSelector, selectedLinksSelector } from '../links/selectors'
 import { moveSelectedLinks } from '../links/actions'
 import {
   zoomSelector,
@@ -18,7 +18,7 @@ import { addPorts } from '../ports/actions'
 import { moveSelectedWidgets } from '../widgets/actions'
 import { moveSelectedLinkPoints } from '../linkPoints/actions'
 import { getWidgetPathByEditorKey, PATH_WIDGETS } from '../widgets/state'
-import { widgetsSelector, getWidgetByEditorKey, widgetsToMoveSelector } from '../widgets/selectors'
+import { widgetsSelector, getWidgetByEditorKey, selectedWidgetsSelector } from '../widgets/selectors'
 import {
   linkPointsSelector,
   linkPointByEditorKeySelector,
@@ -186,12 +186,12 @@ export const onEditorMouseMove = (position: Position) => (
     y: (position.y - previousCursor.y) / zoomSelector(getState()),
   }
   if (draggingSelector(getState())) {
-    if (widgetsToMoveSelector(getState()).length) dispatch(moveSelectedWidgets(diff))
-    if (linksToMoveSelector(getState()).length) dispatch(moveSelectedLinks(diff))
+    if (selectedWidgetsSelector(getState()).length) dispatch(moveSelectedWidgets(diff))
+    if (selectedLinksSelector(getState()).length) dispatch(moveSelectedLinks(diff))
     if (linkPointsToMoveSelector(getState()).length) dispatch(moveSelectedLinkPoints(diff))
     if (
-      !widgetsToMoveSelector(getState()).length &&
-      !linksToMoveSelector(getState()).length &&
+      !selectedWidgetsSelector(getState()).length &&
+      !selectedLinksSelector(getState()).length &&
       !linkPointsToMoveSelector(getState()).length
     ) {
       const offset = offsetSelector(getState())
@@ -206,7 +206,6 @@ export const onEditorMouseMove = (position: Position) => (
   }
 }
 
-// FIXME: this is sometimes called instead of onLinkMouseDoown
 export const onEditorMouseDown = (point: Position) => (dispatch: Dispatch, getState: GetState) => {
   dispatch(setDragging(true))
   dispatch(cancelCurrentSelection())

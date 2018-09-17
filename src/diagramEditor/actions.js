@@ -1,6 +1,6 @@
 // @flow
+import { omit, map } from 'lodash'
 import { getIn, setIn, filterObject, multiSetIn } from '../imuty'
-import { concat, reduce } from 'lodash'
 import { LOCAL_STORAGE_PATH } from '../constants'
 import { saveFilters, undoRedoFilters } from '../objectFilterPaths'
 import {
@@ -12,20 +12,26 @@ import {
   redoableSelector,
   undoableSelector,
 } from './state'
-import { PATH_LINKS } from './links/state'
+import { PATH_PORTS } from './ports/state'
 import { PATH_WIDGETS } from './widgets/state'
-import { currentLinkSelector, linksSelector } from './links/selectors'
-import { widgetsSelector } from './widgets/selectors'
+import { currentLinkSelector } from './links/selectors'
+import {
+  selectedWidgetsSelector,
+  selectedPortsSelector,
+  widgetsSelector,
+} from './widgets/selectors'
 import { cancelCurrentSelection, setSelectedPort } from './mainEditor/actions'
 import { selectedNodesSelector } from './mainEditor/selectors'
 import { shortcuts } from './shortcuts'
-import { linkPointsSelector } from './linkPoints/selectors'
-import { PATH_LINK_POINTS } from './linkPoints/state'
+import { portsSelector } from './ports/selectors'
 import { keyboardEventToString } from './diagramUtils'
-import { checkpoint } from '../generalActions'
+import { checkpoint, setValueAt } from '../generalActions'
+import { linksToDeleteSelector, linksSelector } from './links/selectors'
+import { PATH_LINKS } from './links/state'
+import { removeLinkPoints } from './linkPoints/actions'
 
 import type { State, Dispatch, GetState, Logger } from '../flow/reduxTypes'
-import type { Path, EditorKey } from '../flow/commonTypes'
+import type { Path, Node } from '../flow/commonTypes'
 import type { Shortcut } from './shortcuts'
 
 export const changeTopbarHeight = (height: number) => ({
@@ -113,50 +119,46 @@ export const cancelSelection = () => (dispatch: Dispatch, getState: GetState) =>
   }
 }
 
-// FIXME: deletion on links doesn't work, refactor same way as mouse move, rename selectors
-export const deleteCurrentSelection = () => ({
-  type: 'Delete current selection',
-  reducer: (state: State) => {
-    const selectedNodes = selectedNodesSelector(state)
-    let newState = state,
-      newLinks = linksSelector(state)
-    const newWidgets = reduce(
-      widgetsSelector(newState),
-      (acc: Object, widget: any, key: EditorKey) => {
-        if (widget.selected) {
-          const widgetPorts = concat(widget.inPortKeys, widget.outPortKeys)
-          newLinks = reduce(
-            newLinks,
-            (acc: Object, link: any, linkKey: EditorKey) => {
-              if (widgetPorts.includes(link.source) || widgetPorts.includes(link.target)) {
-                return acc
-              }
-              return { ...acc, [linkKey]: link }
-            },
-            {}
-          )
-          return acc
-        } else {
-          return { ...acc, [key]: widget }
-        }
-      },
-      {}
+export const deleteCurrentSelection = () => (
+  dispatch: Dispatch,
+  getState: GetState,
+  logger: Logger
+) => {
+  logger.log('Delete current selection')
+  dispatch(
+    setValueAt(
+      [],
+      multiSetIn(getState(),
+        // remove selected widgets
+        [
+          PATH_WIDGETS,
+          omit(
+            widgetsSelector(getState()),
+            map(selectedWidgetsSelector(getState()), (node: Node) => node.editorKey)
+          ),
+        ],
+        // remove selected widget ports
+        [
+          PATH_PORTS,
+          omit(
+            portsSelector(getState()),
+            map(selectedPortsSelector(getState()), (node: Node) => node.editorKey)
+          ),
+        ],
+        // remove selected links (link points are harder as they make changes also in links)
+        [
+          PATH_LINKS,
+          omit(
+            linksSelector(getState()),
+            map(linksToDeleteSelector(getState()), (node: Node) => node.editorKey)
+          ),
+        ]
+      ),
+      { loggable: false, undoable: false }
     )
-    // TODO: remove points and links with less than 2 points
-    const newLinkPoints = reduce(
-      linkPointsSelector(newState),
-      (acc: Object, linkPoint: any, key: EditorKey) => {
-        if (selectedNodes.includes(key)) return acc
-        else return { ...acc, [key]: { ...linkPoint } }
-      },
-      {}
-    )
-    newState = setIn(newState, PATH_WIDGETS, newWidgets)
-    newState = setIn(newState, PATH_LINKS, newLinks)
-    newState = setIn(newState, PATH_LINK_POINTS, newLinkPoints)
-    return newState
-  },
-})
+  )
+  dispatch(removeLinkPoints())
+}
 
 export const deleteSelection = () => (dispatch: Dispatch, getState: GetState) => {
   const state = getState()

@@ -1,14 +1,14 @@
 // @flow
 import { setIn, multiSetIn, mergeIn } from '../../imuty'
 import { PATH_CURRENT_LINK_POINTS, PATH_LINKS, getLinkPointsPathByLinkKey } from './state'
-import { currentLinkPointsSelector } from './selectors'
+import { currentLinkPointsSelector, linksToDeleteSelector } from './selectors'
 import { relativeMousePoint } from '../mainEditor/selectors'
 import { setDragging, setSelectedNode } from '../mainEditor/actions'
 import { uniqueId, map, flatten } from 'lodash'
 import { distance } from './linkUtils'
 import { createDefaultLinkPoint } from '../linkPoints/linkPointUtils'
 import { PATH_LINK_POINTS } from '../linkPoints/state'
-import { getLinkByEditorKey, linksToMoveSelector } from './selectors'
+import { getLinkByEditorKey, selectedLinksSelector } from './selectors'
 import { linkPointsByEditorKeysSelector, linkPointsSelector } from '../linkPoints/selectors'
 
 import type { CurrentLink, Link } from './state'
@@ -65,7 +65,7 @@ export const onLinkMouseDown = (event: MouseEvent, editorKey: EditorKey) => (
 
 export const addPointToCurrentLink = (point: Position, isUndoable?: boolean) => ({
   type: 'Add point to current link',
-  payload: {point, isUndoable},
+  payload: { point, isUndoable },
   undoable: isUndoable !== undefined ? isUndoable : true,
   reducer: (state: State) => {
     const linkPoint = createDefaultLinkPoint(relativeMousePoint(state, point))
@@ -93,7 +93,7 @@ export const moveSelectedLinks = (diff: Position) => ({
   loggable: false,
   undoable: false,
   reducer: (state: State) => {
-    const linkstoMove = linksToMoveSelector(state)
+    const linkstoMove = selectedLinksSelector(state)
     const pointsToMove = flatten(map(linkstoMove, (link: Link) => link.path.slice(1, -1)))
     const linkPoints = linkPointsSelector(state)
     return mergeIn(

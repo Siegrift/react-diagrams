@@ -2,8 +2,8 @@
 import { get, map, filter, concat, pick, flatten } from 'lodash'
 import { PATH_LINK_POINTS } from './state'
 import { createSelector } from 'reselect'
-import { portsToMoveSelector } from '../widgets/selectors'
-import { linksSelector, linksToMoveSelector } from '../links/selectors'
+import { selectedPortsSelector } from '../widgets/selectors'
+import { linksSelector, selectedLinksSelector, linksToDeleteSelector } from '../links/selectors'
 
 import type { State } from '../../flow/reduxTypes'
 import type { EditorKey } from '../../flow/commonTypes'
@@ -21,8 +21,8 @@ export const linkPointsByEditorKeysSelector = (editorKeys: EditorKey[]) =>
 export const linkPointsToMoveSelector = createSelector(
   linkPointsSelector,
   linksSelector,
-  linksToMoveSelector,
-  portsToMoveSelector,
+  selectedLinksSelector,
+  selectedPortsSelector,
   (linkPoints: LinkPointsState, links: LinkState, linksToMove: LinkState, ports: EditorKey[]) => {
     const movedPorts = new Set(ports)
     // move link points of links, that have source or target in dragged widgets
@@ -42,5 +42,17 @@ export const linkPointsToMoveSelector = createSelector(
       }),
       ...pick(linkPoints, ...pointsToMove),
     })
+  }
+)
+
+export const linkPointsToDeleteSelector = createSelector(
+  linkPointsSelector,
+  linksToDeleteSelector,
+  (linkPoints: LinkPointsState, links: LinkState) => {
+    const linkPointPath = new Set(flatten(map(links, (link: Link) => link.path)))
+    return filter(
+      linkPoints,
+      (linkPoint: LinkPoint) => linkPoint.selected || linkPointPath.has(linkPoint.editorKey)
+    )
   }
 )

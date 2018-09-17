@@ -1,7 +1,7 @@
 // @flow
 import { setIn, multiSetIn, mergeIn } from '../../imuty'
 import { PATH_CURRENT_LINK_POINTS, PATH_LINKS, getLinkPointsPathByLinkKey } from './state'
-import { currentLinkPointsSelector, linksToDeleteSelector } from './selectors'
+import { currentLinkPointsSelector } from './selectors'
 import { relativeMousePoint } from '../mainEditor/selectors'
 import { setDragging, setSelectedNode } from '../mainEditor/actions'
 import { uniqueId, map, flatten } from 'lodash'

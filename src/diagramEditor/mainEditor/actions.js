@@ -18,7 +18,11 @@ import { addPorts } from '../ports/actions'
 import { moveSelectedWidgets } from '../widgets/actions'
 import { moveSelectedLinkPoints } from '../linkPoints/actions'
 import { getWidgetPathByEditorKey, PATH_WIDGETS } from '../widgets/state'
-import { widgetsSelector, getWidgetByEditorKey, selectedWidgetsSelector } from '../widgets/selectors'
+import {
+  widgetsSelector,
+  getWidgetByEditorKey,
+  selectedWidgetsSelector,
+} from '../widgets/selectors'
 import {
   linkPointsSelector,
   linkPointByEditorKeySelector,
@@ -181,9 +185,13 @@ export const onEditorMouseMove = (position: Position) => (
   const previousCursor = cursorSelector(getState())
   dispatch(setValueAt(PATH_CURSOR, position, { loggable: false, undoable: false }))
   if (!previousCursor) return
+  const rawDiff = {
+    x: position.x - previousCursor.x,
+    y: position.y - previousCursor.y,
+  }
   const diff = {
-    x: (position.x - previousCursor.x) / zoomSelector(getState()),
-    y: (position.y - previousCursor.y) / zoomSelector(getState()),
+    x: rawDiff.x / zoomSelector(getState()),
+    y: rawDiff.y / zoomSelector(getState()),
   }
   if (draggingSelector(getState())) {
     if (selectedWidgetsSelector(getState()).length) dispatch(moveSelectedWidgets(diff))
@@ -198,7 +206,7 @@ export const onEditorMouseMove = (position: Position) => (
       dispatch(
         setValueAt(
           PATH_OFFSET,
-          { x: offset.x + diff.x, y: offset.y + diff.y },
+          { x: offset.x + rawDiff.x, y: offset.y + rawDiff.y },
           { undoable: false, loggable: false }
         )
       )

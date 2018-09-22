@@ -2,7 +2,7 @@
 import { omit, map } from 'lodash'
 import { getIn, setIn, filterObject, multiSetIn } from '../imuty'
 import { LOCAL_STORAGE_PATH } from '../constants'
-import { saveFilters, undoRedoFilters } from '../objectFilterPaths'
+import { SAVE_FILTERS, UNDO_REDO_FILTERS } from '../objectFilterPaths'
 import {
   PATH_HISTORY,
   PATH_HISTORY_INDEX,
@@ -87,7 +87,7 @@ export const undo = () => ({
     const filteredState = history[index - 1]
     return multiSetIn(
       state,
-      ...undoRedoFilters.map((filter: Path) => [filter, getIn(filteredState, filter)]),
+      ...UNDO_REDO_FILTERS.map((filter: Path) => [filter, getIn(filteredState, filter)]),
       [PATH_HISTORY_INDEX, index - 1]
     )
   },
@@ -102,7 +102,7 @@ export const redo = () => ({
     const filteredState = history[index + 1]
     return multiSetIn(
       state,
-      ...undoRedoFilters.map((filter: Path) => [filter, getIn(filteredState, filter)]),
+      ...UNDO_REDO_FILTERS.map((filter: Path) => [filter, getIn(filteredState, filter)]),
       [PATH_HISTORY_INDEX, index + 1]
     )
   },
@@ -128,7 +128,8 @@ export const deleteCurrentSelection = () => (
   dispatch(
     setValueAt(
       [],
-      multiSetIn(getState(),
+      multiSetIn(
+        getState(),
         // remove selected widgets
         [
           PATH_WIDGETS,
@@ -172,7 +173,10 @@ export const deleteSelection = () => (dispatch: Dispatch, getState: GetState) =>
 
 export const localStorageSave = () => (dispatch: Dispatch, getState: GetState, logger: Logger) => {
   logger.log('Save editor state')
-  localStorage.setItem(LOCAL_STORAGE_PATH, JSON.stringify(filterObject(getState(), ...saveFilters)))
+  localStorage.setItem(
+    LOCAL_STORAGE_PATH,
+    JSON.stringify(filterObject(getState(), ...SAVE_FILTERS))
+  )
 }
 
 export const localStorageLoad = () => ({
@@ -182,7 +186,7 @@ export const localStorageLoad = () => ({
     const loadedFilteredState = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PATH))
     return multiSetIn(
       state,
-      ...saveFilters.map((filter: Path) => [filter, getIn(loadedFilteredState, filter)])
+      ...SAVE_FILTERS.map((filter: Path) => [filter, getIn(loadedFilteredState, filter)])
     )
   },
 })

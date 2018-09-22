@@ -40,22 +40,26 @@ const TopPanel = ({
   localStorageLoad,
 }) => (
   <div className="TopPanel" style={{ height: topbarHeight }}>
-    <PanelItem text="Undo" onClick={undo} disabled={!undoable}>
+    <PanelItem text="Krok späť" onClick={undo} disabled={!undoable}>
       <UndoIcon />
     </PanelItem>
-    <PanelItem text="Redo" onClick={redo} disabled={!redoable}>
+    <PanelItem text="Vykonať znova" onClick={redo} disabled={!redoable}>
       <RedoIcon />
     </PanelItem>
-    <PanelItem text="Cancel selection" onClick={cancelSelection} disabled={!cancelable}>
+    <PanelItem text="Zrušit označenie" onClick={cancelSelection} disabled={!cancelable}>
       <CancelIcon />
     </PanelItem>
-    <PanelItem text="Delete selected" onClick={deleteSelection} disabled={!currentSelection.length}>
+    <PanelItem
+      text="Vymazať označené"
+      onClick={deleteSelection}
+      disabled={!currentSelection.length}
+    >
       <DeleteIcon />
     </PanelItem>
-    <PanelItem text="Save" onClick={localStorageSave}>
+    <PanelItem text="Uložiť" onClick={localStorageSave}>
       <SaveIcon />
     </PanelItem>
-    <PanelItem text="Load" onClick={localStorageLoad} disabled={!isLoadingAvailable()}>
+    <PanelItem text="Načítať" onClick={localStorageLoad} disabled={!isLoadingAvailable()}>
       <LoadIcon />
     </PanelItem>
   </div>

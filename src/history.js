@@ -1,6 +1,6 @@
 // @flow
 import { addToHistory } from './diagramEditor/actions'
-import { undoRedoFilters } from './objectFilterPaths'
+import { UNDO_REDO_FILTERS } from './objectFilterPaths'
 import { filterObject } from './imuty'
 
 import type { Dispatch, MiddlewareProps, GenericAction } from './flow/reduxTypes'
@@ -15,7 +15,7 @@ const historyMiddleware = ({ dispatch, getState }: MiddlewareProps) => (next: Di
     action.undoable &&
     (typeof action.undoable !== 'function' || action.undoable(prevState, nextState))
   ) {
-    dispatch(addToHistory(filterObject(nextState, ...undoRedoFilters)))
+    dispatch(addToHistory(filterObject(nextState, ...UNDO_REDO_FILTERS)))
   }
   return null
 }

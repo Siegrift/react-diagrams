@@ -15,7 +15,7 @@ export type GenericAction<Payload> = {
 
 export type Dispatch = (action: GenericAction<*> | Function) => null
 export type GetState = () => State
-export type Logger = () => void
+export type Logger = { log: (message: string, payload?: Object) => null }
 export type MiddlewareProps = {
   +dispatch: Dispatch,
   +getState: GetState,

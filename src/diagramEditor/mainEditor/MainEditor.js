@@ -26,6 +26,8 @@ import Link from '../links/Link'
 import { createDefaultLinkPoint } from '../linkPoints/linkPointUtils'
 import './_MainEditor.scss'
 
+const ZOOM_DELTA_MULTIPLIER = 0.00097
+
 const MainEditor = ({
   schema,
   widgets,
@@ -70,8 +72,14 @@ const MainEditor = ({
     onWheel={(e) => {
       e.preventDefault()
       e.stopPropagation()
-      // TODO: magic number
-      updateZoom(e.deltaY * 0.00097)
+      const bounds = e.currentTarget.getBoundingClientRect()
+      updateZoom(
+        {
+          x: e.clientX - bounds.left - bounds.width / 2,
+          y: e.clientY - bounds.top - bounds.height / 2,
+        },
+        e.deltaY * ZOOM_DELTA_MULTIPLIER
+      )
     }}
   >
     <svg

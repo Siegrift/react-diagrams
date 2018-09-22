@@ -29,9 +29,9 @@ import {
   linkPointsToMoveSelector,
 } from '../linkPoints/selectors'
 import { PATH_LINK_POINTS, linkPointPathByEditorKey } from '../linkPoints/state'
-import { setValueAt } from '../../generalActions'
+import { setValueAt, checkpoint } from '../../generalActions'
 
-import type { State, Dispatch, GetState } from '../../flow/reduxTypes'
+import type { State, Dispatch, GetState, Logger } from '../../flow/reduxTypes'
 import type { Position, EditorKey, BoundingBox } from '../../flow/commonTypes'
 import type { Command } from '../../flow/schemaTypes'
 import type { Port } from '../ports/state'
@@ -169,6 +169,14 @@ export const setSelectedNode = (nodeKey: EditorKey, onlyAppend: boolean) => (
   dispatch(setDragging(true))
 }
 
+export const setEditorOffset = (offset: Position) => ({
+  type: 'Set editor offset',
+  payload: offset,
+  undoable: false,
+  loggable: false,
+  reducer: (state: State) => setIn(state, PATH_OFFSET, offset),
+})
+
 export const setEditorBounds = (bounds: BoundingBox) => ({
   type: 'Set editor bounds',
   payload: bounds,
@@ -203,13 +211,7 @@ export const onEditorMouseMove = (position: Position) => (
       !linkPointsToMoveSelector(getState()).length
     ) {
       const offset = offsetSelector(getState())
-      dispatch(
-        setValueAt(
-          PATH_OFFSET,
-          { x: offset.x + rawDiff.x, y: offset.y + rawDiff.y },
-          { undoable: false, loggable: false }
-        )
-      )
+      dispatch(setEditorOffset({ x: offset.x + rawDiff.x, y: offset.y + rawDiff.y }))
     }
   }
 }
@@ -224,16 +226,28 @@ export const onEditorMouseUp = () => ({
   reducer: (state: State) => setIn(state, PATH_DRAGGING, false),
 })
 
-export const updateZoom = (zoomFactor: number) => ({
-  type: 'Update zoom',
-  payload: { zoomFactor },
-  reducer: (state: State) =>
-    setIn(
-      state,
-      PATH_ZOOM,
-      Math.max(zoomSelector(state) + zoomSelector(state) * zoomFactor, MIN_ZOOM)
-    ),
-})
+export const updateZoom = (cursor: Position, zoomFactor: number) => (
+  dispatch: Dispatch,
+  getState: GetState,
+  logger: Logger
+) => {
+  logger.log('Zoom to mouse position', { cursor, zoomFactor })
+  const offset = offsetSelector(getState())
+  const zoom = zoomSelector(getState())
+  dispatch(
+    setValueAt(PATH_ZOOM, Math.max(zoom * (1 - zoomFactor), MIN_ZOOM), {
+      undoable: false,
+      loggable: false,
+    })
+  )
+  dispatch(
+    setEditorOffset({
+      x: offset.x + (-offset.x + cursor.x) * zoomFactor,
+      y: offset.y - (-offset.y + cursor.y) * zoomFactor,
+    })
+  )
+  dispatch(checkpoint())
+}
 
 export const setSelectedPort = (
   editorKey: EditorKey | -1,

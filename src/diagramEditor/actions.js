@@ -6,8 +6,6 @@ import { SAVE_FILTERS, UNDO_REDO_FILTERS } from '../objectFilterPaths'
 import {
   PATH_HISTORY,
   PATH_HISTORY_INDEX,
-  PATH_SIDEBAR_WIDTH,
-  PATH_TOPBAR_HEIGHT,
   cancelableSelector,
   redoableSelector,
   undoableSelector,
@@ -33,18 +31,6 @@ import { removeLinkPoints } from './linkPoints/actions'
 import type { State, Dispatch, GetState, Logger } from '../flow/reduxTypes'
 import type { Path, Node } from '../flow/commonTypes'
 import type { Shortcut } from './shortcuts'
-
-export const changeTopbarHeight = (height: number) => ({
-  type: 'Change topbar height',
-  payload: height,
-  reducer: (state: State) => setIn(state, PATH_TOPBAR_HEIGHT, height),
-})
-
-export const changeSidebarWidth = (width: number) => ({
-  type: 'Change sidebar width',
-  payload: width,
-  reducer: (state: State) => setIn(state, PATH_SIDEBAR_WIDTH, width),
-})
 
 const handleKeyStroke = (event: KeyboardEvent) => (
   dispatch: Dispatch,

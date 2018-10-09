@@ -4,70 +4,75 @@ import './_TopPanel.scss'
 
 import UndoIcon from 'react-icons/lib/md/undo'
 import RedoIcon from 'react-icons/lib/md/redo'
-import CancelIcon from 'react-icons/lib/md/cancel'
 import DeleteIcon from 'react-icons/lib/md/delete'
 import SaveIcon from 'react-icons/lib/md/save'
 import LoadIcon from 'react-icons/lib/md/file-download'
-import {
-  cancelSelection,
-  deleteSelection,
-  localStorageLoad,
-  localStorageSave,
-  redo,
-  undo,
-} from '../actions'
+import { deleteSelection, localStorageLoad, localStorageSave, redo, undo } from '../actions'
 import { selectedNodesSelector } from '../mainEditor/selectors'
-import {
-  cancelableSelector,
-  redoableSelector,
-  topbarHeightSelector,
-  undoableSelector,
-} from '../state'
+import { cancelableSelector, redoableSelector, undoableSelector } from '../state'
 import { isLoadingAvailable } from '../diagramUtils'
-import PanelItem from './panelItem/PanelItem'
+
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import Typography from '@material-ui/core/Typography'
+import IconButton from '@material-ui/core/IconButton'
+import Tooltip from '@material-ui/core/Tooltip'
+
+const TopPanelItem = ({ disabled, onClick, text, children }) => (
+  <Tooltip title={text} enterDelay={500}>
+    <div>
+      <IconButton text={text} onClick={onClick} disabled={disabled} className="TopPanel__Item">
+        {children}
+      </IconButton>
+    </div>
+  </Tooltip>
+)
 
 const TopPanel = ({
-  topbarHeight,
   undo,
   redo,
   undoable,
   redoable,
-  cancelable,
-  cancelSelection,
   deleteSelection,
   currentSelection,
   localStorageSave,
   localStorageLoad,
 }) => (
-  <div className="TopPanel" style={{ height: topbarHeight }}>
-    <PanelItem text="Krok späť" onClick={undo} disabled={!undoable}>
-      <UndoIcon />
-    </PanelItem>
-    <PanelItem text="Vykonať znova" onClick={redo} disabled={!redoable}>
-      <RedoIcon />
-    </PanelItem>
-    <PanelItem text="Zrušit označenie" onClick={cancelSelection} disabled={!cancelable}>
-      <CancelIcon />
-    </PanelItem>
-    <PanelItem
-      text="Vymazať označené"
-      onClick={deleteSelection}
-      disabled={!currentSelection.length}
-    >
-      <DeleteIcon />
-    </PanelItem>
-    <PanelItem text="Uložiť" onClick={localStorageSave}>
-      <SaveIcon />
-    </PanelItem>
-    <PanelItem text="Načítať" onClick={localStorageLoad} disabled={!isLoadingAvailable()}>
-      <LoadIcon />
-    </PanelItem>
-  </div>
+  <AppBar position="static" className="TopPanel">
+    <Toolbar variant="dense">
+      <Typography variant="title" color="inherit">
+        Diagrams
+      </Typography>
+
+      <TopPanelItem onClick={undo} disabled={!undoable} text="Krok späť">
+        <UndoIcon />
+      </TopPanelItem>
+
+      <TopPanelItem onClick={redo} disabled={!redoable} text="Vykonať znova">
+        <RedoIcon />
+      </TopPanelItem>
+
+      <TopPanelItem
+        onClick={deleteSelection}
+        disabled={!currentSelection.length}
+        text="Vymazať označené"
+      >
+        <DeleteIcon />
+      </TopPanelItem>
+
+      <TopPanelItem onClick={localStorageSave} text="Uložiť">
+        <SaveIcon />
+      </TopPanelItem>
+
+      <TopPanelItem onClick={localStorageLoad} text="Načítať" disabled={!isLoadingAvailable()}>
+        <LoadIcon />
+      </TopPanelItem>
+    </Toolbar>
+  </AppBar>
 )
 
 export default connect(
   (state) => ({
-    topbarHeight: topbarHeightSelector(state),
     undoable: undoableSelector(state),
     redoable: redoableSelector(state),
     cancelable: cancelableSelector(state),
@@ -76,7 +81,6 @@ export default connect(
   {
     undo,
     redo,
-    cancelSelection,
     deleteSelection,
     localStorageSave,
     localStorageLoad,

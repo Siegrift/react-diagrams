@@ -9,14 +9,10 @@ import type { State } from '../flow/reduxTypes'
 import type { CurrentLink } from './links/state'
 
 export const PATH_APP = ['app']
-export const PATH_TOPBAR_HEIGHT = [...PATH_APP, 'topbarHeight']
-export const PATH_SIDEBAR_WIDTH = [...PATH_APP, 'sidebarWidth']
 export const PATH_HISTORY = [...PATH_APP, 'history']
 export const PATH_HISTORY_INDEX = [...PATH_APP, 'historyIndex']
 
 export type AppState = {
-  topbarHeight: number,
-  sidebarWidth: number,
   history: any[],
   historyIndex: number,
 }
@@ -26,17 +22,11 @@ export type AppliedAppState = { app: AppState }
 export const setInitialState = (state: StateDraft): StateDraft & AppliedAppState => ({
   ...state,
   [PATH_APP.toString()]: {
-    topbarHeight: 40,
-    sidebarWidth: 200,
     history: [],
     // -1 because when editor is initialized, we trigger a save (so there is a base history state)
     historyIndex: -1,
   },
 })
-
-// TODO: move to selectors
-export const topbarHeightSelector = (state: State) => get(state, PATH_TOPBAR_HEIGHT)
-export const sidebarWidthSelector = (state: State) => get(state, PATH_SIDEBAR_WIDTH)
 
 export const undoableSelector = (state: State) => {
   const index = get(state, PATH_HISTORY_INDEX)

@@ -6,8 +6,9 @@
   width: fit-content;
   height: fit-content;
   &__side-panel {
-    position: relative;
     width: inherit;
+    overflow: hidden;
+    position: relative;
     margin: 0.5em;
   }
   &__name {

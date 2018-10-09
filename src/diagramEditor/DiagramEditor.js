@@ -5,9 +5,8 @@ import TopPanel from './topPanel/TopPanel'
 import './_DiagramEditor.scss'
 import classnames from 'classnames'
 import { connectAdvanced } from 'react-redux'
-import { sidebarWidthSelector, topbarHeightSelector } from './state'
-import { changeSidebarWidth, changeTopbarHeight, initializeEditor } from './actions'
-import Splitter from '../components/splitter/Splitter'
+import { changeSidebarWidth, initializeEditor } from './actions'
+import SplitPane from 'react-split-pane'
 import SidePanel from './sidePanel/SidePanel'
 import MainEditor from './mainEditor/MainEditor'
 import { bindActionCreators } from 'redux'
@@ -17,6 +16,8 @@ import { apiExportGraph } from './editorApi'
 import type { State, Dispatch } from '../flow/reduxTypes'
 import type { Schema } from '../flow/schemaTypes'
 import type { Dispatch as GeneralDispatch } from 'redux'
+
+const DEFAULT_SIDEBAR_SIZE = 150
 
 // TODO: TBD
 export type DiagramEditorApi = {
@@ -29,8 +30,6 @@ type Props = {
   changeSidebarWidth: Function,
   initializeEditor: Function,
   className: string,
-  topbarHeight: number,
-  sidebarWidth: number,
   schema: Schema,
 }
 
@@ -49,42 +48,25 @@ class DiagramEditor extends React.Component<Props> {
   }
 
   render() {
-    const { className, topbarHeight, sidebarWidth, schema } = this.props
+    const { className, schema } = this.props
     return (
       <div
         onContextMenu={(e: Event) => e.preventDefault()}
         className={classnames('DiagramEditor', className)}
       >
-        <Splitter
-          vertical
-          primaryIndex={1}
-          secondarySize={topbarHeight}
-          onChange={this.onTopbarHeightChange}
-        >
-          <TopPanel />
-          <Splitter
-            secondarySize={sidebarWidth}
-            primaryIndex={1}
-            onChange={this.onSidebarWidthChange}
-          >
-            <SidePanel schema={schema} />
-            <MainEditor schema={schema} />
-          </Splitter>
-        </Splitter>
+        <TopPanel />
+        <SplitPane split="vertical" size={DEFAULT_SIDEBAR_SIZE} resizerClassName="Resizer">
+          <SidePanel schema={schema} />
+          <MainEditor schema={schema} />
+        </SplitPane>
       </div>
     )
   }
 }
 
-const mapStateToProps = (state: State) => ({
-  topbarHeight: topbarHeightSelector(state),
-  sidebarWidth: sidebarWidthSelector(state),
-})
-
 const mapActionsToProps = (dispatch: GeneralDispatch<any>) =>
   bindActionCreators(
     {
-      changeTopbarHeight,
       changeSidebarWidth,
       initializeEditor,
       apiExportGraph,
@@ -97,7 +79,6 @@ const selectorFactory = (dispatch: Dispatch) => {
   return (nextState: State, nextOwnProps: Props) => {
     const nextResult = {
       ...nextOwnProps,
-      ...mapStateToProps(nextState),
       ...mapActionsToProps(dispatch),
     }
     if (!shallowEqual(result, nextResult)) result = nextResult

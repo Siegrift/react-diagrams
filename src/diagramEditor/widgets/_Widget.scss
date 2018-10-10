@@ -16,14 +16,6 @@
     position: relative;
     margin: 0.5em;
   }
-  &__IconMode {
-    svg {
-      vertical-align: middle;
-      margin: auto;
-      width: 100%;
-      height: 100%;
-    }
-  }
   &__name {
     text-align: center;
   }
@@ -57,4 +49,14 @@
     margin: 0.1em;
   }
   margin-top: 1em;
+}
+
+.IconWidget {
+  cursor: grab;
+  svg {
+    vertical-align: middle;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+  }
 }

@@ -7,6 +7,7 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 import Measure from 'react-measure'
+import Tooltip from '@material-ui/core/Tooltip'
 import { WIDGET_ICON_MODE_TRASHHOLD } from '../../constants'
 
 import AddCircle from 'react-icons/lib/md/add-circle'
@@ -62,7 +63,7 @@ const WholeWidget = ({
 const IconWidget = (props) => (
   <div
     id={props.editorKey}
-    className="diagram-widget__IconMode"
+    className="IconWidget"
     style={{ top: props.y, left: props.x, backgroundColor: props.color }}
     draggable={props.draggable}
     onDragStart={props.onDragStart}
@@ -72,21 +73,26 @@ const IconWidget = (props) => (
   </div>
 )
 
-const Widget = (props) =>
-  props.isSidePanel ? (
-    <Measure bounds>
-      {({ measureRef, contentRect }) => (
-        <div ref={measureRef}>
-          {contentRect.bounds.width > WIDGET_ICON_MODE_TRASHHOLD ? (
-            <WholeWidget {...props} />
-          ) : (
-            <IconWidget {...props} />
+const Widget = (props) => (
+  <Tooltip title={props.name} placement="right">
+    <div>
+      {props.isSidePanel ? (
+        <Measure bounds>
+          {({ measureRef, contentRect }) => (
+            <div ref={measureRef}>
+              {contentRect.bounds.width > WIDGET_ICON_MODE_TRASHHOLD ? (
+                <WholeWidget {...props} />
+              ) : (
+                <IconWidget {...props} />
+              )}
+            </div>
           )}
-        </div>
+        </Measure>
+      ) : (
+        <WholeWidget {...props} />
       )}
-    </Measure>
-  ) : (
-    <WholeWidget {...props} />
-  )
+    </div>
+  </Tooltip>
+)
 
 export default Widget

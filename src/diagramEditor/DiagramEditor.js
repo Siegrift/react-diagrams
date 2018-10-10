@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import TopPanel from './topPanel/TopPanel'
-// FLOW: css/css imports are not recognized by flow
+// FLOW: scss imports are not recognized by flow in this module
 import './_DiagramEditor.scss'
 import classnames from 'classnames'
 import { connectAdvanced } from 'react-redux'

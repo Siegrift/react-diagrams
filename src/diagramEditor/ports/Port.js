@@ -19,6 +19,7 @@ const Port = ({ className, isInPort, name, type, editorKey, onPortMouseDown, isV
         onPortMouseDown(editorKey, e, isValidLink || isValidLinkDefault)
       }}
       control={
+        // TODO: make use of property checked
         <Radio checked={false} style={{ padding: isInPort ? '0 0.3em 0 0' : '0 0 0 0.3em' }} />
       }
       label={

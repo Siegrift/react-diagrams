@@ -74,25 +74,23 @@ const IconWidget = (props) => (
 )
 
 const Widget = (props) => (
-  <Tooltip title={props.name} placement="right">
-    <div>
-      {props.isSidePanel ? (
-        <Measure bounds>
-          {({ measureRef, contentRect }) => (
-            <div ref={measureRef}>
-              {contentRect.bounds.width > WIDGET_ICON_MODE_TRASHHOLD ? (
-                <WholeWidget {...props} />
-              ) : (
-                <IconWidget {...props} />
-              )}
-            </div>
-          )}
-        </Measure>
-      ) : (
-        <WholeWidget {...props} />
+  props.isSidePanel ? (
+    <Measure bounds>
+      {({ measureRef, contentRect }) => (
+        <Tooltip title={props.name} placement="right">
+          <div ref={measureRef}>
+            {contentRect.bounds.width > WIDGET_ICON_MODE_TRASHHOLD ? (
+              <WholeWidget {...props} />
+            ) : (
+              <IconWidget {...props} />
+            )}
+          </div>
+        </Tooltip>
       )}
-    </div>
-  </Tooltip>
+    </Measure>
+  ) : (
+    <WholeWidget {...props} />
+  )
 )
 
 export default Widget

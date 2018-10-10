@@ -31,7 +31,8 @@
 
 .Resizer.vertical {
   width: 12px;
-  margin: 0 -12px;
+  // do not cover the whole scrollbar so you can scroll by mouse (event is captured by resizer)
+  margin: 0 -4px;
   cursor: col-resize;
 }
 

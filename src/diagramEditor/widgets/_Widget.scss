@@ -29,6 +29,9 @@
     background-position: left top, right top, left bottom, left top;
     animation: border-dance 7s infinite linear;
   }
+  &--grabbing {
+    cursor: grabbing;
+  }
   @keyframes border-dance {
     0% {
       background-position: left top, right top, right bottom, left bottom;

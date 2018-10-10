@@ -2,7 +2,10 @@
   &__Label {
     font-size: 0.8em;
   }
-  &:hover {
-    background-color: rgba(50, 50, 50, 0.2);
+  &__SidePanel {
+    cursor: grab !important;
+    span {
+      cursor: grab !important;
+    }
   }
 }

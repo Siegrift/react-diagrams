@@ -1,15 +1,28 @@
 .diagram-widget {
+  contain: content;
   pointer-events: all;
   position: absolute;
   padding: 0.5em;
   border-radius: 1em;
   width: fit-content;
   height: fit-content;
+  svg {
+    margin-right: 0.3em;
+  }
+  cursor: grab;
   &__side-panel {
     width: inherit;
     overflow: hidden;
     position: relative;
     margin: 0.5em;
+  }
+  &__IconMode {
+    svg {
+      vertical-align: middle;
+      margin: auto;
+      width: 100%;
+      height: 100%;
+    }
   }
   &__name {
     text-align: center;
@@ -37,10 +50,11 @@
 .ports {
   cursor: pointer;
   display: flex;
-  &__in {
+  > div {
+    display: flex;
+    flex-direction: column;
     flex: 1;
+    margin: 0.1em;
   }
-  &__out {
-    flex: 1;
-  }
+  margin-top: 1em;
 }

@@ -10,6 +10,7 @@ const SidePanelWidget = ({ className, draggable, command }) => (
     onDragStart={(event) => {
       event.dataTransfer.setData(DATA_TRANSFER_WIDGET_KEY, command.key)
     }}
+    isSidePanel
   />
 )
 

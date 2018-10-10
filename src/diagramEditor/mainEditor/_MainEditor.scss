@@ -41,8 +41,11 @@
   }
 }
 
+// TODO: better name
 .hoverable {
   &:hover {
-    stroke-width: 5;
+    stroke-width: 7;
+    // TODO: put to css vars
+    transition: all 0.1s;
   }
 }

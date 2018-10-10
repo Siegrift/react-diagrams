@@ -5,13 +5,14 @@ import TopPanel from './topPanel/TopPanel'
 import './_DiagramEditor.scss'
 import classnames from 'classnames'
 import { connectAdvanced } from 'react-redux'
-import { changeSidebarWidth, initializeEditor } from './actions'
+import { initializeEditor } from './actions'
 import SplitPane from 'react-split-pane'
 import SidePanel from './sidePanel/SidePanel'
 import MainEditor from './mainEditor/MainEditor'
 import { bindActionCreators } from 'redux'
 import { shallowEqual } from '../utils'
 import { apiExportGraph } from './editorApi'
+import { MIN_SIDEBAR_SIZE } from '../constants'
 
 import type { State, Dispatch } from '../flow/reduxTypes'
 import type { Schema } from '../flow/schemaTypes'
@@ -39,9 +40,6 @@ class DiagramEditor extends React.Component<Props> {
   onTopbarHeightChange = (newTopbarHeight: number) => {
     this.props.changeTopbarHeight(newTopbarHeight)
   }
-  onSidebarWidthChange = (newSidebarWidth: number) => {
-    this.props.changeSidebarWidth(newSidebarWidth)
-  }
 
   componentDidMount() {
     this.props.initializeEditor()
@@ -55,7 +53,12 @@ class DiagramEditor extends React.Component<Props> {
         className={classnames('DiagramEditor', className)}
       >
         <TopPanel />
-        <SplitPane split="vertical" size={DEFAULT_SIDEBAR_SIZE} resizerClassName="Resizer">
+        <SplitPane
+          split="vertical"
+          minSize={MIN_SIDEBAR_SIZE}
+          defaultSize={DEFAULT_SIDEBAR_SIZE}
+          pane1ClassName="SplitPaneSidepanel"
+        >
           <SidePanel schema={schema} />
           <MainEditor schema={schema} />
         </SplitPane>
@@ -67,7 +70,6 @@ class DiagramEditor extends React.Component<Props> {
 const mapActionsToProps = (dispatch: GeneralDispatch<any>) =>
   bindActionCreators(
     {
-      changeSidebarWidth,
       initializeEditor,
       apiExportGraph,
     },

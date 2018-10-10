@@ -2,11 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import './_TopPanel.scss'
 
-import UndoIcon from 'react-icons/lib/md/undo'
-import RedoIcon from 'react-icons/lib/md/redo'
-import DeleteIcon from 'react-icons/lib/md/delete'
-import SaveIcon from 'react-icons/lib/md/save'
-import LoadIcon from 'react-icons/lib/md/file-download'
+import {
+  MdUndo,
+  MdRedo,
+  MdDelete,
+  MdSave,
+  MdVerticalAlignBottom as LoadIcon,
+} from 'react-icons/lib/md'
 import { deleteSelection, localStorageLoad, localStorageSave, redo, undo } from '../actions'
 import { selectedNodesSelector } from '../mainEditor/selectors'
 import { cancelableSelector, redoableSelector, undoableSelector } from '../state'
@@ -45,11 +47,11 @@ const TopPanel = ({
       </Typography>
 
       <TopPanelItem onClick={undo} disabled={!undoable} text="Krok späť">
-        <UndoIcon />
+        <MdUndo />
       </TopPanelItem>
 
       <TopPanelItem onClick={redo} disabled={!redoable} text="Vykonať znova">
-        <RedoIcon />
+        <MdRedo />
       </TopPanelItem>
 
       <TopPanelItem
@@ -57,11 +59,11 @@ const TopPanel = ({
         disabled={!currentSelection.length}
         text="Vymazať označené"
       >
-        <DeleteIcon />
+        <MdDelete />
       </TopPanelItem>
 
       <TopPanelItem onClick={localStorageSave} text="Uložiť">
-        <SaveIcon />
+        <MdSave />
       </TopPanelItem>
 
       <TopPanelItem onClick={localStorageLoad} text="Načítať" disabled={!isLoadingAvailable()}>

@@ -18,7 +18,7 @@ import type { State, Dispatch } from '../flow/reduxTypes'
 import type { Schema } from '../flow/schemaTypes'
 import type { Dispatch as GeneralDispatch } from 'redux'
 
-const DEFAULT_SIDEBAR_SIZE = 150
+const DEFAULT_SIDEBAR_SIZE = 250
 
 // TODO: TBD
 export type DiagramEditorApi = {

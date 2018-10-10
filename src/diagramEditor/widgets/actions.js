@@ -3,12 +3,18 @@ import { mergeIn } from '../../imuty'
 import { setDragging, setSelectedNode } from '../mainEditor/actions'
 import { selectedWidgetsSelector } from './selectors'
 import { PATH_WIDGETS } from './state'
+import { currentLinkSelector } from '../links/selectors'
+import { cancelSelection } from '../actions'
 
-import type { State, Dispatch } from '../../flow/reduxTypes'
+import type { State, Dispatch, GetState } from '../../flow/reduxTypes'
 import type { EditorKey, Position } from '../../flow/commonTypes'
 import type { Widget, WidgetState } from './state'
 
-export const onWidgetMouseDown = (editorKey: EditorKey, e: MouseEvent) => (dispatch: Dispatch) => {
+export const onWidgetMouseDown = (editorKey: EditorKey, e: MouseEvent) => (
+  dispatch: Dispatch,
+  getState: GetState
+) => {
+  if (currentLinkSelector(getState())) dispatch(cancelSelection())
   dispatch(setDragging(true))
   dispatch(setSelectedNode(editorKey, e.ctrlKey))
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import Widget from '../widgets/Widget'
+import Widget from '../mainEditor/widgets/Widget'
 import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
 
 const SidePanelWidget = ({ className, draggable, command }) => (

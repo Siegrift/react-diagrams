@@ -1,8 +1,24 @@
 // @flow
-import type { InitialState } from '../initialState'
+import type { AppliedAppState } from '../diagramEditor/flow'
+import type { AppliedEditorState } from '../diagramEditor/mainEditor/flow'
+import type { AppliedWidgetState } from '../diagramEditor/mainEditor/widgets/flow'
+import type { AppliedLinkState } from '../diagramEditor/mainEditor/links/flow'
+import type { AppliedPortState } from '../diagramEditor/mainEditor/ports/flow'
+import type { AppliedLinkPointsState } from '../diagramEditor/mainEditor/linkPoints/flow'
 
-// re-export State as it's imported mainly in redux actions
-export type State = InitialState
+export type State = AppliedAppState &
+  AppliedEditorState &
+  AppliedWidgetState &
+  AppliedLinkState &
+  AppliedPortState &
+  AppliedLinkPointsState
+
+export type StateDraft = ?AppliedAppState &
+  ?AppliedEditorState &
+  ?AppliedWidgetState &
+  ?AppliedLinkState &
+  ?AppliedPortState &
+  ?AppliedLinkPointsState
 
 export type SegmentReducer<Segment, Payload> = (state: Segment, payload: Payload) => Segment
 export type GenericAction<Payload> = {

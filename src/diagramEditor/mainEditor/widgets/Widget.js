@@ -8,8 +8,8 @@ import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 import Measure from 'react-measure'
 import Tooltip from '@material-ui/core/Tooltip'
-import { WIDGET_ICON_MODE_TRASHHOLD } from '../../constants'
-import { withSchemaCommandContext } from '../SchemaContext'
+import { WIDGET_ICON_MODE_TRASHHOLD } from '../../../constants'
+import { withSchemaCommandContext } from '../../SchemaContext'
 
 // TODO: We get a warning about variant not being recognized because of
 // https://github.com/mui-org/material-ui/issues/13145

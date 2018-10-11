@@ -1,21 +1,21 @@
 // @flow
-import React from 'react'
+import * as React from 'react'
 import type { Schema, Command } from '../flow/schemaTypes'
 
 // create context with empty schema
-export const SchemaContext = React.createContext({})
+export const SchemaContext = React.createContext({ commands: [], types: [] })
 
-export const withSchemaContext = (Component: React.Node) => {
-  return (props: object) => (
+export const withSchemaContext = (Component: React.ComponentType<{ schema: Schema }>) => {
+  return (props: Object) => (
     <SchemaContext.Consumer>
       {(schema: Schema) => <Component {...props} schema={schema} />}
     </SchemaContext.Consumer>
   )
 }
 
-export const withSchemaCommandContext = (getCommandKey: (props: object) => string) => (
-  Component: React.Node
-) => (props: object) => (
+export const withSchemaCommandContext = (getCommandKey: (props: Object) => string) => (
+  Component: React.ComponentType<{ schema: Schema }>
+) => (props: Object) => (
   <SchemaContext.Consumer>
     {(schema: Schema) => (
       <Component

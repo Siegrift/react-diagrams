@@ -2,18 +2,18 @@
 import { currentLinkSelector } from '../links/selectors'
 import { concat } from 'lodash'
 
-import { setIn } from '../../imuty'
+import { setIn } from '../../../imuty'
 
-import { cancelCurrentSelection, setSelectedPort } from '../mainEditor/actions'
+import { cancelCurrentSelection, setSelectedPort } from '../../mainEditor/actions'
 import { addPointToCurrentLink, addLink } from '../links/actions'
 import { isInvalidLink } from '../links/linkUtils'
 import { PATH_PORTS } from './state'
 import { portsSelector } from './selectors'
-import { checkpoint } from '../../generalActions'
+import { checkpoint } from '../../../generalActions'
 
-import type { EditorKey } from '../../flow/commonTypes'
-import type { Dispatch, GetState, State } from '../../flow/reduxTypes'
-import type { Port } from './state'
+import type { EditorKey } from '../../../flow/commonTypes'
+import type { Dispatch, GetState, State } from '../../../flow/reduxTypes'
+import type { Port } from './flow'
 
 export const onPortMouseDown = (editorKey: EditorKey, event: MouseEvent, linkChecker: Function) => (
   dispatch: Dispatch,

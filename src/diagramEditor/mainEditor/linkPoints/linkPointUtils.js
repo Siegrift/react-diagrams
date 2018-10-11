@@ -1,7 +1,7 @@
 // @flow
 import { uniqueId } from 'lodash'
 
-import type { Position } from '../../flow/commonTypes'
+import type { Position } from '../../../flow/commonTypes'
 
 export const createDefaultLinkPoint = (position: Position, isVisible: boolean = true) => ({
   ...position,

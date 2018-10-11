@@ -1,14 +1,14 @@
 // @flow
-import { mergeIn } from '../../imuty'
-import { setDragging, setSelectedNode } from '../mainEditor/actions'
+import { mergeIn } from '../../../imuty'
+import { setDragging, setSelectedNode } from '../actions'
 import { selectedWidgetsSelector } from './selectors'
 import { PATH_WIDGETS } from './state'
 import { currentLinkSelector } from '../links/selectors'
-import { cancelSelection } from '../actions'
+import { cancelSelection } from '../../actions'
 
-import type { State, Dispatch, GetState } from '../../flow/reduxTypes'
-import type { EditorKey, Position } from '../../flow/commonTypes'
-import type { Widget, WidgetState } from './state'
+import type { State, Dispatch, GetState } from '../../../flow/reduxTypes'
+import type { EditorKey, Position } from '../../../flow/commonTypes'
+import type { Widget, WidgetState } from './flow'
 
 export const onWidgetMouseDown = (editorKey: EditorKey, e: MouseEvent) => (
   dispatch: Dispatch,

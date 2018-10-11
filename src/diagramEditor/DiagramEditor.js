@@ -17,13 +17,13 @@ import { SchemaContext } from './SchemaContext'
 
 import type { State, Dispatch } from '../flow/reduxTypes'
 import type { Schema } from '../flow/schemaTypes'
+import type { ExportedGraph } from './editorApi'
 import type { Dispatch as GeneralDispatch } from 'redux'
 
 const DEFAULT_SIDEBAR_SIZE = 250
 
-// TODO: TBD
 export type DiagramEditorApi = {
-  exportGraph: () => any,
+  exportGraph: () => ExportedGraph,
 }
 
 type Props = {
@@ -36,6 +36,8 @@ type Props = {
 }
 
 class DiagramEditor extends React.Component<Props> {
+  ref: { current: null | React$ElementRef<{}> }
+
   exportGraph = () => this.props.apiExportGraph()
 
   onTopbarHeightChange = (newTopbarHeight: number) => {

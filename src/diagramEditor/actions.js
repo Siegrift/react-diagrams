@@ -10,45 +10,29 @@ import {
   redoableSelector,
   undoableSelector,
 } from './state'
-import { PATH_PORTS } from './ports/state'
-import { PATH_WIDGETS } from './widgets/state'
-import { currentLinkSelector } from './links/selectors'
+import { PATH_PORTS } from './mainEditor/ports/state'
+import { PATH_WIDGETS } from './mainEditor/widgets/state'
+import { currentLinkSelector } from './mainEditor/links/selectors'
 import {
   selectedWidgetsSelector,
   selectedPortsSelector,
   widgetsSelector,
-} from './widgets/selectors'
+} from './mainEditor/widgets/selectors'
 import { cancelCurrentSelection, setSelectedPort } from './mainEditor/actions'
 import { selectedNodesSelector } from './mainEditor/selectors'
-import { shortcuts } from './shortcuts'
-import { portsSelector } from './ports/selectors'
+import { portsSelector } from './mainEditor/ports/selectors'
 import { keyboardEventToString } from './diagramUtils'
 import { checkpoint, setValueAt } from '../generalActions'
-import { linksToDeleteSelector, linksSelector } from './links/selectors'
-import { PATH_LINKS } from './links/state'
-import { removeLinkPoints } from './linkPoints/actions'
+import { linksToDeleteSelector, linksSelector } from './mainEditor/links/selectors'
+import { PATH_LINKS } from './mainEditor/links/state'
+import { removeLinkPoints } from './mainEditor/linkPoints/actions'
 
 import type { State, Dispatch, GetState, Logger } from '../flow/reduxTypes'
 import type { Path, Node } from '../flow/commonTypes'
-import type { Shortcut } from './shortcuts'
 
-const handleKeyStroke = (event: KeyboardEvent) => (
-  dispatch: Dispatch,
-  getState: GetState,
-  logger: Logger
-) => {
-  const eventKeyStroke = keyboardEventToString(event)
-  logger.log(`Handling key stroke: ${eventKeyStroke}`)
-  // FLOW: the argument is definitely Shortcut
-  const shortcut = shortcuts.find((shortcut: Shortcut) => shortcut.keyStroke === eventKeyStroke)
-  if (shortcut) shortcut.action(dispatch, getState)
-}
-
-export const initializeEditor = () => (dispatch: Dispatch, getState: GetState, logger: Logger) => {
-  logger.log('Initialize editor')
-  dispatch(checkpoint())
-  const keyDownHandler = (e: KeyboardEvent) => dispatch(handleKeyStroke(e))
-  document.addEventListener('keydown', keyDownHandler)
+export type Shortcut = {
+  keyStroke: string,
+  action: (dispatch: Dispatch, getState: GetState) => null,
 }
 
 // NOTE: filteredState does not have every State property
@@ -168,11 +152,49 @@ export const localStorageSave = () => (dispatch: Dispatch, getState: GetState, l
 export const localStorageLoad = () => ({
   type: 'Load editor state',
   reducer: (state: State) => {
-    // FLOW: check if the item is in local storage is outside this method
-    const loadedFilteredState = JSON.parse(localStorage.getItem(LOCAL_STORAGE_PATH))
+    const storage = localStorage.getItem(LOCAL_STORAGE_PATH)
+    if (!storage) return state
+    const loadedFilteredState = JSON.parse(storage)
     return multiSetIn(
       state,
       ...SAVE_FILTERS.map((filter: Path) => [filter, getIn(loadedFilteredState, filter)])
     )
   },
 })
+
+export const shortcuts = [
+  {
+    keyStroke: 'Ctrl+KeyZ',
+    action: (dispatch: Dispatch, getState: GetState) => dispatch(undo()),
+  },
+  {
+    keyStroke: 'Ctrl+Shift+KeyZ',
+    action: (dispatch: Dispatch, getState: GetState) => dispatch(redo()),
+  },
+  {
+    keyStroke: 'Escape',
+    action: (dispatch: Dispatch, getState: GetState) => dispatch(cancelSelection()),
+  },
+  {
+    keyStroke: 'Delete',
+    action: (dispatch: Dispatch, getState: GetState) => dispatch(deleteSelection()),
+  },
+]
+
+const handleKeyStroke = (event: KeyboardEvent) => (
+  dispatch: Dispatch,
+  getState: GetState,
+  logger: Logger
+) => {
+  const eventKeyStroke = keyboardEventToString(event)
+  logger.log(`Handling key stroke: ${eventKeyStroke}`)
+  const shortcut = shortcuts.find((shortcut: Shortcut) => shortcut.keyStroke === eventKeyStroke)
+  if (shortcut) shortcut.action(dispatch, getState)
+}
+
+export const initializeEditor = () => (dispatch: Dispatch, getState: GetState, logger: Logger) => {
+  logger.log('Initialize editor')
+  dispatch(checkpoint())
+  const keyDownHandler = (e: KeyboardEvent) => dispatch(handleKeyStroke(e))
+  document.addEventListener('keydown', keyDownHandler)
+}

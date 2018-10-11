@@ -1,7 +1,8 @@
 // @flow
-import type { StateDraft } from '../../initialState'
+import type { StateDraft } from '../../../flow/reduxTypes'
+import type { AppliedLinkState } from './flow'
 
-import type { EditorKey, Path, Node } from '../../flow/commonTypes'
+import type { EditorKey, Path } from '../../../flow/commonTypes'
 
 export const PATH_LINKS = ['links']
 export const PATH_CURRENT_LINK = ['currentLink']
@@ -12,22 +13,6 @@ export const getLinkPointsPathByLinkKey = (linkKey: EditorKey): Path => [
   linkKey,
   'path',
 ]
-
-export type Link = Node & {
-  source: EditorKey,
-  target: EditorKey,
-  path: EditorKey[],
-}
-
-export type LinkState = { [key: EditorKey]: Link }
-export type CurrentLink = {
-  source: EditorKey,
-  target?: EditorKey,
-  path: EditorKey[],
-}
-
-// NOTE: Type needs to be manually updated when PATH changes
-export type AppliedLinkState = { links: LinkState, currrentLink: CurrentLink }
 
 export const setInitialState = (state: StateDraft): StateDraft & AppliedLinkState => ({
   ...state,

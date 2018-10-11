@@ -2,15 +2,15 @@
 import { get, forEach } from 'lodash'
 import { createSelector } from 'reselect'
 import { PATH_EDITOR_BOUNDS, PATH_CURSOR, PATH_ZOOM, PATH_OFFSET, PATH_DRAGGING } from './state'
-import { linksSelector } from '../links/selectors'
-import { widgetsSelector } from '../widgets/selectors'
-import { linkPointsSelector } from '../linkPoints/selectors'
+import { linksSelector } from './links/selectors'
+import { widgetsSelector } from './widgets/selectors'
+import { linkPointsSelector } from './linkPoints/selectors'
 
 import type { State } from '../../flow/reduxTypes'
 import type { Node, Position } from '../../flow/commonTypes'
-import type { WidgetState } from '../widgets/state'
-import type { LinkState } from '../links/state'
-import type { LinkPointsState } from '../linkPoints/state'
+import type { WidgetState } from './widgets/flow'
+import type { LinkState } from './links/flow'
+import type { LinkPointsState } from './linkPoints/flow'
 
 export const editorBoundsSelector = (state: State) => get(state, PATH_EDITOR_BOUNDS)
 export const cursorSelector = (state: State) => get(state, PATH_CURSOR)

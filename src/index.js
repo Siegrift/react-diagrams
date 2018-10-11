@@ -12,7 +12,7 @@ const store = getConfiguredStore()
 
 type DiagramEditorRef = { getWrappedInstance: () => DiagramEditorApi }
 
-class DiagramEditorWrapper extends React.Component<Schema> {
+export class DiagramEditorWrapper extends React.Component<Schema> {
   editorRef: ?DiagramEditorApi
 
   exportGraph(): ?ExportedGraph {

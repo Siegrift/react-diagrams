@@ -1,5 +1,6 @@
 // @flow
-import type { StateDraft } from '../../initialState'
+import type { StateDraft } from '../../flow/reduxTypes'
+import type { AppliedEditorState } from './flow'
 
 export const PATH_EDITOR = ['editor']
 export const PATH_MOUSE = [...PATH_EDITOR, 'mouse']
@@ -9,28 +10,6 @@ export const PATH_DRAGGING = [...PATH_MOUSE, 'dragging']
 export const PATH_CURSOR = [...PATH_MOUSE, 'cursor']
 export const PATH_ZOOM = [...PATH_CANVAS, 'zoom']
 export const PATH_OFFSET = [...PATH_CANVAS, 'offset']
-
-export type EditorState = {
-  mouse: {
-    cursor: {
-      x: number,
-      y: number,
-    },
-    dragging: boolean,
-  },
-  canvas: {
-    offset: {
-      x: number,
-      y: number,
-    },
-    zoom: number,
-  },
-  // TODO: TBD
-  editorBounds: any,
-}
-
-// NOTE: Type needs to be manually updated when PATH changes
-export type AppliedEditorState = { editor: EditorState }
 
 export const setInitialState = (state: StateDraft): StateDraft & AppliedEditorState => ({
   ...state,

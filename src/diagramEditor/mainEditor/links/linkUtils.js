@@ -1,6 +1,6 @@
 // @flow
-import type { Position, EditorKey } from '../../flow/commonTypes'
-import type { State } from '../../flow/reduxTypes'
+import type { Position, EditorKey } from '../../../flow/commonTypes'
+import type { State } from '../../../flow/reduxTypes'
 import { getWidgetByEditorKey } from '../widgets/selectors'
 import { portByEditorKeySelector } from '../ports/selectors'
 

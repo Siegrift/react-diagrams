@@ -1,9 +1,9 @@
 // @flow
-import { setIn, multiSetIn, mergeIn } from '../../imuty'
+import { setIn, multiSetIn, mergeIn } from '../../../imuty'
 import { PATH_CURRENT_LINK_POINTS, PATH_LINKS, getLinkPointsPathByLinkKey } from './state'
 import { currentLinkPointsSelector } from './selectors'
-import { relativeMousePoint } from '../mainEditor/selectors'
-import { setDragging, setSelectedNode } from '../mainEditor/actions'
+import { relativeMousePoint } from '../../mainEditor/selectors'
+import { setDragging, setSelectedNode } from '../../mainEditor/actions'
 import { uniqueId, map, flatten } from 'lodash'
 import { distance } from './linkUtils'
 import { createDefaultLinkPoint } from '../linkPoints/linkPointUtils'
@@ -11,10 +11,10 @@ import { PATH_LINK_POINTS } from '../linkPoints/state'
 import { getLinkByEditorKey, selectedLinksSelector } from './selectors'
 import { linkPointsByEditorKeysSelector, linkPointsSelector } from '../linkPoints/selectors'
 
-import type { CurrentLink, Link } from './state'
-import type { LinkPoint } from '../linkPoints/state'
-import type { EditorKey, Position } from '../../flow/commonTypes'
-import type { State, Dispatch, GetState } from '../../flow/reduxTypes'
+import type { CurrentLink, Link } from './flow'
+import type { LinkPoint } from '../linkPoints/flow'
+import type { EditorKey, Position } from '../../../flow/commonTypes'
+import type { State, Dispatch, GetState } from '../../../flow/reduxTypes'
 
 const addPointToLink = (linkKey: EditorKey, event: MouseEvent) => ({
   type: 'Add point to link',

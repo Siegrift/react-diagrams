@@ -3,9 +3,9 @@ import { reduce, uniqueId } from 'lodash'
 import { setIn, multiSetIn } from '../../imuty'
 import { MIN_ZOOM } from '../../constants'
 import { PATH_CURSOR, PATH_DRAGGING, PATH_EDITOR_BOUNDS, PATH_ZOOM, PATH_OFFSET } from './state'
-import { PATH_LINKS, getLinkPathByEditorKey, PATH_CURRENT_LINK } from '../links/state'
-import { getLinkByEditorKey, linksSelector, selectedLinksSelector } from '../links/selectors'
-import { moveSelectedLinks } from '../links/actions'
+import { PATH_LINKS, getLinkPathByEditorKey, PATH_CURRENT_LINK } from './links/state'
+import { getLinkByEditorKey, linksSelector, selectedLinksSelector } from './links/selectors'
+import { moveSelectedLinks } from './links/actions'
 import {
   zoomSelector,
   relativeMousePoint,
@@ -13,31 +13,31 @@ import {
   draggingSelector,
   offsetSelector,
 } from './selectors'
-import { createPorts } from '../ports/portUtils'
-import { addPorts } from '../ports/actions'
-import { moveSelectedWidgets } from '../widgets/actions'
-import { moveSelectedLinkPoints } from '../linkPoints/actions'
-import { getWidgetPathByEditorKey, PATH_WIDGETS } from '../widgets/state'
+import { createPorts } from './ports/portUtils'
+import { addPorts } from './ports/actions'
+import { moveSelectedWidgets } from './widgets/actions'
+import { moveSelectedLinkPoints } from './linkPoints/actions'
+import { getWidgetPathByEditorKey, PATH_WIDGETS } from './widgets/state'
 import {
   widgetsSelector,
   getWidgetByEditorKey,
   selectedWidgetsSelector,
-} from '../widgets/selectors'
+} from './widgets/selectors'
 import {
   linkPointsSelector,
   linkPointByEditorKeySelector,
   linkPointsToMoveSelector,
-} from '../linkPoints/selectors'
-import { PATH_LINK_POINTS, linkPointPathByEditorKey } from '../linkPoints/state'
+} from './linkPoints/selectors'
+import { PATH_LINK_POINTS, linkPointPathByEditorKey } from './linkPoints/state'
 import { setValueAt, checkpoint } from '../../generalActions'
 
 import type { State, Dispatch, GetState, Logger } from '../../flow/reduxTypes'
 import type { Position, EditorKey, BoundingBox } from '../../flow/commonTypes'
 import type { Command } from '../../flow/schemaTypes'
-import type { Port } from '../ports/state'
-import type { Link } from '../links/state'
-import type { Widget } from '../widgets/state'
-import type { LinkPoint } from '../linkPoints/state'
+import type { Port } from './ports/flow'
+import type { Link } from './links/flow'
+import type { Widget } from './widgets/flow'
+import type { LinkPoint } from './linkPoints/flow'
 
 export const setDragging = (dragging: boolean) => ({
   type: `Set dragging to ${dragging.toString()}`,

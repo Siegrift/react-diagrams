@@ -1,20 +1,20 @@
 // @flow
 import { map, omit, reduce } from 'lodash'
-import { setDragging, setSelectedNode } from '../mainEditor/actions'
+import { setDragging, setSelectedNode } from '../actions'
 import {
   linkPointsToMoveSelector,
   linkPointsToDeleteSelector,
   linkPointsSelector,
 } from './selectors'
-import { mergeIn, multiSetIn } from '../../imuty'
+import { mergeIn, multiSetIn } from '../../../imuty'
 import { PATH_LINK_POINTS } from './state'
 import { PATH_LINKS } from '../links/state'
 import { linksSelector } from '../links/selectors'
 
-import type { Link } from '../links/state'
-import type { EditorKey, Position } from '../../flow/commonTypes'
-import type { Dispatch, GenericAction, State } from '../../flow/reduxTypes'
-import type { LinkPoint } from './state'
+import type { Link } from '../links/flow'
+import type { EditorKey, Position } from '../../../flow/commonTypes'
+import type { Dispatch, GenericAction, State } from '../../../flow/reduxTypes'
+import type { LinkPoint } from './flow'
 
 export const onPointMouseDown = (event: MouseEvent, editorKey: EditorKey) => (
   dispatch: Dispatch

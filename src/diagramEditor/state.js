@@ -2,22 +2,17 @@
 import { get } from 'lodash'
 import { createSelector } from 'reselect'
 import { selectedNodesSelector } from './mainEditor/selectors'
-import { currentLinkSelector } from './links/selectors'
+import { currentLinkSelector } from './mainEditor/links/selectors'
 
-import type { StateDraft } from '../initialState'
+import type { Node } from '../flow/commonTypes'
+import type { StateDraft } from '../flow/reduxTypes'
 import type { State } from '../flow/reduxTypes'
-import type { CurrentLink } from './links/state'
+import type { CurrentLink } from './mainEditor/links/flow'
+import type { AppliedAppState } from './flow'
 
 export const PATH_APP = ['app']
 export const PATH_HISTORY = [...PATH_APP, 'history']
 export const PATH_HISTORY_INDEX = [...PATH_APP, 'historyIndex']
-
-export type AppState = {
-  history: any[],
-  historyIndex: number,
-}
-// NOTE: Needs to be updated when PATH in state changes
-export type AppliedAppState = { app: AppState }
 
 export const setInitialState = (state: StateDraft): StateDraft & AppliedAppState => ({
   ...state,
@@ -42,8 +37,7 @@ export const redoableSelector = (state: State) => {
 export const cancelableSelector = createSelector(
   currentLinkSelector,
   selectedNodesSelector,
-  // FLOW: flow selectedNodes properly
-  (currentLink: CurrentLink, selectedNodes: any) => {
+  (currentLink: CurrentLink, selectedNodes: Node[]) => {
     return currentLink || selectedNodes.length
   }
 )

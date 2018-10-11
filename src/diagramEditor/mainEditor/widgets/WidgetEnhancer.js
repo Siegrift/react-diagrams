@@ -5,12 +5,12 @@ import WidgetComponent from './Widget'
 import { connect } from 'react-redux'
 import { portByEditorKeySelector } from '../ports/selectors'
 import classNames from 'classnames'
-import { draggingSelector } from '../mainEditor/selectors'
+import { draggingSelector } from '../../mainEditor/selectors'
 
-import type { Widget } from './state'
-import type { Port } from '../ports/state'
-import type { EditorKey } from '../../flow/commonTypes'
-import type { State } from '../../flow/reduxTypes'
+import type { Widget } from './flow'
+import type { Port } from '../ports/flow'
+import type { EditorKey } from '../../../flow/commonTypes'
+import type { State } from '../../../flow/reduxTypes'
 
 type Props = {
   widget: Widget,

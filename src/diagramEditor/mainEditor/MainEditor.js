@@ -20,12 +20,12 @@ import {
   updateZoom,
 } from './actions'
 import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
-import { currentLinkSelector, linksSelector } from '../links/selectors'
-import { widgetsSelector } from '../widgets/selectors'
-import { addPointToCurrentLink } from '../links/actions'
-import WidgetEnhancer from '../widgets/WidgetEnhancer'
-import Link from '../links/Link'
-import { createDefaultLinkPoint } from '../linkPoints/linkPointUtils'
+import { currentLinkSelector, linksSelector } from './links/selectors'
+import { widgetsSelector } from './widgets/selectors'
+import { addPointToCurrentLink } from './links/actions'
+import WidgetEnhancer from './widgets/WidgetEnhancer'
+import Link from './links/Link'
+import { createDefaultLinkPoint } from './linkPoints/linkPointUtils'
 import './_MainEditor.scss'
 
 const ZOOM_DELTA_MULTIPLIER = 0.00097

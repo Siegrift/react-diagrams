@@ -5,10 +5,10 @@ import { createSelector } from 'reselect'
 import { selectedPortsSelector } from '../widgets/selectors'
 import { linksSelector, selectedLinksSelector, linksToDeleteSelector } from '../links/selectors'
 
-import type { State } from '../../flow/reduxTypes'
-import type { EditorKey } from '../../flow/commonTypes'
-import type { LinkPointsState, LinkPoint } from './state'
-import type { LinkState, Link } from '../links/state'
+import type { State } from '../../../flow/reduxTypes'
+import type { EditorKey } from '../../../flow/commonTypes'
+import type { LinkPointsState, LinkPoint } from './flow'
+import type { LinkState, Link } from '../links/flow'
 
 export const linkPointsSelector = (state: State) => get(state, PATH_LINK_POINTS)
 export const linkPointByEditorKeySelector = (editorKey: EditorKey) =>

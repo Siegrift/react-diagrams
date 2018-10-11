@@ -9,10 +9,10 @@ import {
 } from './state'
 import { selectedPortsSelector } from '../widgets/selectors'
 
-import type { EditorKey } from '../../flow/commonTypes'
-import type { State } from '../../flow/reduxTypes'
-import type { LinkState, Link } from './state'
-import type { LinkPointsState, LinkPoint } from '../linkPoints/state'
+import type { EditorKey } from '../../../flow/commonTypes'
+import type { State } from '../../../flow/reduxTypes'
+import type { LinkState, Link } from './flow'
+import type { LinkPointsState, LinkPoint } from '../linkPoints/flow'
 
 export const currentLinkSelector = (state: State) => get(state, PATH_CURRENT_LINK)
 export const linksSelector = (state: State) => get(state, PATH_LINKS)

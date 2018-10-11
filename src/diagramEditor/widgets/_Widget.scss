@@ -6,10 +6,18 @@
   border-radius: 1em;
   width: fit-content;
   height: fit-content;
+  &--constrained {
+    max-width: 250px;
+  }
   svg {
     margin-right: 0.3em;
   }
   cursor: grab;
+  &__Header {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
   &__side-panel {
     width: inherit;
     overflow: hidden;

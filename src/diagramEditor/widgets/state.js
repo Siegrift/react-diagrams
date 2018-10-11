@@ -6,11 +6,9 @@ export const PATH_WIDGETS = ['widgets']
 export const getWidgetPathByEditorKey = (editorKey: EditorKey): Path => [...PATH_WIDGETS, editorKey]
 
 export type Widget = {
-  color: string,
-  desc: string,
+  key: string,
   inPortKeys: EditorKey[],
   outPortKeys: EditorKey[],
-  name: string,
 } & Position &
   Node
 export type WidgetState = { [key: EditorKey]: Widget }

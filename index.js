@@ -2,6 +2,7 @@
 import React from 'react'
 import DiagramEditor from './src'
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+import CssBaseline from '@material-ui/core/CssBaseline'
 
 const theme = createMuiTheme({
   typography: {
@@ -14,7 +15,9 @@ class Editor extends React.Component {
   render() {
     return (
       <MuiThemeProvider theme={theme}>
-        <DiagramEditor {...this.props} />
+        <CssBaseline>
+          <DiagramEditor {...this.props} />
+        </CssBaseline>
       </MuiThemeProvider>
     )
   }

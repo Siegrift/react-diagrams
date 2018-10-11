@@ -1,5 +1,6 @@
 import React from 'react'
 import SidePanelWidget from './SidePanelWidget'
+import { withSchemaContext } from '../SchemaContext'
 
 const SidePanel = ({ schema }) => (
   <div>
@@ -14,4 +15,4 @@ const SidePanel = ({ schema }) => (
   </div>
 )
 
-export default SidePanel
+export default withSchemaContext(SidePanel)

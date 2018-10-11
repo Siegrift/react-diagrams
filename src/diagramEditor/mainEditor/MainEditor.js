@@ -2,6 +2,8 @@ import React from 'react'
 import classnames from 'classnames'
 import { map, isEqual } from 'lodash'
 import { connect } from 'react-redux'
+import { withSchemaContext } from '../SchemaContext'
+import { compose } from '../../utils'
 import {
   zoomSelector,
   offsetSelector,
@@ -113,23 +115,26 @@ const MainEditor = ({
   </div>
 )
 
-export default connect(
-  (state) => ({
-    widgets: widgetsSelector(state),
-    zoom: zoomSelector(state),
-    offset: offsetSelector(state),
-    currentLink: currentLinkSelector(state),
-    links: linksSelector(state),
-    cursor: relativeCursorPointSelector(state),
-    bounds: editorBoundsSelector(state),
-  }),
-  {
-    onWidgetDrop,
-    setEditorBounds,
-    onEditorMouseMove,
-    onEditorMouseDown,
-    onEditorMouseUp,
-    updateZoom,
-    addPointToCurrentLink,
-  }
+export default compose(
+  connect(
+    (state) => ({
+      widgets: widgetsSelector(state),
+      zoom: zoomSelector(state),
+      offset: offsetSelector(state),
+      currentLink: currentLinkSelector(state),
+      links: linksSelector(state),
+      cursor: relativeCursorPointSelector(state),
+      bounds: editorBoundsSelector(state),
+    }),
+    {
+      onWidgetDrop,
+      setEditorBounds,
+      onEditorMouseMove,
+      onEditorMouseDown,
+      onEditorMouseUp,
+      updateZoom,
+      addPointToCurrentLink,
+    }
+  ),
+  withSchemaContext
 )(MainEditor)

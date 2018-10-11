@@ -1,5 +1,5 @@
 // @flow
-import { pick, reduce, uniqueId } from 'lodash'
+import { reduce, uniqueId } from 'lodash'
 import { setIn, multiSetIn } from '../../imuty'
 import { MIN_ZOOM } from '../../constants'
 import { PATH_CURSOR, PATH_DRAGGING, PATH_EDITOR_BOUNDS, PATH_ZOOM, PATH_OFFSET } from './state'
@@ -56,7 +56,7 @@ const addWidget = (
   undoable: true,
   reducer: (state: State) => {
     return setIn(state, getWidgetPathByEditorKey(widgetEditorKey), {
-      ...pick(command, ['name', 'desc', 'color']),
+      commandKey: command.key,
       inPortKeys: portKeys.in,
       outPortKeys: portKeys.out,
       ...relativeMousePoint(state, pos),

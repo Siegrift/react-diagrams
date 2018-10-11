@@ -13,6 +13,7 @@ import { bindActionCreators } from 'redux'
 import { shallowEqual } from '../utils'
 import { apiExportGraph } from './editorApi'
 import { MIN_SIDEBAR_SIZE } from '../constants'
+import { SchemaContext } from './SchemaContext'
 
 import type { State, Dispatch } from '../flow/reduxTypes'
 import type { Schema } from '../flow/schemaTypes'
@@ -52,16 +53,18 @@ class DiagramEditor extends React.Component<Props> {
         onContextMenu={(e: Event) => e.preventDefault()}
         className={classnames('DiagramEditor', className)}
       >
-        <TopPanel />
-        <SplitPane
-          split="vertical"
-          minSize={MIN_SIDEBAR_SIZE}
-          defaultSize={DEFAULT_SIDEBAR_SIZE}
-          pane1ClassName="SplitPaneSidepanel"
-        >
-          <SidePanel schema={schema} />
-          <MainEditor schema={schema} />
-        </SplitPane>
+        <SchemaContext.Provider value={schema}>
+          <TopPanel />
+          <SplitPane
+            split="vertical"
+            minSize={MIN_SIDEBAR_SIZE}
+            defaultSize={DEFAULT_SIDEBAR_SIZE}
+            pane1ClassName="SplitPaneSidepanel"
+          >
+            <SidePanel />
+            <MainEditor />
+          </SplitPane>
+        </SchemaContext.Provider>
       </div>
     )
   }

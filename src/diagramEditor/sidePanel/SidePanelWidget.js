@@ -5,6 +5,7 @@ import { DATA_TRANSFER_WIDGET_KEY } from '../../constants'
 const SidePanelWidget = ({ className, draggable, command }) => (
   <Widget
     {...command}
+    commandKey={command.key}
     className={className}
     draggable={draggable}
     onDragStart={(event) => {

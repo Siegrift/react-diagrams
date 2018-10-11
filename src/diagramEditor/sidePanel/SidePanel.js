@@ -6,7 +6,7 @@ const SidePanel = ({ schema }) => (
   <div>
     {schema.commands.map((command) => (
       <SidePanelWidget
-        className="diagram-widget__side-panel"
+        className="DiagramWidget__SidePanel"
         draggable
         key={command.key}
         command={command}

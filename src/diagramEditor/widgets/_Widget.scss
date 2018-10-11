@@ -1,4 +1,4 @@
-.diagram-widget {
+.DiagramWidget {
   contain: content;
   pointer-events: all;
   position: absolute;
@@ -6,27 +6,37 @@
   border-radius: 1em;
   width: fit-content;
   height: fit-content;
-  &--constrained {
-    max-width: 250px;
-  }
+  cursor: grab;
+
   svg {
     margin-right: 0.3em;
   }
-  cursor: grab;
+
   &__Header {
     display: flex !important;
     align-items: center;
     justify-content: center;
   }
-  &__side-panel {
+
+  &__SidePanel {
     width: inherit;
     overflow: hidden;
     position: relative;
     margin: 0.5em;
   }
-  &__name {
-    text-align: center;
+
+  &__Ports {
+    cursor: pointer;
+    display: flex;
+    > div {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      margin: 0.1em;
+    }
+    margin-top: 1em;
   }
+
   &__selected {
     background: linear-gradient(90deg, rgb(0, 192, 255) 50%, transparent 0),
       linear-gradient(0deg, rgb(0, 192, 255) 50%, transparent 0),
@@ -35,12 +45,18 @@
     background-repeat: repeat-x, repeat-y, repeat-x, repeat-y;
     background-size: 20px 4px, 4px 20px, 20px 4px, 4px 20px;
     background-position: left top, right top, left bottom, left top;
-    animation: border-dance 7s infinite linear;
+    animation: movingBorder 7s infinite linear;
   }
-  &--grabbing {
+
+  &__constrained {
+    max-width: 250px;
+  }
+
+  &__grabbing {
     cursor: grabbing;
   }
-  @keyframes border-dance {
+
+  @keyframes movingBorder {
     0% {
       background-position: left top, right top, right bottom, left bottom;
     }
@@ -48,18 +64,6 @@
       background-position: right top, right bottom, left bottom, left top;
     }
   }
-}
-
-.ports {
-  cursor: pointer;
-  display: flex;
-  > div {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    margin: 0.1em;
-  }
-  margin-top: 1em;
 }
 
 .IconWidget {

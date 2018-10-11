@@ -29,8 +29,8 @@ const WholeWidget = ({
 }) => (
   <Card
     id={editorKey}
-    className={classnames('diagram-widget', className, {
-      'diagram-widget__selected': selected,
+    className={classnames('DiagramWidget', className, {
+      DiagramWidget__selected: selected,
     })}
     style={{ top: y, left: x, backgroundColor: command.color }}
     draggable={draggable}
@@ -43,18 +43,18 @@ const WholeWidget = ({
         component="div"
         align="center"
         noWrap
-        className="diagram-widget__Header"
+        className="DiagramWidget__Header"
       >
-        <command.Icon size={30} className="diagram-widget__Header__Icon" />
-        <span className="diagram-widget__Header__Title">{command.name}</span>
+        <command.Icon size={30} className="DiagramWidget__Header__Icon" />
+        <span className="DiagramWidget__Header__Title">{command.name}</span>
       </Typography>
-      <div className="ports">
-        <div className="ports__in">
+      <div className="DiagramWidget__Ports">
+        <div>
           {map(inPorts, (port) => (
             <Port {...port} isInPort className={isSidePanel && 'DiagramPort__SidePanel'} />
           ))}
         </div>
-        <div className="ports__out">
+        <div>
           {map(outPorts, (port) => (
             <Port {...port} className={isSidePanel && 'DiagramPort__SidePanel'} />
           ))}
@@ -93,7 +93,7 @@ const Widget = (props) =>
       )}
     </Measure>
   ) : (
-    <WholeWidget {...props} className="diagram-widget--constrained" />
+    <WholeWidget {...props} className="DiagramWidget__constrained" />
   )
 
 export default withSchemaCommandContext((props) => props.commandKey)(Widget)

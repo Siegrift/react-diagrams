@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import LinkPoint from '../linkPoints/LinkPoint'
 import { onLinkMouseDown, addPointToCurrentLink } from './actions'
 import { linkPointsByEditorKeysSelector } from '../linkPoints/selectors'
+import './_Link.scss'
 
 // Properties of a line
 // I:  - pointA (array) [x,y]: coordinates
@@ -83,16 +84,16 @@ const Link = ({
           <path
             d="M1,1 L1,5 L5,3 L1,1"
             className={classNames({
-              Marker__End: selected,
+              MarkerEnd: selected,
             })}
           />
         </marker>
       </defs>
       <path
         markerEnd="url(#arrow)"
-        className={classNames('Editor__Inner__Svg__Path', {
-          Editor__Inner__Svg__Path__Selected: selected,
-          hoverable: !currentLink,
+        className={classNames('Editor__Inner__SvgEditor__Path', {
+          Editor__Inner__SvgEditor__Path__selected: selected,
+          Editor__Inner__SvgEditor__Path__hoverable: !currentLink,
         })}
         d={d}
         onMouseDown={(e) => {
@@ -104,9 +105,7 @@ const Link = ({
           }
         }}
       />
-      {mergedPoints.map((point) => (
-        <LinkPoint point={point} key={point.editorKey} />
-      ))}
+      {mergedPoints.map((point) => <LinkPoint point={point} key={point.editorKey} />)}
     </g>
   )
 }

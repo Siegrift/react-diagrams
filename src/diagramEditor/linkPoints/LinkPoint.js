@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 const LinkPoint = ({ point, onPointMouseDown }) => (
   <circle
     className={classNames('LinkPoint', {
-      LinkPoint__Selected: point.selected,
+      LinkPoint__selected: point.selected,
       LinkPoint__hidden: !point.visible,
     })}
     cx={point.x}

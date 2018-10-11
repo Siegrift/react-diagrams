@@ -8,7 +8,7 @@
     transform: scale(1.5);
   }
   fill: green;
-  &__Selected {
+  &__selected {
     stroke: rgb(0, 192, 255) !important;
     stroke-dasharray: 10, 2;
     animation: dash 1s linear infinite;

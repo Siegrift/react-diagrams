@@ -61,7 +61,7 @@ const MainEditor = ({
       const command = schema.commands.find((c) => c.key === dataKey)
       onWidgetDrop(command, { x: event.clientX, y: event.clientY })
     }}
-    className={classnames('editor')}
+    className={classnames('Editor')}
     onDragOver={(event) => event.preventDefault()}
     onMouseMove={(e) => onEditorMouseMove({ x: e.clientX, y: e.clientY })}
     onMouseDown={(e) => {
@@ -85,7 +85,7 @@ const MainEditor = ({
     }}
   >
     <svg
-      className="Editor__Inner__Svg"
+      className="Editor__Inner__SvgEditor"
       style={{
         transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
       }}
@@ -103,7 +103,7 @@ const MainEditor = ({
       )}
     </svg>
     <div
-      className={classnames('editor__inner')}
+      className={classnames('Editor__Inner')}
       style={{
         transform: `translate(${offset.x}px, ${offset.y}px) scale(${zoom})`,
       }}

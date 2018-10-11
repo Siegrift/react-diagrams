@@ -38,7 +38,7 @@ const WidgetEnhancer = ({
       event.stopPropagation()
       onWidgetMouseDown(widget.editorKey, event)
     }}
-    className={classNames({ 'diagram-widget--grabbing': isDragging })}
+    className={classNames({ 'DiagramWidget--grabbing': isDragging })}
   />
 )
 

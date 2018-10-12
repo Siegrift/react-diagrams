@@ -3,7 +3,6 @@
   pointer-events: all;
   position: absolute;
   padding: 0.5em;
-  border-radius: 1em;
   width: fit-content;
   height: fit-content;
   cursor: grab;
@@ -16,6 +15,8 @@
     display: flex !important;
     align-items: center;
     justify-content: center;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid black;
   }
 
   &__SidePanel {
@@ -26,13 +27,11 @@
   }
 
   &__Ports {
-    cursor: pointer;
     display: flex;
     > div {
       display: flex;
       flex-direction: column;
       flex: 1;
-      margin: 0.1em;
     }
     margin-top: 1em;
   }

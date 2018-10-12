@@ -4,32 +4,38 @@ import './_Port.scss'
 import { connect } from 'react-redux'
 import { onPortMouseDown } from './actions'
 import { isValidLinkDefault } from './portUtils'
-import Radio from '@material-ui/core/Radio'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormLabel from '@material-ui/core/FormLabel'
 
 // TODO: valid link not part of the port
-const Port = ({ className, isInPort, name, type, editorKey, onPortMouseDown, isValidLink }) => {
+const Port = ({
+  isSidePanel,
+  isInPort,
+  name,
+  type,
+  editorKey,
+  onPortMouseDown,
+  isValidLink,
+  selected,
+}) => {
   return (
-    <FormControlLabel
-      style={{ margin: 0, textAlign: isInPort ? 'left' : 'right' }}
-      className={classnames(className, 'DiagramPort')}
+    <FormLabel
+      style={{ textAlign: isInPort ? 'left' : 'right' }}
+      className={classnames(
+        { DiagramPort__selected: selected },
+        isSidePanel ? 'DiagramPort__SidePanel' : 'DiagramPort__hoverable',
+        'DiagramPort'
+      )}
       onMouseDown={(e) => {
         if (!editorKey) return
         e.stopPropagation()
         onPortMouseDown(editorKey, e, isValidLink || isValidLinkDefault)
       }}
-      control={
-        // TODO: make use of property checked
-        <Radio checked={false} style={{ padding: isInPort ? '0 0.3em 0 0' : '0 0 0 0.3em' }} />
-      }
-      label={
-        <span>
-          <b>{name}</b>
-          <span>{` (${type})`}</span>
-        </span>
-      }
-      labelPlacement={isInPort ? 'end' : 'start'}
-    />
+    >
+      <span className="DiagramPort__Label">
+        <b>{name}</b>
+        <span>{` (${type})`}</span>
+      </span>
+    </FormLabel>
   )
 }
 

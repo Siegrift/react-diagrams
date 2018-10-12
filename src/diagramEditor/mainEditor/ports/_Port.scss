@@ -1,4 +1,15 @@
 .DiagramPort {
+  border-radius: 5px;
+  padding: 3px !important;
+  &__hoverable {
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+  &__selected {
+    border: 1px solid rgba(0, 0, 0, 0.5);
+  }
   &__Label {
     font-size: 0.8em;
   }

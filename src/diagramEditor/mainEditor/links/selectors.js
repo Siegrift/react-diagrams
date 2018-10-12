@@ -11,7 +11,7 @@ import { selectedPortsSelector } from '../widgets/selectors'
 
 import type { EditorKey } from '../../../flow/commonTypes'
 import type { State } from '../../../flow/reduxTypes'
-import type { LinkState, Link } from './flow'
+import type { LinkState, Link, CurrentLink } from './flow'
 import type { LinkPointsState, LinkPoint } from '../linkPoints/flow'
 
 export const currentLinkSelector = (state: State) => get(state, PATH_CURRENT_LINK)
@@ -49,5 +49,12 @@ export const linksToDeleteSelector = createSelector(
         linkPathLeft.length === 2
       )
     })
+  }
+)
+
+export const currentLinkSourceSelector = createSelector(
+  currentLinkSelector,
+  (currentLink: ?CurrentLink) => {
+    return currentLink && currentLink.source
   }
 )

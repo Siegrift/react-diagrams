@@ -26,6 +26,7 @@ const WholeWidget = ({
   outPorts,
   isSidePanel,
   command,
+  currentLinkSource,
 }) => (
   <Card
     id={editorKey}
@@ -51,12 +52,21 @@ const WholeWidget = ({
       <div className="DiagramWidget__Ports">
         <div>
           {map(inPorts, (port) => (
-            <Port {...port} isInPort className={isSidePanel && 'DiagramPort__SidePanel'} />
+            <Port
+              {...port}
+              selected={currentLinkSource && currentLinkSource === port.editorKey}
+              isInPort
+              isSidePanel={isSidePanel}
+            />
           ))}
         </div>
         <div>
           {map(outPorts, (port) => (
-            <Port {...port} className={isSidePanel && 'DiagramPort__SidePanel'} />
+            <Port
+              {...port}
+              selected={currentLinkSource && currentLinkSource === port.editorKey}
+              isSidePanel={isSidePanel}
+            />
           ))}
         </div>
       </div>

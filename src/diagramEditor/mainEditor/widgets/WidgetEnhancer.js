@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { portByEditorKeySelector } from '../ports/selectors'
 import classNames from 'classnames'
 import { draggingSelector } from '../../mainEditor/selectors'
+import { currentLinkSourceSelector } from '../../mainEditor/links/selectors'
 
 import type { Widget } from './flow'
 import type { Port } from '../ports/flow'
@@ -21,6 +22,7 @@ type ConnectedProps = Props & {
   outPorts: Port[],
   onWidgetMouseDown: Function,
   isDragging: boolean,
+  currentLinkSource: EditorKey,
 }
 
 const WidgetEnhancer = ({
@@ -29,6 +31,7 @@ const WidgetEnhancer = ({
   outPorts,
   onWidgetMouseDown,
   isDragging,
+  currentLinkSource,
 }: ConnectedProps) => (
   <WidgetComponent
     {...widget}
@@ -39,6 +42,7 @@ const WidgetEnhancer = ({
       onWidgetMouseDown(widget.editorKey, event)
     }}
     className={classNames({ 'DiagramWidget--grabbing': isDragging })}
+    currentLinkSource={currentLinkSource}
   />
 )
 
@@ -47,6 +51,7 @@ export default connect(
     isDragging: draggingSelector(state),
     inPorts: widget.inPortKeys.map((key: EditorKey) => portByEditorKeySelector(state, key)),
     outPorts: widget.outPortKeys.map((key: EditorKey) => portByEditorKeySelector(state, key)),
+    currentLinkSource: currentLinkSourceSelector(state),
   }),
   { onWidgetMouseDown }
 )(WidgetEnhancer)

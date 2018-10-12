@@ -1,7 +1,6 @@
 // @flow
 import type { Position, EditorKey } from '../../../flow/commonTypes'
 import type { State } from '../../../flow/reduxTypes'
-import { getWidgetByEditorKey } from '../widgets/selectors'
 import { portByEditorKeySelector } from '../ports/selectors'
 
 /** Returns the distance from p1 to p3 + p2 to p3. */
@@ -14,12 +13,9 @@ export const distance = (p1: Position, p2: Position, p3: Position): number => {
 export const isInvalidLink = (
   state: State,
   sourceEditorKey: EditorKey,
-  targetEditorKey: EditorKey,
-  linkChecker: Function
+  targetEditorKey: EditorKey
 ) => {
   const sourcePort = portByEditorKeySelector(state, sourceEditorKey)
-  const sourceWidget = getWidgetByEditorKey(state, sourcePort.widgetEditorKey)
   const targetPort = portByEditorKeySelector(state, targetEditorKey)
-  const targetWidget = getWidgetByEditorKey(state, targetPort.widgetEditorKey)
-  return !linkChecker(sourcePort, sourceWidget, targetPort, targetWidget)
+  return sourcePort.isInPort || !targetPort.isInPort
 }

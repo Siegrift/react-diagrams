@@ -3,7 +3,6 @@ import { uniqueId } from 'lodash'
 
 import type { Port as SchemaPort } from '../../../flow/schemaTypes'
 import type { Port } from './flow'
-import type { Widget } from '../widgets/flow'
 import type { EditorKey } from '../../../flow/commonTypes'
 
 export type CreatedPorts = {
@@ -29,13 +28,4 @@ export const createPorts = (
       widgetEditorKey,
     })),
   }
-}
-
-export const isValidLinkDefault = (
-  sourcePort: Port,
-  sourceWidget: Widget,
-  targetPort: Port,
-  targetWidget: Widget
-) => {
-  return !sourcePort.isInPort && targetPort.isInPort
 }

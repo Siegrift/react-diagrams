@@ -15,20 +15,19 @@ import type { EditorKey } from '../../../flow/commonTypes'
 import type { Dispatch, GetState, State } from '../../../flow/reduxTypes'
 import type { Port } from './flow'
 
-export const onPortMouseDown = (editorKey: EditorKey, event: MouseEvent, linkChecker: Function) => (
+export const onPortMouseDown = (editorKey: EditorKey, event: MouseEvent, isInPort: boolean) => (
   dispatch: Dispatch,
   getState: GetState
 ) => {
   const currentLink = currentLinkSelector(getState())
   const point = { x: event.clientX, y: event.clientY }
   dispatch(cancelCurrentSelection())
-  if (currentLink) {
-    if (isInvalidLink(getState(), currentLink.source, editorKey, linkChecker)) return
+  if (currentLink && !isInvalidLink(getState(), currentLink.source, editorKey)) {
     dispatch(addPointToCurrentLink(point, false))
     dispatch(addLink({ ...currentLinkSelector(getState()), target: editorKey }))
     dispatch(setSelectedPort(-1))
     dispatch(checkpoint())
-  } else {
+  } else if (!isInPort) {
     dispatch(setSelectedPort(editorKey, point))
     dispatch(addPointToCurrentLink(point))
   }

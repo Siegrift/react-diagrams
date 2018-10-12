@@ -3,7 +3,6 @@ import classnames from 'classnames'
 import './_Port.scss'
 import { connect } from 'react-redux'
 import { onPortMouseDown } from './actions'
-import { isValidLinkDefault } from './portUtils'
 import FormLabel from '@material-ui/core/FormLabel'
 
 // TODO: valid link not part of the port
@@ -28,7 +27,7 @@ const Port = ({
       onMouseDown={(e) => {
         if (!editorKey) return
         e.stopPropagation()
-        onPortMouseDown(editorKey, e, isValidLink || isValidLinkDefault)
+        onPortMouseDown(editorKey, e, isInPort)
       }}
     >
       <span className="DiagramPort__Label">

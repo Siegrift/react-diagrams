@@ -25,9 +25,9 @@ export const selectedLinksSelector = createSelector(linksSelector, (links: LinkS
   filter(links, (link: Link) => link.selected)
 )
 
-// TODO: this should be in a ../links/selectors file, but that would cause transitive dep issue
+// NOTE: this should be in a ../linkPoints/selectors file, but that would cause transitive dep issue
 export const rawSelectedLinkPointsSelector = createSelector(
-  // TODO: we can't import the path as well
+  // NOTE: we can't import the path as well
   (state: State) => get(state, ['linkPoints']),
   (linkPoints: LinkPointsState) => filter(linkPoints, (linkPoint: LinkPoint) => linkPoint.selected)
 )

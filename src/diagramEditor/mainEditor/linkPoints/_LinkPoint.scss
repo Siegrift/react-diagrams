@@ -4,7 +4,6 @@
   transition: transform 0.1s;
   &:hover {
     fill: rgb(0, 50, 0);
-    // TODO: put as css vars
     transform: scale(1.5);
   }
   fill: green;

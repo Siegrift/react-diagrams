@@ -1,4 +1,6 @@
 // @flow
+import type { BoundingBox } from '../../flow/commonTypes'
+
 export type EditorState = {
   mouse: {
     cursor: {
@@ -14,8 +16,7 @@ export type EditorState = {
     },
     zoom: number,
   },
-  // TODO: TBD
-  editorBounds: any,
+  editorBounds: BoundingBox,
 }
 
 // NOTE: Type needs to be manually updated when PATH changes

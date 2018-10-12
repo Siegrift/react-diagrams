@@ -8,7 +8,6 @@ import type { EditorKey } from '../../../flow/commonTypes'
 import type { State } from '../../../flow/reduxTypes'
 
 export const widgetsSelector = (state: State) => get(state, PATH_WIDGETS)
-// TODO: make a selector
 export const getWidgetByEditorKey = (state: State, editorKey: EditorKey) =>
   get(state, getWidgetPathByEditorKey(editorKey))
 

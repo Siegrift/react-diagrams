@@ -11,8 +11,6 @@ import Tooltip from '@material-ui/core/Tooltip'
 import { WIDGET_ICON_MODE_TRASHHOLD } from '../../../constants'
 import { withSchemaCommandContext } from '../../SchemaContext'
 
-// TODO: We get a warning about variant not being recognized because of
-// https://github.com/mui-org/material-ui/issues/13145
 const WholeWidget = ({
   className,
   editorKey,

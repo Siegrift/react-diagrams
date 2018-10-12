@@ -42,7 +42,7 @@ const TopPanel = ({
 }) => (
   <AppBar position="static" className="TopPanel">
     <Toolbar variant="dense">
-      <Typography variant="title" color="inherit">
+      <Typography variant="h6" color="inherit">
         Diagrams
       </Typography>
 
